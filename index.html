@@ -501,14 +501,13 @@ function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   if (!email || !password) { showAuthError('Por favor completa todos los campos.'); return; }
-  netlifyIdentity.login({email, password}).catch(err => showAuthError(err.message || 'Error al iniciar sesión.'));
+  netlifyIdentity.open('login');
 }
 function doRegister() {
-  const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const password = document.getElementById('reg-password').value;
   if (!email || !password) { showAuthError('Por favor completa todos los campos.'); return; }
-  netlifyIdentity.signup({email, password, data:{full_name:name}}).catch(err => showAuthError(err.message || 'Error al registrarse.'));
+  netlifyIdentity.open('signup');
 }
 function showAuthError(msg) {
   document.getElementById('auth-error').style.display = 'block';
