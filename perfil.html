@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Perfil · He Knows She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<style>
+:root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;--bg:#EDEBE8;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--night);}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);text-decoration:none;}
+.nav-logo span{color:var(--terra);font-style:italic;}
+.nav-right{display:flex;gap:12px;align-items:center;}
+.btn-s{padding:9px 20px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:2px;transition:all 0.2s;text-decoration:none;display:inline-block;border:none;}
+.btn-dark{background:var(--night);color:var(--cream);}
+.btn-dark:hover{background:var(--terra);}
+.btn-out{background:transparent;color:var(--terra);border:1.5px solid rgba(196,122,90,0.35);}
+.main{padding-top:80px;min-height:100vh;}
+.center{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);text-align:center;padding:40px;}
+.center-inner{max-width:480px;}
+.center-inner h1{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--night);margin-bottom:16px;line-height:1.1;}
+.center-inner h1 em{color:var(--terra);font-style:italic;}
+.center-inner p{font-size:0.95rem;color:var(--muted);margin-bottom:32px;line-height:1.7;}
+.wrap{display:none;max-width:1100px;margin:0 auto;padding:48px 40px 80px;}
+.profile-header{background:var(--night);border-radius:4px;padding:40px;display:flex;gap:24px;align-items:flex-start;margin-bottom:20px;position:relative;overflow:hidden;}
+.profile-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 20%,rgba(196,122,90,0.12),transparent 55%);}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:white;flex-shrink:0;border:2px solid rgba(201,169,110,0.3);position:relative;z-index:2;}
+.pinfo{flex:1;position:relative;z-index:2;}
+.pname{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--cream);margin-bottom:4px;}
+.pemail{font-size:0.78rem;color:rgba(247,243,238,0.45);margin-bottom:12px;}
+.pbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.25);padding:4px 12px;border-radius:20px;}
+.pbadge span{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+.pactions{position:relative;z-index:2;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(196,122,90,0.1);border-radius:4px;overflow:hidden;margin-bottom:20px;}
+.stat{background:var(--cream);padding:22px;text-align:center;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--terra);}
+.stat-lbl{font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:5px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:var(--cream);border-radius:4px;padding:28px;border:1px solid rgba(196,122,90,0.1);}
+.card-full{grid-column:1/-1;}
+.ctitle{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;font-weight:600;}
+.bio-txt{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--slate);line-height:1.7;}
+.tags{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{font-size:0.65rem;padding:5px 12px;border-radius:20px;background:rgba(196,122,90,0.08);color:var(--terra);font-weight:500;border:1px solid rgba(196,122,90,0.18);cursor:pointer;transition:all 0.2s;}
+.tag.sel{background:var(--terra);color:white;border-color:var(--terra);}
+.plan-box{background:var(--night);border-radius:4px;padding:22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.plan-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--cream);}
+.plan-det{font-size:0.7rem;color:rgba(247,243,238,0.4);margin-top:3px;}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--terra);}
+.empty{text-align:center;padding:28px;color:var(--muted);}
+.empty-icon{font-size:2rem;margin-bottom:10px;}
+.empty p{font-size:0.85rem;line-height:1.6;}
+.fg{margin-bottom:16px;}
+.flbl{font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--slate);display:block;margin-bottom:8px;font-weight:600;}
+.finp{width:100%;padding:11px 14px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;}
+.finp:focus{border-color:var(--terra);}
+textarea.finp{height:90px;resize:vertical;}
+.divider{height:1px;background:rgba(196,122,90,0.1);margin:20px 0;}
+.bank-box{background:#F0EAE3;border-radius:4px;padding:20px;border:1px solid rgba(196,122,90,0.15);}
+.bank-label{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.bank-val{font-size:0.9rem;color:var(--night);font-weight:500;}
+@media(max-width:768px){nav{padding:14px 20px;}.wrap{padding:24px 20px 60px;}.profile-header{flex-direction:column;padding:24px;}.grid{grid-template-columns:1fr;}.card-full{grid-column:1;}.stats{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">He Knows · <span>She Knows</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="btn-s btn-out">← Inicio</a>
+    <button onclick="netlifyIdentity.logout()" class="btn-s btn-dark">Cerrar sesión</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- NO SESIÓN -->
+  <div class="center" id="no-sesion">
+    <div class="center-inner">
+      <div style="font-size:2.5rem;margin-bottom:20px;">🔒</div>
+      <h1>Inicia sesión para ver tu <em>perfil.</em></h1>
+      <p>Necesitas una cuenta para acceder a tu perfil, consultas y configuración.</p>
+      <button onclick="netlifyIdentity.open()" class="btn-s btn-dark" style="padding:14px 32px;font-size:0.75rem;">Iniciar sesión →</button>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="wrap" id="perfil">
+
+    <!-- HEADER -->
+    <div class="profile-header">
+      <div class="avatar" id="avatar">K</div>
+      <div class="pinfo">
+        <div class="pname" id="pname">—</div>
+        <div class="pemail" id="pemail">—</div>
+        <div class="pbadge"><span>✓</span><span id="prole">Usuario</span></div>
+      </div>
+      <div class="pactions">
+        <button onclick="toggleEditar()" class="btn-s" style="background:rgba(255,255,255,0.08);color:rgba(247,243,238,0.7);border:1px solid rgba(255,255,255,0.12);">✏️ Editar perfil</button>
+      </div>
+    </div>
+
+    <!-- ADVISOR -->
+    <div id="sec-advisor" style="display:none;">
+      <div class="stats">
+        <div class="stat"><div class="stat-val" id="adv-rating">—</div><div class="stat-lbl">Rating</div></div>
+        <div class="stat"><div class="stat-val" id="adv-consultas">0</div><div class="stat-lbl">Consultas</div></div>
+        <div class="stat"><div class="stat-val" id="adv-ganancias">$0</div><div class="stat-lbl">Ganancias MXN</div></div>
+      </div>
+      <div class="grid">
+        <div class="card card-full">
+          <div class="ctitle">Bio profesional</div>
+          <div id="bio-display"><div class="empty"><div class="empty-icon">📝</div><p>Aún no has agregado tu bio. Edita tu perfil para añadirla.</p></div></div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Áreas de expertise</div>
+          <div id="areas-display"><div class="empty"><p>Sin áreas seleccionadas aún.</p></div></div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Idiomas</div>
+          <div id="idiomas-display"><div class="empty"><p>Sin idiomas seleccionados.</p></div></div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Datos bancarios</div>
+          <div id="banco-display"><div class="empty"><div class="empty-icon">🏦</div><p>Agrega tus datos bancarios para recibir tus ganancias.</p></div></div>
+        </div>
+        <div class="card card-full">
+          <div class="ctitle">Consultas recientes</div>
+          <div class="empty"><div class="empty-icon">💬</div><p>Aún no tienes consultas. Cuando los usuarios te contacten aparecerán aquí.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USUARIO -->
+    <div id="sec-usuario" style="display:none;">
+      <div class="grid">
+        <div class="card">
+          <div class="ctitle">Mi plan</div>
+          <div class="plan-box"><div><div class="plan-name">Explorador</div><div class="plan-det">Para siempre gratis</div></div><div class="plan-price">$0</div></div>
+          <a href="index.html#precios" class="btn-s btn-dark" style="width:100%;text-align:center;display:block;padding:12px;">Mejorar plan →</a>
+        </div>
+        <div class="card">
+          <div class="ctitle">Advisors favoritos</div>
+          <div class="empty"><div class="empty-icon">⭐</div><p>Aún no tienes advisors favoritos.</p></div>
+        </div>
+        <div class="card card-full">
+          <div class="ctitle">Mis consultas</div>
+          <div class="empty"><div class="empty-icon">💬</div><p>Aún no has hecho consultas. ¡Haz tu primera pregunta!</p></div>
+          <div style="text-align:center;margin-top:16px;"><a href="index.html" class="btn-s btn-dark" style="padding:12px 28px;">Buscar advisor →</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO EDITAR -->
+    <div class="card" id="form-editar" style="display:none;margin-top:16px;">
+      <div class="ctitle">Editar perfil</div>
+      <div class="fg"><label class="flbl">Nombre</label><input type="text" class="finp" id="e-nombre"></div>
+      <div id="campos-advisor">
+        <div class="fg"><label class="flbl">Bio profesional</label><textarea class="finp" id="e-bio" placeholder="Cuéntanos tu experiencia y por qué eres bueno/a dando consejos..."></textarea></div>
+        <div class="fg">
+          <label class="flbl">Áreas de expertise</label>
+          <div class="tags" id="areas-sel">
+            <button class="tag" onclick="toggleArea(this)" data-v="Relaciones y pareja">💔 Relaciones y pareja</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Ghosting e infidelidad">👻 Ghosting e infidelidad</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Cómo piensa el sexo opuesto">🧠 Cómo piensa el sexo opuesto</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Confianza y autoestima">💪 Confianza y autoestima</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Styling y presencia">👗 Styling y presencia</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Texting y comunicación">💬 Texting y comunicación</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Citas y conquista">❤️‍🔥 Citas y conquista</button>
+            <button class="tag" onclick="toggleArea(this)" data-v="Desahogo real">🗣️ Desahogo real</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Idiomas</label>
+          <div class="tags">
+            <button class="tag" onclick="toggleLang(this)" data-v="Español">🇲🇽 Español</button>
+            <button class="tag" onclick="toggleLang(this)" data-v="English">🇺🇸 English</button>
+          </div>
+        </div>
+        <div class="fg"><label class="flbl">Precio por consulta (MXN)</label><input type="number" class="finp" id="e-precio" placeholder="Ej. 150" min="50" step="10"></div>
+
+        <div class="divider"></div>
+        <p style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-weight:600;">🏦 Datos bancarios para pagos</p>
+        <div class="fg"><label class="flbl">Banco</label><input type="text" class="finp" id="e-banco" placeholder="Ej. BBVA, Banamex, HSBC..."></div>
+        <div class="fg"><label class="flbl">Número de cuenta</label><input type="text" class="finp" id="e-cuenta" placeholder="18 dígitos"></div>
+        <div class="fg"><label class="flbl">CLABE interbancaria</label><input type="text" class="finp" id="e-clabe" placeholder="18 dígitos"></div>
+        <div class="fg"><label class="flbl">Nombre del titular</label><input type="text" class="finp" id="e-titular" placeholder="Nombre exacto en tu cuenta"></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button onclick="guardar()" class="btn-s btn-dark" style="flex:2;padding:14px;font-size:0.75rem;">Guardar cambios</button>
+        <button onclick="toggleEditar()" class="btn-s btn-out" style="flex:1;padding:14px;font-size:0.75rem;">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let user=null,data={},areas=[],langs=[];
+
+netlifyIdentity.on('init',u=>{u?mostrarPerfil(u):mostrarLock();});
+netlifyIdentity.on('login',u=>{mostrarPerfil(u);netlifyIdentity.close();});
+netlifyIdentity.on('logout',()=>{window.location.href='index.html';});
+
+function mostrarLock(){
+  document.getElementById('no-sesion').style.display='flex';
+  document.getElementById('perfil').style.display='none';
+}
+
+function mostrarPerfil(u){
+  user=u;
+  document.getElementById('no-sesion').style.display='none';
+  document.getElementById('perfil').style.display='block';
+  const nombre=u.user_metadata?.full_name||u.email.split('@')[0];
+  document.getElementById('avatar').textContent=nombre.charAt(0).toUpperCase();
+  document.getElementById('pname').textContent=nombre;
+  document.getElementById('pemail').textContent=u.email;
+  const saved=localStorage.getItem('hksk-p-'+u.id);
+  if(saved)data=JSON.parse(saved);
+  const rol=data.rol||'usuario';
+  document.getElementById('prole').textContent=rol==='advisor'?'Advisor Verificado':'Usuario';
+  if(rol==='advisor'){
+    document.getElementById('sec-advisor').style.display='block';
+    document.getElementById('campos-advisor').style.display='block';
+    renderAdvisor();
+  } else {
+    document.getElementById('sec-usuario').style.display='block';
+    document.getElementById('campos-advisor').style.display='none';
+  }
+  document.getElementById('e-nombre').value=nombre;
+  if(data.bio)document.getElementById('e-bio').value=data.bio;
+  if(data.precio)document.getElementById('e-precio').value=data.precio;
+  if(data.banco)document.getElementById('e-banco').value=data.banco;
+  if(data.cuenta)document.getElementById('e-cuenta').value=data.cuenta;
+  if(data.clabe)document.getElementById('e-clabe').value=data.clabe;
+  if(data.titular)document.getElementById('e-titular').value=data.titular;
+  if(data.areas)areas=[...data.areas];
+  if(data.langs)langs=[...data.langs];
+}
+
+function renderAdvisor(){
+  if(data.bio)document.getElementById('bio-display').innerHTML='<p class="bio-txt">'+data.bio+'</p>';
+  if(data.areas&&data.areas.length)document.getElementById('areas-display').innerHTML='<div class="tags">'+data.areas.map(a=>'<span class="tag sel">'+a+'</span>').join('')+'</div>';
+  if(data.langs&&data.langs.length)document.getElementById('idiomas-display').innerHTML='<div class="tags">'+data.langs.map(l=>'<span class="tag sel">'+l+'</span>').join('')+'</div>';
+  if(data.banco||data.cuenta){
+    let html='<div class="bank-box">';
+    if(data.banco)html+='<div class="bank-label">Banco</div><div class="bank-val">'+data.banco+'</div><br>';
+    if(data.cuenta)html+='<div class="bank-label">Número de cuenta</div><div class="bank-val">'+data.cuenta+'</div><br>';
+    if(data.clabe)html+='<div class="bank-label">CLABE</div><div class="bank-val">'+data.clabe+'</div><br>';
+    if(data.titular)html+='<div class="bank-label">Titular</div><div class="bank-val">'+data.titular+'</div>';
+    html+='</div>';
+    document.getElementById('banco-display').innerHTML=html;
+  }
+}
+
+function toggleEditar(){
+  const f=document.getElementById('form-editar');
+  f.style.display=f.style.display==='none'?'block':'none';
+  document.querySelectorAll('[data-v]').forEach(b=>{
+    const isArea=b.id===undefined&&b.dataset.v;
+    const sel=areas.includes(b.dataset.v)||langs.includes(b.dataset.v);
+    b.classList.toggle('sel',sel);
+  });
+}
+
+function toggleArea(btn){
+  const v=btn.dataset.v;
+  if(areas.includes(v)){areas=areas.filter(x=>x!==v);btn.classList.remove('sel');}
+  else{areas.push(v);btn.classList.add('sel');}
+}
+
+function toggleLang(btn){
+  const v=btn.dataset.v;
+  if(langs.includes(v)){langs=langs.filter(x=>x!==v);btn.classList.remove('sel');}
+  else{langs.push(v);btn.classList.add('sel');}
+}
+
+function guardar(){
+  const nombre=document.getElementById('e-nombre').value.trim();
+  const bio=document.getElementById('e-bio')?document.getElementById('e-bio').value.trim():'';
+  const precio=document.getElementById('e-precio')?document.getElementById('e-precio').value:'';
+  const banco=document.getElementById('e-banco')?document.getElementById('e-banco').value.trim():'';
+  const cuenta=document.getElementById('e-cuenta')?document.getElementById('e-cuenta').value.trim():'';
+  const clabe=document.getElementById('e-clabe')?document.getElementById('e-clabe').value.trim():'';
+  const titular=document.getElementById('e-titular')?document.getElementById('e-titular').value.trim():'';
+  data={...data,nombre,bio,areas,langs,precio,banco,cuenta,clabe,titular};
+  localStorage.setItem('hksk-p-'+user.id,JSON.stringify(data));
+  document.getElementById('pname').textContent=nombre||user.email.split('@')[0];
+  document.getElementById('avatar').textContent=(nombre||user.email).charAt(0).toUpperCase();
+  if(data.rol==='advisor')renderAdvisor();
+  toggleEditar();
+  alert('✅ Perfil guardado correctamente');
+}
+</script>
+</body>
+</html>
