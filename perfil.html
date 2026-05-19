@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi Perfil · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
@@ -53,7 +52,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-save{background:var(--night);color:var(--cream);padding:11px 26px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;}
 .btn-save:hover{background:var(--terra);}
 .btn-save:disabled{opacity:0.5;cursor:default;}
-.btn-cancel{background:transparent;border:none;color:var(--muted);padding:11px 16px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.2s;}
+.btn-cancel{background:transparent;border:none;color:var(--muted);padding:11px 16px;font-size:0.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.2s;}
 .btn-cancel:hover{color:var(--slate);}
 .btn-row{display:flex;align-items:center;gap:8px;margin-top:20px;}
 .divider{height:1px;background:rgba(196,122,90,0.12);margin:36px 0;}
@@ -72,20 +71,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </style>
 </head>
 <body>
-
 <div class="loader" id="loader"><div class="loader-logo">He Knows · <span>She Knows</span></div></div>
 <div class="toast" id="toast"></div>
-
 <nav>
   <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="buscar-advisors.html">Advisors</a>
     <span class="nav-email" id="nav-email"></span>
-    <button class="btn-logout" id="btn-logout">Salir</button>
+    <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
   </div>
 </nav>
-
 <div class="page">
   <div class="profile-hero">
     <div class="av-wrap">
@@ -93,7 +89,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
         <span id="av-initial">?</span>
         <img id="av-img" style="display:none;" alt="Avatar">
       </div>
-      <button class="av-btn" onclick="document.getElementById('avatar-input').click()" title="Cambiar foto">✎</button>
+      <button class="av-btn" onclick="document.getElementById('avatar-input').click()">✎</button>
       <input type="file" id="avatar-input" accept="image/*">
     </div>
     <div class="ph-info">
@@ -109,14 +105,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <button class="btn-edit" onclick="toggleEdit('info')">Editar</button>
     </div>
     <div class="view-block">
-      <div class="sec-label">Nombre</div>
-      <div class="view-txt" id="view-name">—</div>
+      <div class="sec-label">Nombre</div><div class="view-txt" id="view-name">—</div>
       <div style="height:18px;"></div>
-      <div class="sec-label">Ciudad</div>
-      <div class="view-txt" id="view-city">—</div>
+      <div class="sec-label">Ciudad</div><div class="view-txt" id="view-city">—</div>
       <div style="height:18px;"></div>
-      <div class="sec-label">Me identifico como</div>
-      <div class="view-txt" id="view-gender">—</div>
+      <div class="sec-label">Me identifico como</div><div class="view-txt" id="view-gender">—</div>
     </div>
     <div class="edit-block">
       <div class="field-2">
@@ -129,8 +122,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
           </select>
         </div>
       </div>
-      <div class="field">
-        <label>Me identifico como</label>
+      <div class="field"><label>Me identifico como</label>
         <div class="chips-row">
           <button class="chip" onclick="selChip(this,'gender','Hombre')">Hombre</button>
           <button class="chip" onclick="selChip(this,'gender','Mujer')">Mujer</button>
@@ -155,8 +147,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <div class="view-txt empty" id="view-bio">Aún no has escrito una bio.</div>
     </div>
     <div class="edit-block">
-      <div class="field">
-        <label>Cuéntanos algo sobre ti</label>
+      <div class="field"><label>Cuéntanos algo sobre ti</label>
         <textarea id="inp-bio" placeholder="¿Qué buscas en la plataforma?"></textarea>
       </div>
       <div class="btn-row">
@@ -169,131 +160,89 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <script src="supabase.js"></script>
 <script>
-let USER_EMAIL = null;
+let USER = null;
 let PROFILE = null;
 const chips = {};
 
-netlifyIdentity.on('init', async user => {
-  if (!user) { window.location.href = '/'; return; }
+(async () => {
+  const session = await HKSK.getSession();
+  if (!session) { window.location.href = '/'; return; }
 
-  USER_EMAIL = user.email;
-  document.getElementById('nav-email').textContent = user.email;
-  document.getElementById('btn-logout').onclick = () => netlifyIdentity.logout();
-  netlifyIdentity.on('logout', () => window.location.href = '/');
+  USER = session.user;
+  document.getElementById('nav-email').textContent = USER.email;
 
-  // Cargar perfil existente
-  PROFILE = await HKSK.getProfile(USER_EMAIL);
-
-  // Si no existe, crearlo
+  PROFILE = await HKSK.getProfile(USER.id);
   if (!PROFILE) {
-    await HKSK.saveProfile(USER_EMAIL, {
-      full_name: user.user_metadata?.full_name || '',
-      role: 'user'
-    });
-    PROFILE = await HKSK.getProfile(USER_EMAIL);
+    await HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
+    PROFILE = await HKSK.getProfile(USER.id);
   }
 
   renderProfile();
   document.getElementById('loader').classList.add('gone');
-});
+})();
 
 function renderProfile() {
   const p = PROFILE || {};
   const name = p.full_name || '';
-  const initial = name ? name[0].toUpperCase() : (USER_EMAIL?.[0]?.toUpperCase() || '?');
-
-  document.getElementById('ph-name').textContent = name || USER_EMAIL || '—';
-  document.getElementById('ph-email').textContent = USER_EMAIL || '';
+  const initial = name ? name[0].toUpperCase() : USER.email[0].toUpperCase();
+  document.getElementById('ph-name').textContent = name || USER.email;
+  document.getElementById('ph-email').textContent = USER.email;
   document.getElementById('ph-role').textContent = p.role === 'advisor' ? 'Advisor' : 'Usuario';
-
   document.getElementById('av-initial').textContent = initial;
   if (p.avatar_url) {
     document.getElementById('av-img').src = p.avatar_url;
     document.getElementById('av-img').style.display = 'block';
     document.getElementById('av-initial').style.display = 'none';
   }
-
   document.getElementById('view-name').textContent = name || '—';
   document.getElementById('view-city').textContent = p.city || '—';
   document.getElementById('view-gender').textContent = p.gender || '—';
-
   const bioEl = document.getElementById('view-bio');
   if (p.bio) { bioEl.textContent = p.bio; bioEl.classList.remove('empty'); }
   else { bioEl.textContent = 'Aún no has escrito una bio.'; bioEl.classList.add('empty'); }
-
   document.getElementById('inp-name').value = name;
   document.getElementById('inp-bio').value = p.bio || '';
-  if (p.city) {
-    const s = document.getElementById('inp-city');
-    for (let o of s.options) if (o.value === p.city) { o.selected = true; break; }
-  }
+  if (p.city) { const s = document.getElementById('inp-city'); for(let o of s.options) if(o.value===p.city){o.selected=true;break;} }
 }
 
-function toggleEdit(section) {
-  document.getElementById('sec-' + section).classList.toggle('is-editing');
-}
+function toggleEdit(s) { document.getElementById('sec-'+s).classList.toggle('is-editing'); }
 
-function selChip(el, key, value) {
+function selChip(el, key, val) {
   el.closest('.chips-row').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
-  el.classList.add('on');
-  chips[key] = value;
+  el.classList.add('on'); chips[key] = val;
 }
 
 async function saveSection(section) {
   const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'Guardando…';
-
+  btn.disabled = true; btn.textContent = 'Guardando…';
   let fields = {};
-  if (section === 'info') {
-    fields = {
-      full_name: document.getElementById('inp-name').value.trim(),
-      city: document.getElementById('inp-city').value,
-      gender: chips['gender'] || PROFILE?.gender || ''
-    };
-  }
-  if (section === 'bio') {
-    fields = { bio: document.getElementById('inp-bio').value.trim() };
-  }
-
-  const ok = await HKSK.saveProfile(USER_EMAIL, fields);
-
-  btn.disabled = false;
-  btn.textContent = 'Guardar';
-
-  if (ok) {
-    Object.assign(PROFILE, fields);
-    renderProfile();
-    toggleEdit(section);
-    showToast('✓ Cambios guardados');
-  } else {
-    showToast('Error al guardar. Intenta de nuevo.', true);
-  }
+  if (section === 'info') fields = { full_name: document.getElementById('inp-name').value.trim(), city: document.getElementById('inp-city').value, gender: chips['gender'] || PROFILE?.gender || '' };
+  if (section === 'bio') fields = { bio: document.getElementById('inp-bio').value.trim() };
+  const ok = await HKSK.saveProfile(USER.id, USER.email, fields);
+  btn.disabled = false; btn.textContent = 'Guardar';
+  if (ok) { Object.assign(PROFILE, fields); renderProfile(); toggleEdit(section); showToast('✓ Cambios guardados'); }
+  else showToast('Error al guardar', true);
 }
 
 document.getElementById('avatar-input').addEventListener('change', async function() {
-  const file = this.files[0];
-  if (!file || !USER_EMAIL) return;
+  const file = this.files[0]; if (!file) return;
   showToast('Subiendo foto…');
-  const url = await HKSK.uploadAvatar(USER_EMAIL, file);
+  const url = await HKSK.uploadAvatar(USER.id, file);
   if (url) {
-    await HKSK.saveProfile(USER_EMAIL, { avatar_url: url });
+    await HKSK.saveProfile(USER.id, USER.email, { avatar_url: url });
     PROFILE.avatar_url = url;
     document.getElementById('av-img').src = url;
     document.getElementById('av-img').style.display = 'block';
     document.getElementById('av-initial').style.display = 'none';
     showToast('✓ Foto actualizada');
-  } else {
-    showToast('Error al subir la foto', true);
-  }
+  } else showToast('Error al subir foto', true);
 });
 
-function showToast(msg, isErr = false) {
+function showToast(msg, isErr=false) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isErr ? ' err' : '');
-  setTimeout(() => t.classList.add('show'), 10);
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.textContent = msg; t.className = 'toast'+(isErr?' err':'');
+  setTimeout(()=>t.classList.add('show'),10);
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 </script>
 </body>

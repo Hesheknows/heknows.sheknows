@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
@@ -21,21 +20,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
 .btn-logout:hover{background:var(--terra);color:white;}
 .page{padding:100px 0 80px;max-width:900px;margin:0 auto;padding-left:24px;padding-right:24px;}
-
-/* WELCOME */
 .welcome{margin-bottom:48px;}
 .welcome-tag{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;}
 .welcome-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.1;color:var(--night);margin-bottom:6px;}
 .welcome-title em{font-style:italic;color:var(--terra);}
 .welcome-sub{font-size:0.92rem;color:var(--muted);font-weight:300;}
-
-/* STATS */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(196,122,90,0.1);border-radius:3px;overflow:hidden;margin-bottom:48px;}
 .stat{background:var(--cream);padding:28px 24px;}
 .stat-n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--night);line-height:1;}
 .stat-l{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-top:6px;}
-
-/* ACCIONES RÁPIDAS */
 .section-label{font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:18px;}
 .actions{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px;}
 .action-card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:28px 24px;cursor:pointer;transition:all 0.25s;text-decoration:none;display:block;}
@@ -43,41 +36,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .ac-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
 .ac-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);margin-bottom:6px;}
 .ac-desc{font-size:0.78rem;line-height:1.6;color:var(--muted);font-weight:300;}
-
-/* PERFIL INCOMPLETO */
 .alert{background:linear-gradient(135deg,rgba(196,122,90,0.08),rgba(201,169,110,0.05));border:1px solid rgba(196,122,90,0.2);border-radius:3px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:36px;}
 .alert-icon{font-size:1.4rem;flex-shrink:0;}
 .alert-text{font-size:0.84rem;line-height:1.6;color:var(--slate);font-weight:300;flex:1;}
 .alert-text strong{font-weight:600;color:var(--night);}
 .alert-btn{background:var(--terra);color:white;padding:9px 18px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;white-space:nowrap;text-decoration:none;display:inline-block;transition:background 0.2s;}
 .alert-btn:hover{background:var(--night);}
-
-/* ADVISOR PANEL */
-.advisor-panel{background:linear-gradient(135deg,var(--night),#2A1E18);border-radius:3px;padding:32px;margin-bottom:48px;}
-.ap-label{font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;}
-.ap-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--cream);margin-bottom:16px;}
-.ap-stats{display:flex;gap:32px;}
-.ap-stat-n{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--cream);}
-.ap-stat-l{font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.4);font-weight:500;margin-top:4px;}
-.ap-toggle{margin-top:20px;display:flex;align-items:center;gap:12px;}
-.toggle-lbl{font-size:0.72rem;color:rgba(247,243,238,0.5);}
-.toggle{width:40px;height:22px;background:rgba(255,255,255,0.1);border-radius:11px;position:relative;cursor:pointer;transition:background 0.2s;border:none;}
-.toggle.on{background:var(--terra);}
-.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:3px;left:3px;transition:left 0.2s;}
-.toggle.on::after{left:21px;}
-
 .loader{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:200;transition:opacity 0.35s;}
 .loader.gone{opacity:0;pointer-events:none;}
 .loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
 .loader-logo span{color:var(--terra);font-style:italic;}
 @keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
-@media(max-width:768px){nav{padding:15px 20px;}.stats{grid-template-columns:1fr 1fr;}.actions{grid-template-columns:1fr;}.ap-stats{gap:20px;flex-wrap:wrap;}}
+@media(max-width:768px){nav{padding:15px 20px;}.stats{grid-template-columns:1fr 1fr;}.actions{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-
 <div class="loader" id="loader"><div class="loader-logo">He Knows · <span>She Knows</span></div></div>
-
 <nav>
   <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
@@ -85,75 +59,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <a href="buscar-advisors.html">Advisors</a>
     <a href="perfil.html">Mi perfil</a>
     <span class="nav-email" id="nav-email"></span>
-    <button class="btn-logout" id="btn-logout">Salir</button>
+    <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
   </div>
 </nav>
-
 <div class="page">
-
-  <!-- BIENVENIDA -->
   <div class="welcome">
     <div class="welcome-tag">Tu espacio · He Knows She Knows</div>
     <h1 class="welcome-title">Hola, <em id="welcome-name">bienvenido/a</em></h1>
     <p class="welcome-sub">¿Qué quieres entender hoy?</p>
   </div>
-
-  <!-- ALERTA PERFIL INCOMPLETO -->
   <div class="alert" id="alert-perfil" style="display:none;">
     <span class="alert-icon">👤</span>
-    <div class="alert-text"><strong>Completa tu perfil</strong> para aprovechar al máximo la plataforma. Solo toma 2 minutos.</div>
+    <div class="alert-text"><strong>Completa tu perfil</strong> para aprovechar al máximo la plataforma.</div>
     <a href="perfil.html" class="alert-btn">Completar →</a>
   </div>
-
-  <!-- STATS -->
   <div class="stats">
-    <div class="stat">
-      <div class="stat-n" id="stat-preguntas">0</div>
-      <div class="stat-l">Preguntas hechas</div>
-    </div>
-    <div class="stat">
-      <div class="stat-n" id="stat-respuestas">0</div>
-      <div class="stat-l">Respuestas recibidas</div>
-    </div>
-    <div class="stat">
-      <div class="stat-n" id="stat-plan">Free</div>
-      <div class="stat-l">Tu plan actual</div>
-    </div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">Preguntas hechas</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">Respuestas recibidas</div></div>
+    <div class="stat"><div class="stat-n" id="stat-plan">Free</div><div class="stat-l">Tu plan actual</div></div>
   </div>
-
-  <!-- PANEL ADVISOR (solo si es advisor) -->
-  <div id="advisor-panel" style="display:none;">
-    <div class="advisor-panel">
-      <div class="ap-label">Panel Advisor</div>
-      <div class="ap-title">Tu actividad como Advisor</div>
-      <div class="ap-stats">
-        <div>
-          <div class="ap-stat-n" id="ap-consultas">0</div>
-          <div class="ap-stat-l">Consultas totales</div>
-        </div>
-        <div>
-          <div class="ap-stat-n" id="ap-rating">—</div>
-          <div class="ap-stat-l">Rating promedio</div>
-        </div>
-        <div>
-          <div class="ap-stat-n" id="ap-ganancia">$0</div>
-          <div class="ap-stat-l">Ganancias MXN</div>
-        </div>
-      </div>
-      <div class="ap-toggle">
-        <button class="toggle" id="avail-toggle" onclick="toggleAvailable()"></button>
-        <span class="toggle-lbl" id="avail-lbl">Disponible para consultas</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ACCIONES RÁPIDAS -->
   <div class="section-label">Acciones rápidas</div>
   <div class="actions">
     <a href="buscar-advisors.html" class="action-card">
       <span class="ac-icon">🔍</span>
       <div class="ac-title">Buscar un Advisor</div>
-      <p class="ac-desc">Encuentra la perspectiva del sexo opuesto que necesitas. Filtra por especialidad y precio.</p>
+      <p class="ac-desc">Encuentra la perspectiva del sexo opuesto. Filtra por especialidad y precio.</p>
     </a>
     <a href="perfil.html" class="action-card">
       <span class="ac-icon">👤</span>
@@ -163,65 +93,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <a href="index.html#precios" class="action-card">
       <span class="ac-icon">⭐</span>
       <div class="ac-title">Mejorar mi plan</div>
-      <p class="ac-desc">Obtén más consultas privadas, respuesta prioritaria y acceso a advisors Top 10.</p>
+      <p class="ac-desc">Obtén más consultas privadas y respuesta prioritaria.</p>
     </a>
     <a href="index.html#advsec" class="action-card">
       <span class="ac-icon">💬</span>
       <div class="ac-title">Ser Advisor</div>
-      <p class="ac-desc">¿Quieres dar consejos y ganar dinero? Regístrate como Advisor y empieza a ayudar.</p>
+      <p class="ac-desc">¿Quieres dar consejos y ganar dinero? Regístrate como Advisor.</p>
     </a>
   </div>
-
 </div>
-
 <script src="supabase.js"></script>
 <script>
-let USER = null;
-let PROFILE = null;
-let ADV = null;
-
-netlifyIdentity.on('init', async user => {
-  if (!user) { window.location.href = '/'; return; }
-  USER = user;
+(async () => {
+  const session = await HKSK.getSession();
+  if (!session) { window.location.href = '/'; return; }
+  const user = session.user;
   document.getElementById('nav-email').textContent = user.email;
-  document.getElementById('btn-logout').onclick = () => netlifyIdentity.logout();
-  netlifyIdentity.on('logout', () => window.location.href = '/');
-
-  PROFILE = await HKSK.getProfile(user.id);
-  if (!PROFILE) {
-    await HKSK.upsertProfile(user.id, user.email, { full_name: user.user_metadata?.full_name || '', role: 'user' });
-    PROFILE = await HKSK.getProfile(user.id);
+  const profile = await HKSK.getProfile(user.id);
+  if (!profile) {
+    await HKSK.saveProfile(user.id, user.email, { role: 'user' });
   }
-
-  // Bienvenida
-  const name = PROFILE?.full_name?.split(' ')[0] || user.email.split('@')[0];
+  const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
   document.getElementById('welcome-name').textContent = name;
-
-  // Alerta perfil incompleto
-  if (!PROFILE?.full_name || !PROFILE?.bio) {
+  if (!profile?.full_name || !profile?.bio) {
     document.getElementById('alert-perfil').style.display = 'flex';
   }
-
-  // Si es advisor
-  if (PROFILE?.role === 'advisor') {
-    document.getElementById('advisor-panel').style.display = 'block';
-    ADV = await HKSK.getAdvisorProfile(user.id);
-    if (ADV?.available) document.getElementById('avail-toggle').classList.add('on');
-    document.getElementById('avail-lbl').textContent = ADV?.available ? 'Disponible para consultas' : 'No disponible actualmente';
-  }
-
   document.getElementById('loader').classList.add('gone');
-});
-
-async function toggleAvailable() {
-  if (!USER || !ADV) return;
-  const newVal = !ADV.available;
-  ADV.available = newVal;
-  const toggle = document.getElementById('avail-toggle');
-  toggle.classList.toggle('on', newVal);
-  document.getElementById('avail-lbl').textContent = newVal ? 'Disponible para consultas' : 'No disponible actualmente';
-  await HKSK.saveAdvisorProfile(USER.id, { available: newVal });
-}
+})();
 </script>
 </body>
 </html>
