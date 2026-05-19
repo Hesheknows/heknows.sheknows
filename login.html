@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iniciar sesión · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -15,7 +14,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .logo span{color:var(--terra);font-style:italic;}
 .card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:40px 36px;}
 .tabs{display:flex;border-bottom:1px solid rgba(196,122,90,0.15);margin-bottom:32px;}
-.tab{flex:1;padding:10px;text-align:center;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.tab{flex:1;padding:10px;text-align:center;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;}
 .tab.on{color:var(--terra);border-bottom-color:var(--terra);}
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px;}
@@ -25,9 +24,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .btn:hover{background:var(--terra);}
 .btn:disabled{opacity:0.5;cursor:default;}
 .err{font-size:0.78rem;color:#8B2A1A;text-align:center;margin-top:12px;min-height:20px;}
-.divider{text-align:center;font-size:0.7rem;color:var(--muted);margin:20px 0;position:relative;}
-.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(196,122,90,0.15);}
-.divider span{background:white;padding:0 12px;position:relative;}
+.ok{font-size:0.78rem;color:#2A6B3A;text-align:center;margin-top:12px;}
 .back{display:block;text-align:center;margin-top:24px;font-size:0.72rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
 .back:hover{color:var(--terra);}
 </style>
@@ -37,14 +34,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
   <div class="logo">He Knows · <span>She Knows</span></div>
   <div class="card">
     <div class="tabs">
-      <div class="tab on" onclick="showTab('login')">Iniciar sesión</div>
-      <div class="tab" onclick="showTab('register')">Registrarse</div>
+      <button class="tab on" onclick="showTab('login')">Iniciar sesión</button>
+      <button class="tab" onclick="showTab('register')">Registrarse</button>
     </div>
 
     <!-- LOGIN -->
     <div id="tab-login">
       <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña"></div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
       <div class="err" id="login-err"></div>
     </div>
@@ -53,32 +50,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
     <div id="tab-register" style="display:none;">
       <div class="field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@correo.com"></div>
       <div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
-      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña"></div>
       <button class="btn" id="btn-reg" onclick="doRegister()">Crear cuenta →</button>
       <div class="err" id="reg-err"></div>
+      <div class="ok" id="reg-ok" style="display:none;">¡Cuenta creada! Iniciando sesión...</div>
     </div>
 
     <a href="/" class="back">← Volver al inicio</a>
   </div>
 </div>
 
-<script src="supabase.js"></script>
 <script>
-// Manejar token de confirmación en URL
-if (window.location.hash.includes("access_token")) {
-  window.location.href = "/dashboard.html";
+const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidalch.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTczMjMsImV4cCI6MjA5NDc3MzMyM30.a8t8km5BIYODC6Sp_rWE8XCJ1yfHwfdcLjrpN5nBms0';
+
+// Inicializar Supabase directamente aquí sin depender de supabase.js
+let _db = null;
+
+async function getDB() {
+  if (_db) return _db;
+  // Cargar Supabase JS si no está cargado
+  if (typeof supabase === 'undefined') {
+    await new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      s.onload = resolve;
+      document.head.appendChild(s);
+    });
+  }
+  _db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      storageKey: 'hksk-auth',
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  });
+  return _db;
 }
 
-// Si ya hay sesión, ir al dashboard
+// Verificar si ya hay sesión
 (async () => {
-  const session = await HKSK.getSession();
-  if (session) window.location.href = '/dashboard.html';
+  try {
+    const db = await getDB();
+    const { data } = await db.auth.getSession();
+    if (data.session) {
+      window.location.replace('/dashboard.html');
+    }
+    // Manejar token en URL (magic link / email confirmation)
+    if (window.location.hash.includes('access_token')) {
+      window.location.replace('/dashboard.html');
+    }
+  } catch(e) {
+    console.log('session check:', e);
+  }
 })();
 
 function showTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('on', (i === 0) === (tab === 'login'));
+  });
 }
 
 async function doLogin() {
@@ -89,12 +122,18 @@ async function doLogin() {
   errEl.textContent = '';
   if (!email || !pass) { errEl.textContent = 'Por favor llena todos los campos.'; return; }
   btn.disabled = true; btn.textContent = 'Entrando…';
-  const { error } = await HKSK.signIn(email, pass);
-  if (error) {
-    errEl.textContent = 'Correo o contraseña incorrectos.';
+  try {
+    const db = await getDB();
+    const { error } = await db.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      errEl.textContent = 'Correo o contraseña incorrectos.';
+      btn.disabled = false; btn.textContent = 'Entrar →';
+    } else {
+      window.location.replace('/dashboard.html');
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
     btn.disabled = false; btn.textContent = 'Entrar →';
-  } else {
-    window.location.href = '/dashboard.html';
   }
 }
 
@@ -103,18 +142,38 @@ async function doRegister() {
   const pass = document.getElementById('reg-pass').value;
   const pass2 = document.getElementById('reg-pass2').value;
   const errEl = document.getElementById('reg-err');
+  const okEl = document.getElementById('reg-ok');
   const btn = document.getElementById('btn-reg');
-  errEl.textContent = '';
+  errEl.textContent = ''; okEl.style.display = 'none';
   if (!email || !pass) { errEl.textContent = 'Por favor llena todos los campos.'; return; }
   if (pass !== pass2) { errEl.textContent = 'Las contraseñas no coinciden.'; return; }
   if (pass.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   btn.disabled = true; btn.textContent = 'Creando cuenta…';
-  const { error } = await HKSK.signUp(email, pass);
-  if (error) {
-    errEl.textContent = error.message.includes('already') ? 'Este correo ya está registrado.' : 'Error al crear cuenta. Intenta de nuevo.';
+  try {
+    const db = await getDB();
+    const { data, error } = await db.auth.signUp({ email, password: pass });
+    if (error) {
+      if (error.message.includes('already')) {
+        errEl.textContent = 'Este correo ya está registrado. Inicia sesión.';
+      } else {
+        errEl.textContent = 'Error: ' + error.message;
+      }
+      btn.disabled = false; btn.textContent = 'Crear cuenta →';
+    } else {
+      // Auto login después del registro
+      okEl.style.display = 'block';
+      const { error: loginError } = await db.auth.signInWithPassword({ email, password: pass });
+      if (!loginError) {
+        window.location.replace('/dashboard.html');
+      } else {
+        okEl.textContent = '¡Cuenta creada! Ya puedes iniciar sesión.';
+        btn.disabled = false; btn.textContent = 'Crear cuenta →';
+        showTab('login');
+      }
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
     btn.disabled = false; btn.textContent = 'Crear cuenta →';
-  } else {
-    window.location.href = '/dashboard.html';
   }
 }
 </script>
