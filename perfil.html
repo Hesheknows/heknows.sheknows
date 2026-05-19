@@ -343,17 +343,30 @@ async function saveSection(section) {
 
   if (section === 'info') {
     const fields = {
+      id: USER.id,
+      email: USER.email,
       full_name: document.getElementById('inp-name').value.trim(),
       city: document.getElementById('inp-city').value,
-      gender: chips['gender'] || PROFILE?.gender || ''
+      gender: chips['gender'] || PROFILE?.gender || '',
+      role: PROFILE?.role || 'user'
     };
-    ok = await HKSK.saveProfile(USER.id, fields);
+    // Upsert directo — crea si no existe, actualiza si existe
+    const { error } = await HKSK.db.from('profiles').upsert(fields, { onConflict: 'id' });
+    ok = !error;
+    if (error) console.error('Error info:', error);
     if (ok) { Object.assign(PROFILE, fields); renderProfile(); }
   }
 
   if (section === 'bio') {
-    const fields = { bio: document.getElementById('inp-bio').value.trim() };
-    ok = await HKSK.saveProfile(USER.id, fields);
+    const fields = {
+      id: USER.id,
+      email: USER.email,
+      bio: document.getElementById('inp-bio').value.trim(),
+      role: PROFILE?.role || 'user'
+    };
+    const { error } = await HKSK.db.from('profiles').upsert(fields, { onConflict: 'id' });
+    ok = !error;
+    if (error) console.error('Error bio:', error);
     if (ok) { Object.assign(PROFILE, fields); renderProfile(); }
   }
 
