@@ -38,7 +38,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <button class="tab" onclick="showTab('register')">Registrarse</button>
     </div>
 
-    <!-- LOGIN -->
     <div id="tab-login">
       <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
       <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña"></div>
@@ -46,7 +45,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <div class="err" id="login-err"></div>
     </div>
 
-    <!-- REGISTRO -->
     <div id="tab-register" style="display:none;">
       <div class="field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@correo.com"></div>
       <div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
@@ -61,57 +59,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 </div>
 
 <script>
-const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidalch.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTczMjMsImV4cCI6MjA5NDc3MzMyM30.a8t8km5BIYODC6Sp_rWE8XCJ1yfHwfdcLjrpN5nBms0';
-
-// Inicializar Supabase directamente aquí sin depender de supabase.js
-let _db = null;
-
-async function getDB() {
-  if (_db) return _db;
-  // Cargar Supabase JS si no está cargado
-  if (typeof supabase === 'undefined') {
-    await new Promise((resolve) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-      s.onload = resolve;
-      document.head.appendChild(s);
-    });
-  }
-  _db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: {
-      persistSession: true,
-      storageKey: 'hksk-auth',
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
-  });
-  return _db;
-}
-
-// Verificar si ya hay sesión
-(async () => {
-  try {
-    const db = await getDB();
-    const { data } = await db.auth.getSession();
-    if (data.session) {
-      window.location.replace('/dashboard.html');
-    }
-    // Manejar token en URL (magic link / email confirmation)
-    if (window.location.hash.includes('access_token')) {
-      window.location.replace('/dashboard.html');
-    }
-  } catch(e) {
-    console.log('session check:', e);
-  }
-})();
-
 function showTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
   document.querySelectorAll('.tab').forEach((t, i) => {
     t.classList.toggle('on', (i === 0) === (tab === 'login'));
   });
+}
+
+// Guardar sesión en localStorage
+function saveSession(data) {
+  localStorage.setItem('hksk-session', JSON.stringify({
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    user: data.user
+  }));
+}
+
+function getSession() {
+  try {
+    return JSON.parse(localStorage.getItem('hksk-session'));
+  } catch(e) { return null; }
+}
+
+// Si ya hay sesión, ir al dashboard
+if (getSession()?.access_token) {
+  window.location.replace('/dashboard.html');
 }
 
 async function doLogin() {
@@ -123,13 +96,18 @@ async function doLogin() {
   if (!email || !pass) { errEl.textContent = 'Por favor llena todos los campos.'; return; }
   btn.disabled = true; btn.textContent = 'Entrando…';
   try {
-    const db = await getDB();
-    const { error } = await db.auth.signInWithPassword({ email, password: pass });
-    if (error) {
+    const res = await fetch('/.netlify/functions/auth-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      saveSession(data);
+      window.location.replace('/dashboard.html');
+    } else {
       errEl.textContent = 'Correo o contraseña incorrectos.';
       btn.disabled = false; btn.textContent = 'Entrar →';
-    } else {
-      window.location.replace('/dashboard.html');
     }
   } catch(e) {
     errEl.textContent = 'Error de conexión. Intenta de nuevo.';
@@ -150,26 +128,32 @@ async function doRegister() {
   if (pass.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   btn.disabled = true; btn.textContent = 'Creando cuenta…';
   try {
-    const db = await getDB();
-    const { data, error } = await db.auth.signUp({ email, password: pass });
-    if (error) {
-      if (error.message.includes('already')) {
-        errEl.textContent = 'Este correo ya está registrado. Inicia sesión.';
-      } else {
-        errEl.textContent = 'Error: ' + error.message;
-      }
-      btn.disabled = false; btn.textContent = 'Crear cuenta →';
-    } else {
-      // Auto login después del registro
+    const res = await fetch('/.netlify/functions/auth-register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await res.json();
+    if (data.access_token || (data.user && !data.error)) {
       okEl.style.display = 'block';
-      const { error: loginError } = await db.auth.signInWithPassword({ email, password: pass });
-      if (!loginError) {
+      // Auto login
+      const loginRes = await fetch('/.netlify/functions/auth-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const loginData = await loginRes.json();
+      if (loginData.access_token) {
+        saveSession(loginData);
         window.location.replace('/dashboard.html');
       } else {
         okEl.textContent = '¡Cuenta creada! Ya puedes iniciar sesión.';
-        btn.disabled = false; btn.textContent = 'Crear cuenta →';
         showTab('login');
+        btn.disabled = false; btn.textContent = 'Crear cuenta →';
       }
+    } else {
+      errEl.textContent = data.msg || data.error_description || 'Error al crear cuenta.';
+      btn.disabled = false; btn.textContent = 'Crear cuenta →';
     }
   } catch(e) {
     errEl.textContent = 'Error de conexión. Intenta de nuevo.';
