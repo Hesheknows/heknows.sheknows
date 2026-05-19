@@ -64,6 +64,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 
 <script src="supabase.js"></script>
 <script>
+// Manejar token de confirmación en URL
+if (window.location.hash.includes("access_token")) {
+  window.location.href = "/dashboard.html";
+}
+
 // Si ya hay sesión, ir al dashboard
 (async () => {
   const session = await HKSK.getSession();
