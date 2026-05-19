@@ -31,7 +31,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .ph-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;line-height:1.1;margin-bottom:6px;}
 .ph-email{font-size:0.78rem;color:var(--muted);margin-bottom:14px;}
 .ph-role{display:inline-block;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:600;background:rgba(196,122,90,0.1);color:var(--terra);}
-.ph-role.advisor{background:rgba(26,20,16,0.08);color:var(--night);}
 .section{margin-bottom:44px;}
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;}
@@ -98,7 +97,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <span class="ph-role" id="ph-role">Usuario</span>
     </div>
   </div>
-
   <div class="section" id="sec-info">
     <div class="sec-hd">
       <div class="sec-title">Información personal</div>
@@ -135,9 +133,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       </div>
     </div>
   </div>
-
   <div class="divider"></div>
-
   <div class="section" id="sec-bio">
     <div class="sec-hd">
       <div class="sec-title">Bio</div>
@@ -157,7 +153,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     </div>
   </div>
 </div>
-
 <script src="supabase.js"></script>
 <script>
 let USER = null;
@@ -165,20 +160,23 @@ let PROFILE = null;
 const chips = {};
 
 (async () => {
-  const session = await HKSK.getSession();
-  if (!session) { window.location.href = '/'; return; }
-
-  USER = session.user;
-  document.getElementById('nav-email').textContent = USER.email;
-
-  PROFILE = await HKSK.getProfile(USER.id);
-  if (!PROFILE) {
-    await HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
+  try {
+    const session = await HKSK.getSession();
+    if (!session) {
+      window.location.replace('/login.html');
+      return;
+    }
+    USER = session.user;
+    document.getElementById('nav-email').textContent = USER.email;
     PROFILE = await HKSK.getProfile(USER.id);
+    if (!PROFILE) {
+      await HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
+      PROFILE = await HKSK.getProfile(USER.id);
+    }
+    renderProfile();
+  } finally {
+    document.getElementById('loader').classList.add('gone');
   }
-
-  renderProfile();
-  document.getElementById('loader').classList.add('gone');
 })();
 
 function renderProfile() {
