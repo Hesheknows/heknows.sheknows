@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>He Knows · She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);}
+.nav-logo span{color:var(--terra);font-style:italic;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:var(--terra);}
+.nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
+.nav-cta:hover{background:var(--terra)!important;}
+.btn-p{background:var(--night);color:var(--cream);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-p:hover{background:var(--terra);}
+.btn-g{background:transparent;color:var(--slate);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:1.5px solid rgba(61,53,48,0.3);cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-g:hover{border-color:var(--terra);color:var(--terra);}
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(232,196,176,0.3),transparent 60%);}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 64px 80px 80px;position:relative;z-index:2;}
+.ey{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:24px;font-weight:500;}
+.hero-t{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,5vw,5.2rem);font-weight:300;line-height:1.05;color:var(--night);margin-bottom:12px;}
+.hero-t em{font-style:italic;color:var(--terra);}
+.hdv{width:44px;height:1px;background:var(--gold);margin:28px 0;}
+.hero-s{font-size:1.05rem;line-height:1.75;color:var(--slate);max-width:440px;font-weight:300;margin-bottom:48px;}
+.hero-a{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.hero-r{position:relative;overflow:hidden;}
+.hv{position:absolute;inset:0;background:linear-gradient(135deg,#E8C4B0 0%,#D4956F 40%,#1A1410 100%);}
+.hcf{position:absolute;left:40px;top:50%;transform:translateY(-50%);background:rgba(247,243,238,0.96);border-radius:4px;padding:28px 32px;max-width:280px;box-shadow:0 32px 64px rgba(26,20,16,0.2);animation:fl 4s ease-in-out infinite;}
+.hcf2{position:absolute;right:32px;top:30%;background:rgba(26,20,16,0.92);border-radius:4px;padding:24px 28px;max-width:240px;box-shadow:0 24px 48px rgba(26,20,16,0.3);animation:fl2 5s ease-in-out infinite 1s;}
+@keyframes fl{0%,100%{transform:translateY(-50%);}50%{transform:translateY(calc(-50% - 10px));}}
+@keyframes fl2{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.cb{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;font-weight:500;}
+.cb2{color:var(--blush);}
+.ctx{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;}
+.ctx2{font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.5;color:var(--cream);font-style:italic;}
+.cst{color:var(--gold);font-size:0.8rem;margin-top:12px;letter-spacing:2px;}
+.cm{font-size:0.7rem;color:var(--muted);margin-top:8px;}
+.cm2{color:rgba(232,196,176,0.6);}
+.trust{background:var(--night);padding:20px 80px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.ti{display:flex;align-items:center;gap:10px;}
+.tic{color:var(--gold);font-size:1rem;}
+.tit{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.6);}
+.s{padding:100px 80px;}
+.s-mid{background:#F0EAE3;}
+.s-slate{background:#1E1610;}
+.sl{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;}
+.sl-w{color:rgba(201,169,110,0.65);}
+.st{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:300;line-height:1.1;margin-bottom:20px;color:var(--night);}
+.st em{font-style:italic;color:var(--terra);}
+.st-w{color:var(--cream);}
+.ss{font-size:0.95rem;line-height:1.75;color:var(--muted);max-width:560px;font-weight:300;}
+.ss-w{color:rgba(247,243,238,0.48);}
+.sh{margin-bottom:64px;}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--blush);}
+.step{background:var(--cream);padding:56px 40px;position:relative;overflow:hidden;transition:background 0.3s;}
+.step:hover{background:#EDE7DF;}
+.sn{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:rgba(196,122,90,0.12);position:absolute;top:20px;right:24px;line-height:1;}
+.si{font-size:1.8rem;margin-bottom:20px;}
+.sti{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:14px;color:var(--night);}
+.sd{font-size:0.88rem;line-height:1.7;color:var(--slate);font-weight:300;}
+.dual{display:grid;grid-template-columns:1fr 1fr;min-height:580px;}
+.dhim{background:var(--night);padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
+.dher{background:var(--terra);padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
+.dtit{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:300;line-height:1.1;margin-bottom:24px;color:var(--cream);}
+.dhim .dtit em{color:var(--gold);font-style:italic;}
+.dher .dtit em{color:var(--night);font-style:italic;}
+.ddes{font-size:0.95rem;line-height:1.75;font-weight:300;max-width:380px;}
+.dhim .ddes{color:rgba(247,243,238,0.62);}
+.dher .ddes{color:rgba(247,243,238,0.88);}
+.dls{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.dit{display:flex;align-items:flex-start;gap:12px;}
+.ddt{width:5px;height:5px;border-radius:50%;margin-top:8px;flex-shrink:0;}
+.dhim .ddt{background:var(--gold);}
+.dher .ddt{background:var(--night);}
+.dtx{font-size:0.86rem;line-height:1.6;font-weight:300;}
+.dhim .dtx{color:rgba(247,243,238,0.7);}
+.dher .dtx{color:rgba(247,243,238,0.92);}
+.areas{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(196,122,90,0.12);}
+.area{background:var(--cream);padding:36px 28px;transition:all 0.3s;position:relative;overflow:hidden;}
+.area::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
+.area:hover{background:var(--night);}
+.area:hover::after{transform:scaleX(1);}
+.area:hover .anm{color:var(--cream);}
+.area:hover .ades{color:rgba(247,243,238,0.5);}
+.aico{font-size:1.8rem;margin-bottom:16px;display:block;transition:transform 0.3s;}
+.area:hover .aico{transform:scale(1.1);}
+.anm{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--night);margin-bottom:8px;transition:color 0.3s;}
+.ades{font-size:0.76rem;line-height:1.6;color:var(--muted);font-weight:300;transition:color 0.3s;}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(154,136,128,0.18);}
+.pc{background:var(--cream);padding:52px 40px;position:relative;}
+.pc.feat{background:var(--night);transform:scaleY(1.03);z-index:2;box-shadow:0 24px 56px rgba(26,20,16,0.22);}
+.pbadge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--terra);color:var(--cream);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:5px 16px;font-weight:600;white-space:nowrap;}
+.ppl{font-size:0.66rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;font-weight:500;}
+.pc.feat .ppl{color:rgba(247,243,238,0.42);}
+.pam{font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:300;line-height:1;color:var(--night);}
+.pc.feat .pam{color:var(--cream);}
+.pcr{font-size:1.2rem;vertical-align:super;}
+.ppe{font-size:0.76rem;color:var(--muted);margin-top:6px;}
+.pc.feat .ppe{color:rgba(247,243,238,0.42);}
+.pdv{width:26px;height:1px;background:var(--gold);margin:20px 0;}
+.pfs{display:flex;flex-direction:column;gap:10px;margin-bottom:34px;}
+.pf{font-size:0.82rem;color:var(--slate);display:flex;gap:10px;align-items:flex-start;line-height:1.5;font-weight:300;}
+.pc.feat .pf{color:rgba(247,243,238,0.68);}
+.pck{color:var(--terra);font-size:0.85rem;flex-shrink:0;margin-top:2px;font-weight:600;}
+.pc.feat .pck{color:var(--gold);}
+.bpr{width:100%;padding:14px;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border-radius:2px;transition:all 0.25s;border:1.5px solid var(--night);background:transparent;color:var(--night);}
+.bpr:hover{background:var(--night);color:var(--cream);}
+.pc.feat .bpr{border-color:var(--terra);background:var(--terra);color:var(--cream);}
+.pc.feat .bpr:hover{background:var(--gold);border-color:var(--gold);color:var(--night);}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(201,169,110,0.1);max-width:860px;margin:0 auto;}
+.ac{background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.12);padding:48px 40px;position:relative;}
+.ac.feat{background:rgba(196,122,90,0.1);border-color:rgba(196,122,90,0.35);}
+.asv{position:absolute;top:18px;right:18px;background:var(--terra);color:var(--cream);font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:700;}
+.apl{font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:rgba(201,169,110,0.6);margin-bottom:14px;font-weight:600;}
+.anm2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--cream);margin-bottom:4px;}
+.abl{font-size:0.7rem;color:rgba(247,243,238,0.35);margin-bottom:18px;}
+.aam{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--terra);line-height:1;margin-bottom:4px;}
+.amx{font-size:0.7rem;color:rgba(247,243,238,0.32);margin-bottom:22px;}
+.adv{width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-bottom:18px;}
+.afs{display:flex;flex-direction:column;gap:9px;margin-bottom:30px;}
+.af{font-size:0.78rem;color:rgba(247,243,238,0.62);display:flex;gap:8px;align-items:flex-start;line-height:1.5;font-weight:300;}
+.ack{color:var(--gold);font-size:0.78rem;flex-shrink:0;margin-top:2px;}
+.bad{width:100%;padding:13px;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:2px;transition:all 0.25s;border:1px solid rgba(196,122,90,0.35);background:transparent;color:var(--terra);}
+.bad:hover,.ac.feat .bad{background:var(--terra);color:var(--cream);border-color:var(--terra);}
+.ac.feat .bad:hover{background:var(--gold);border-color:var(--gold);color:var(--night);}
+.anote{text-align:center;margin-top:24px;font-size:0.76rem;color:rgba(247,243,238,0.35);font-weight:300;}
+.anote strong{color:var(--gold);}
+.rqg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,169,110,0.06);margin-bottom:64px;}
+.rq{background:rgba(255,255,255,0.03);padding:40px 32px;border-left:2px solid rgba(196,122,90,0.25);}
+.rqi{font-size:1.6rem;margin-bottom:14px;}
+.rqt{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--cream);margin-bottom:10px;}
+.rqd{font-size:0.8rem;color:rgba(247,243,238,0.48);line-height:1.65;font-weight:300;}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(196,122,90,0.1);}
+.tsti{background:var(--cream);padding:48px 36px;}
+.qm{font-family:'Cormorant Garamond',serif;font-size:4rem;color:rgba(196,122,90,0.18);line-height:0.8;display:block;margin-bottom:16px;}
+.ttx{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;line-height:1.65;color:var(--slate);margin-bottom:24px;}
+.tau{display:flex;align-items:center;gap:12px;}
+.tav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:var(--cream);flex-shrink:0;}
+.tavf{background:var(--terra);}
+.tavm{background:var(--night);}
+.tan{font-size:0.76rem;font-weight:600;color:var(--night);}
+.tam{font-size:0.63rem;color:var(--muted);margin-top:2px;}
+.tas{color:var(--gold);font-size:0.63rem;margin-top:3px;letter-spacing:1px;}
+.fcta{background:var(--night);padding:120px 80px;text-align:center;position:relative;overflow:hidden;}
+.fcta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(196,122,90,0.1),transparent 65%);}
+.fcl{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:600;position:relative;z-index:2;}
+.fct{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:20px;position:relative;z-index:2;}
+.fct em{font-style:italic;color:var(--terra);}
+.fcs{font-size:1rem;color:rgba(247,243,238,0.48);max-width:480px;margin:0 auto 48px;line-height:1.7;font-weight:300;position:relative;z-index:2;}
+.fca{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.fl{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:rgba(247,243,238,0.45);}
+.fl span{color:var(--terra);font-style:italic;}
+.flk{display:flex;gap:24px;}
+.flk a{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.3);text-decoration:none;transition:color 0.2s;}
+.flk a:hover{color:var(--terra);}
+.fc2{font-size:0.63rem;color:rgba(247,243,238,0.22);}
+/* MODALES */
+.mov{display:none;position:fixed;inset:0;background:rgba(26,20,16,0.85);z-index:200;backdrop-filter:blur(6px);overflow-y:auto;padding:40px 20px;}
+.mov.active{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:var(--cream);border-radius:4px;max-width:600px;width:100%;padding:56px 52px;position:relative;margin:auto;}
+.mdark{background:#1E1610;color:var(--cream);}
+.mcl{position:absolute;top:20px;right:24px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);transition:color 0.2s;}
+.mcl:hover{color:var(--terra);}
+.mdark .mcl{color:rgba(247,243,238,0.4);}
+.mlb{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);margin-bottom:12px;font-weight:600;}
+.mtt{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;margin-bottom:8px;color:var(--night);}
+.mdark .mtt{color:var(--cream);}
+.mtt em{font-style:italic;color:var(--terra);}
+.msb{font-size:0.88rem;line-height:1.65;color:var(--muted);margin-bottom:36px;font-weight:300;}
+.mdark .msb{color:rgba(247,243,238,0.45);}
+.fg{margin-bottom:20px;}
+.flbl{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;color:var(--slate);margin-bottom:8px;display:block;}
+.mdark .flbl{color:rgba(247,243,238,0.55);}
+.finp{width:100%;padding:12px 16px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;transition:border-color 0.2s;outline:none;}
+.finp:focus{border-color:var(--terra);}
+.mdark .finp{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
+.mdark .finp::placeholder{color:rgba(247,243,238,0.25);}
+.frw{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fsel{width:100%;padding:12px 16px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;cursor:pointer;}
+.mdark .fsel{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.chip{padding:7px 14px;border-radius:20px;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1.5px solid rgba(61,53,48,0.2);background:transparent;color:var(--slate);font-family:'DM Sans',sans-serif;}
+.chip:hover,.chip.active{background:var(--terra);border-color:var(--terra);color:white;}
+.mdark .chip{border-color:rgba(201,169,110,0.2);color:rgba(247,243,238,0.6);}
+.mdark .chip:hover,.mdark .chip.active{background:var(--terra);border-color:var(--terra);color:white;}
+.schg{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.schd{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.12);border-radius:2px;}
+.dtog{position:relative;width:36px;height:20px;flex-shrink:0;}
+.dtog input{opacity:0;width:0;height:0;}
+.dsl{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.3);border-radius:20px;transition:0.3s;}
+.dsl::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;}
+input:checked+.dsl{background:var(--terra);}
+input:checked+.dsl::before{transform:translateX(16px);}
+.dnm{font-size:0.75rem;font-weight:500;width:80px;flex-shrink:0;color:rgba(247,243,238,0.7);}
+.dhr{display:flex;align-items:center;gap:8px;flex:1;opacity:0.3;pointer-events:none;transition:opacity 0.2s;}
+.dhr.on{opacity:1;pointer-events:all;}
+.dhr select{padding:5px 8px;border:1px solid rgba(201,169,110,0.2);border-radius:2px;font-size:0.72rem;background:rgba(255,255,255,0.06);color:rgba(247,243,238,0.7);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.dhr span{font-size:0.7rem;color:rgba(247,243,238,0.4);}
+.fsteps{display:flex;gap:8px;margin-bottom:32px;}
+.fsd{width:8px;height:8px;border-radius:50%;background:rgba(196,122,90,0.2);transition:background 0.3s;}
+.fsd.on{background:var(--terra);}
+.plno{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.plop{border:2px solid rgba(201,169,110,0.2);border-radius:3px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;}
+.plop:hover,.plop.sel{border-color:var(--terra);background:rgba(196,122,90,0.08);}
+.plsv{position:absolute;top:-8px;right:10px;background:var(--terra);color:white;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;padding:3px 10px;border-radius:10px;font-weight:700;}
+.plnm{font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,243,238,0.5);margin-bottom:6px;font-weight:600;}
+.plpr{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--terra);line-height:1;}
+.plpe{font-size:0.65rem;color:rgba(247,243,238,0.35);margin-top:3px;}
+.plfs{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+.plf{font-size:0.68rem;color:rgba(247,243,238,0.55);display:flex;gap:6px;}
+.plf::before{content:'✓';color:var(--gold);flex-shrink:0;}
+.bfl{width:100%;padding:15px;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:2px;transition:all 0.25s;border:none;background:var(--terra);color:white;margin-top:8px;}
+.bfl:hover{background:var(--night);}
+.bflo{background:transparent;border:1.5px solid rgba(201,169,110,0.3);color:rgba(247,243,238,0.6);}
+.bflo:hover{border-color:var(--terra);color:var(--terra);background:transparent;}
+.fdv{height:1px;background:rgba(201,169,110,0.12);margin:24px 0;}
+.fnote{font-size:0.72rem;color:rgba(247,243,238,0.32);text-align:center;margin-top:16px;line-height:1.6;}
+.fnote strong{color:var(--gold);}
+.sucs{text-align:center;padding:20px 0;}
+.suci{font-size:3rem;margin-bottom:20px;}
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;margin-right:8px;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:6px 10px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
+@media(max-width:768px){
+nav{padding:16px 20px;} .nav-links{display:none;}
+.hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
+.s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
+.pgrid{grid-template-columns:1fr;} .pc.feat{transform:none;}
+.agrid,.rqg{grid-template-columns:1fr;}
+.dual{grid-template-columns:1fr;} .dhim,.dher{padding:64px 28px;}
+footer{flex-direction:column;text-align:center;padding:36px 24px;}
+.trust{padding:20px 24px;gap:20px;}
+.modal{padding:36px 24px;} .frw{grid-template-columns:1fr;} .plno{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">He Knows · <span>She Knows</span></div>
+  <div class="nav-links">
+    <a href="#cf"><span class="es"><span class="es">Cómo funciona</span><span class="en">How It Works</span></span><span class="en">How It Works</span></a>
+    <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
+    <a href="#precios"><span class="es">Precios</span><span class="en">Pricing</span></a>
+    <a href="#advsec"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
+    <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div><a href="#" onclick="openM('mu');return false;" class="nav-cta"><span class="es">Comenzar</span><span class="en">Get Started</span></a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <p class="ey"><span class="es">México · 2026 · <span class="es">100% Anónimo</span><span class="en">100% Anonymous</span></span><span class="en">Mexico · 2026 · 100% Anonymous</span></p>
+    <h1 class="hero-t"><span class="es">Él sabe lo que<br>piensa un <em>hombre.</em><br>Ella lo que piensa<br>una <em>mujer.</em></span><span class="en">He knows what<br>a <em>man</em> thinks.<br>She knows what<br>a <em>woman</em> thinks.</span></h1>
+    <div class="hdv"></div>
+    <p class="hero-s"><span class="es">Personas reales del sexo opuesto respondiendo tus dudas amorosas. Sin filtros. Sin juicios. Sin IA.</span><span class="en">Real people of the opposite sex answering your relationship questions. No filters. No judgment. No AI.</span></p>
+    <div class="hero-a">
+      <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Quiero un consejo →</span><span class="en">Get Advice →</span></a>
+      <a href="#" onclick="openM('ma');return false;" class="btn-g"><span class="es">Quiero ser Advisor</span><span class="en">Become an Advisor</span></a>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="hv"></div>
+    <div class="hcf">
+      <div class="cb"><span class="es">Advisor · Hombre real ⭐ 4.9</span><span class="en">Advisor · Real man ⭐ 4.9</span></div>
+      <p class="ctxc" style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;">"Cuando desaparece no es que perdió el interés. Es que no sabe cómo manejar lo que siente."</p>
+      <div class="cst">★★★★★</div>
+      <div class="cm"><span class="es">Respondido hace 12 min · CDMX</span><span class="en">Replied 12 min ago · CDMX</span></div>
+    </div>
+    <div class="hcf2">
+      <div class="cb cb2"><span class="es">Advisor · Mujer real ⭐ 5.0</span><span class="en">Advisor · Real woman ⭐ 5.0</span></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.5;color:var(--cream);font-style:italic;">"Lo que hace sentir valorado a un hombre no es lo que crees."</p>
+      <div class="cst">★★★★★</div>
+      <div class="cm cm2"><span class="es">Respondido hace 3 min</span><span class="en">Replied 3 min ago</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="ti"><span class="tic">🔒</span><span class="tit">100% Anónimo</span></div>
+  <div class="ti"><span class="tic">✓</span><span class="tit"><span class="es">Advisors verificados con ID</span><span class="en">ID-Verified Advisors</span></span></div>
+  <div class="ti"><span class="tic">⭐</span><span class="tit"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></span></div>
+  <div class="ti"><span class="tic">🚫</span><span class="tit"><span class="es">Sin IA — personas reales</span><span class="en">No AI — Real People</span></span></div>
+  <div class="ti"><span class="tic">🇲🇽</span><span class="tit"><span class="es">Hecho en México · Todo en MXN</span><span class="en">Made in Mexico · All in MXN</span></span></div>
+</div>
+
+<section class="s" id="cf">
+  <div class="sh"><p class="sl">Cómo funciona</p><h2 class="st"><span class="es">Tres pasos para entender<br>al <em>sexo opuesto.</em></span><span class="en">Three steps to understand<br>the <em>opposite sex.</em></span></h2></div>
+  <div class="steps">
+    <div class="step"><span class="sn">01</span><div class="si">🔒</div><h3 class="sti"><span class="es">Crea tu perfil anónimo</span><span class="en">Create your anonymous profile</span></h3><p class="sd">Regístrate con tu correo. Nadie sabrá quién eres. Tu identidad está protegida en todo momento.</p></div>
+    <div class="step"><span class="sn">02</span><div class="si">💬</div><h3 class="sti"><span class="es">Haz tu pregunta</span><span class="en">Ask your question</span></h3><p class="sd">Escribe lo que realmente quieres saber. Elige si quieres que sea pública o privada y selecciona tu advisor.</p></div>
+    <div class="step"><span class="sn">03</span><div class="si">💡</div><h3 class="sti"><span class="es">Recibe perspectiva real</span><span class="en">Get real perspective</span></h3><p class="sd">Una persona real del sexo opuesto — verificada, con historial y calificaciones — te da su opinión honesta.</p></div>
+  </div>
+</section>
+
+<section class="dual">
+  <div class="dhim">
+    <h2 class="dtit"><span class="es">Para él,<br>la perspectiva <em>femenina.</em></span><span class="en">For him,<br>the <em>female</em> perspective.</span></h2>
+    <p class="ddes">Mujeres reales te dicen lo que ninguno de tus amigos te diría.</p>
+    <div class="dls">
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Por qué me dejó de hablar sin explicación?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Qué significa que me diga "estoy bien"?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Cómo sé si realmente le intereso?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Cómo reconquisto sin quedar desesperado?</span></div>
+    </div>
+  </div>
+  <div class="dher">
+    <h2 class="dtit"><span class="es">Para ella,<br>la perspectiva <em>masculina.</em></span><span class="en">For her,<br>the <em>male</em> perspective.</span></h2>
+    <p class="ddes">Hombres verificados te dan respuestas directas y sin rodeos.</p>
+    <div class="dls">
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Por qué desapareció si todo iba bien?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Un hombre que no da el paso realmente me quiere?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Cómo sé si solo quiere algo casual?</span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx">¿Cómo actuar después de una pelea fuerte?</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="s s-mid" id="areas">
+  <div class="sh"><p class="sl"><span class="es">Áreas de consejo</span><span class="en">Advice Areas</span></p><h2 class="st"><span class="es">En lo que nuestros<br><em>Advisors</em> te ayudan.</span><span class="en">What our <em>Advisors</em><br>help you with.</span></h2><p class="ss">Cada advisor elige su especialidad. Tú eliges al que más se alinea con lo que necesitas.</p></div>
+  <div class="areas">
+    <div class="area"><span class="aico">💔</span><div class="anm">Relaciones y pareja</div><p class="ades">Conflictos, comunicación y cómo mejorar tu relación actual.</p></div>
+    <div class="area"><span class="aico">👻</span><div class="anm">Ghosting e infidelidad</div><p class="ades">Por qué desaparecen y qué hacer después de una traición.</p></div>
+    <div class="area"><span class="aico">🧠</span><div class="anm">Cómo piensa el sexo opuesto</div><p class="ades">Entiende la lógica y las motivaciones del otro lado.</p></div>
+    <div class="area"><span class="aico">💪</span><div class="anm">Confianza y autoestima</div><p class="ades">Cómo proyectarte mejor y atraer lo que buscas.</p></div>
+    <div class="area"><span class="aico">👗</span><div class="anm">Styling y presencia</div><p class="ades">Qué imagen das al sexo opuesto y cómo mejorarla.</p></div>
+    <div class="area"><span class="aico">💬</span><div class="anm">Texting y comunicación</div><p class="ades">Qué decir, cuándo escribir e interpretar mensajes.</p></div>
+    <div class="area"><span class="aico">❤️‍🔥</span><div class="anm">Citas y conquista</div><p class="ades">Primera cita, flirteo y señales de interés real.</p></div>
+    <div class="area"><span class="aico">🗣️</span><div class="anm">Desahogo real</div><p class="ades">Que alguien del sexo opuesto te escuche sin juzgarte.</p></div>
+  </div>
+</section>
+
+<section class="s" id="precios">
+  <div class="sh"><p class="sl"><span class="es">Planes · Para quien busca consejos · Todo en MXN</span><span class="en">Plans · For those seeking advice · All in MXN</span></p><h2 class="st"><span class="es">Invierte en entender<br>al <em>sexo opuesto.</em></span><span class="en">Invest in understanding<br>the <em>opposite sex.</em></span></h2><p class="ss"><span class="es">Empieza gratis. Actualiza cuando quieras más.</span><span class="en">Start free. Upgrade anytime.</span></p></div>
+  <div class="pgrid">
+    <div class="pc">
+      <div class="ppl">Explorador</div><div class="pam"><span class="pcr">$</span>0</div><div class="ppe">Para siempre gratis · MXN</div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span>Lee todos los casos públicos</div><div class="pf"><span class="pck">✓</span>1 pregunta pública al mes</div><div class="pf"><span class="pck">✓</span>Perfil anónimo verificado</div><div class="pf"><span class="pck">✓</span>Califica consejos</div></div>
+      <button class="bpr" onclick="openM('mu')"><span class="es">Comenzar gratis</span><span class="en">Start free</span></button>
+    </div>
+    <div class="pc feat">
+      <div class="pbadge"><span class="es">Más popular</span><span class="en">Most popular</span></div><div class="ppl">Premium</div><div class="pam"><span class="pcr">$</span>199</div><div class="ppe">por mes · MXN</div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span>5 consultas privadas al mes</div><div class="pf"><span class="pck">✓</span>Elige tu advisor por rating</div><div class="pf"><span class="pck">✓</span>Respuesta prioritaria en 12h</div><div class="pf"><span class="pck">✓</span>Acceso completo a casos públicos</div><div class="pf"><span class="pck">✓</span>10 créditos extra incluidos</div></div>
+      <a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" target="_blank" class="bpr" style="text-align:center;text-decoration:none;display:block;"><span class="es">Obtener Premium</span><span class="en">Get Premium</span></a>
+    </div>
+    <div class="pc">
+      <div class="ppl">Elite</div><div class="pam"><span class="pcr">$</span>299</div><div class="ppe">por mes · MXN</div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span>Consultas ilimitadas</div><div class="pf"><span class="pck">✓</span>Advisor exclusivo Top 10</div><div class="pf"><span class="pck">✓</span>Respuesta garantizada en 6h</div><div class="pf"><span class="pck">✓</span>Sesiones de seguimiento</div><div class="pf"><span class="pck">✓</span>30 créditos mensuales</div></div>
+      <a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" target="_blank" class="bpr" style="text-align:center;text-decoration:none;display:block;"><span class="es">Obtener Elite</span><span class="en">Get Elite</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="s s-slate" id="advsec">
+  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w">Si entiendes al sexo opuesto y sabes dar consejos honestos, ya tienes todo lo que se necesita.</p></div>
+  <div class="rqg">
+    <div class="rq"><div class="rqi">🪪</div><div class="rqt">Verificación de identidad</div><p class="rqd">ID oficial sin foto. Queda verificada pero tu nombre nunca se muestra a los usuarios.</p></div>
+    <div class="rq"><div class="rqi">⭐</div><div class="rqt">Sistema de rating real</div><p class="rqd">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</p></div>
+    <div class="rq"><div class="rqi">📱</div><div class="rqt">Desde tu celular</div><p class="rqd">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</p></div>
+  </div>
+  <div class="sh" style="margin-bottom:40px;"><p class="sl sl-w">Membresía Advisor · Pesos Mexicanos</p><h3 class="st st-w" style="font-size:clamp(1.8rem,3vw,2.6rem);">Elige tu plan<br>de <em>Advisor.</em></h3></div>
+  <div class="agrid">
+    <div class="ac">
+      <div class="apl">Mensual</div><div class="anm2">Membresía Advisor</div><div class="abl">Cobro mensual · MXN</div>
+      <div class="aam">$99</div><div class="amx">MXN por mes</div><div class="adv"></div>
+      <div class="afs"><div class="af"><span class="ack">✓</span>Acceso a todas las funciones</div><div class="af"><span class="ack">✓</span>Soporte prioritario</div><div class="af"><span class="ack">✓</span>70% de ganancias por consulta</div><div class="af"><span class="ack">✓</span>Herramientas de marketing</div><div class="af"><span class="ack">✓</span>Renovación automática</div></div>
+      <button class="bad" onclick="openM('ma')">Registrarme como Advisor</button>
+    </div>
+    <div class="ac feat">
+      <div class="asv">AHORRA 50%</div>
+      <div class="apl">Anual</div><div class="anm2">Membresía Advisor</div><div class="abl">Cobro anual · MXN</div>
+      <div class="aam">$999</div><div class="amx">MXN por año · (~$83/mes)</div><div class="adv"></div>
+      <div class="afs"><div class="af"><span class="ack">✓</span>Acceso ilimitado a funciones premium</div><div class="af"><span class="ack">✓</span>90% de ganancias por consulta</div><div class="af"><span class="ack">✓</span>Mensajería ilimitada con clientes</div><div class="af"><span class="ack">✓</span>Visibilidad prioritaria en búsquedas</div><div class="af"><span class="ack">✓</span>Verificación Premium ✓</div><div class="af"><span class="ack">✓</span>Múltiples fotos de perfil</div><div class="af"><span class="ack">✓</span>Herramientas de marketing incluidas</div></div>
+      <button class="bad" onclick="openM('ma')">Quiero el plan anual →</button>
+    </div>
+  </div>
+  <p class="anote">Ganas entre <strong>70% y 90%</strong> de cada consulta · Pagos mensuales en MXN · Sin mínimos</p>
+</section>
+
+<section class="s s-mid">
+  <div class="sh"><p class="sl"><span class="es">Lo que dicen</span><span class="en">What They Say</span></p><h2 class="st"><span class="es">Perspectivas que<br><em>cambian todo.</em></span><span class="en">Perspectives that<br><em>change everything.</em></span></h2></div>
+  <div class="tgrid">
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Llevaba semanas dándole vueltas a lo mismo. Un advisor me dijo en dos párrafos lo que ninguna amiga me había explicado en meses.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México · Plan Premium</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Lo que más me gustó fue la honestidad. No me dijeron lo que quería oír, me dijeron lo que necesitaba escuchar. Y funcionó.</p><div class="tau"><div class="tav tavm">R</div><div><div class="tan">@rod_gtz</div><div class="tam">Monterrey · Plan Elite</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Me da mucha pena hablar de estas cosas con mis amigas porque todas conocen a mi ex. Aquí puedo ser completamente honesta.</p><div class="tau"><div class="tav tavf">V</div><div><div class="tan">@vale_gdl</div><div class="tam">Guadalajara · Plan Premium</div><div class="tas">★★★★★</div></div></div></div>
+  </div>
+</section>
+
+<section class="fcta">
+  <p class="fcl"><span class="es">Únete · Coming Soon</span><span class="en">Join · Coming Soon</span></p>
+  <h2 class="fct"><span class="es">¿Listo para entender<br>al <em>sexo opuesto?</em></span><span class="en">Ready to understand<br>the <em>opposite sex?</em></span></h2>
+  <p class="fcs"><span class="es">Primera pregunta completamente gratis. Sin tarjeta. Sin compromisos.</span><span class="en">First question completely free. No card. No commitment.</span></p>
+  <div class="fca">
+    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Quiero consejos →</span><span class="en">Get Advice →</span></a>
+    <a href="#" onclick="openM('ma');return false;" class="btn-g" style="border-color:rgba(247,243,238,0.25);color:rgba(247,243,238,0.6);">Quiero ser Advisor</a>
+  </div>
+</section>
+
+<!-- NEWSLETTER SECTION -->
+<section style="background:#F0EAE3;padding:80px 80px;text-align:center;">
+  <p style="font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;">Newsletter</p>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:var(--night);margin-bottom:12px;line-height:1.1;">Consejos que <em style="color:var(--terra);font-style:italic;">te cambian.</em></h2>
+  <p style="font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto 40px;line-height:1.7;font-weight:300;">Perspectivas reales del sexo opuesto, directo a tu correo. Sin spam. Sin IA.</p>
+  <div id="nl-form" style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;">
+    <input id="nl-nombre" type="text" placeholder="Tu nombre (opcional)" style="flex:1;min-width:160px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
+    <input id="nl-email" type="email" placeholder="tu@correo.com" style="flex:2;min-width:200px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
+    <button onclick="subscribeNewsletter()" style="padding:14px 28px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap;" onmouseover="this.style.background='var(--terra)'" onmouseout="this.style.background='var(--night)'">Suscribirme →</button>
+  </div>
+  <div id="nl-success" style="display:none;margin-top:24px;">
+    <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--terra);">¡Listo! Bienvenido/a al newsletter. 🎉</p>
+  </div>
+  <div id="nl-error" style="display:none;margin-top:16px;">
+    <p style="font-size:0.82rem;color:#c0392b;">Algo salió mal, intenta de nuevo.</p>
+  </div>
+</section>
+
+<script>
+async function subscribeNewsletter() {
+  const email = document.getElementById('nl-email').value.trim();
+  const nombre = document.getElementById('nl-nombre').value.trim();
+  if (!email) { alert('Por favor ingresa tu correo.'); return; }
+  try {
+    const res = await fetch('/.netlify/functions/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, nombre })
+    });
+    if (res.ok) {
+      document.getElementById('nl-form').style.display = 'none';
+      document.getElementById('nl-success').style.display = 'block';
+    } else {
+      document.getElementById('nl-error').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('nl-error').style.display = 'block';
+  }
+}
+</script>
+
+<footer>
+  <div class="fl">He Knows · <span>She Knows</span></div>
+  <div class="flk"><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
+  <div class="fc2"><span class="es">© 2026 He Knows She Knows · México · Todo en MXN</span><span class="en">© 2026 He Knows She Knows · Mexico · All in MXN</span></div>
+</footer>
+
+<!-- MODAL USUARIO -->
+<div class="mov" id="mu">
+  <div class="modal">
+    <button class="mcl" onclick="closeM('mu')">✕</button>
+    <div id="mu-form">
+      <p class="mlb">Crear cuenta gratuita</p>
+      <h2 class="mtt">Bienvenido/a a<br><em>He Knows She Knows</em></h2>
+      <p class="msb">Anónimo desde el primer momento. Nadie sabrá quién eres.</p>
+      <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ug')">Hombre</button><button class="chip" onclick="togCS(this,'ug')">Mujer</button><button class="chip" onclick="togCS(this,'ug')">Prefiero no decir</button></div></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="frw">
+        <div class="fg"><label class="flbl">Usuario anónimo</label><input class="finp" type="text" placeholder="@usuario_secreto"></div>
+        <div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Tijuana</option><option>Otra</option></select></div>
+      </div>
+      <div class="fg"><label class="flbl">Contraseña</label><input class="finp" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <div class="fg"><label class="flbl">¿Qué te trae por aquí?</label><div class="chips"><button class="chip" onclick="togC(this)">Entender a mi pareja</button><button class="chip" onclick="togC(this)">Superar una ruptura</button><button class="chip" onclick="togC(this)">Reconquistar a alguien</button><button class="chip" onclick="togC(this)">Entender el ghosting</button><button class="chip" onclick="togC(this)">Mejorar mi vida amorosa</button><button class="chip" onclick="togC(this)">Solo explorar</button></div></div>
+      <div class="fg" style="margin-top:4px;"><label class="flbl">¿Tienes una captura o foto que quieras compartir? <span style="font-weight:300;letter-spacing:0;text-transform:none;">(opcional)</span></label><div id="upload-area" style="border:1.5px dashed rgba(61,53,48,0.2);border-radius:4px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(196,122,90,0.02);" onclick="document.getElementById('foto-input').click()" onmouseover="this.style.borderColor='var(--terra)'" onmouseout="this.style.borderColor='rgba(61,53,48,0.2)'"><input type="file" id="foto-input" accept="image/*" multiple style="display:none;" onchange="showPreview(this)"><div id="upload-placeholder"><div style="font-size:1.5rem;margin-bottom:8px;">📎</div><div style="font-size:0.72rem;color:var(--muted);">Toca para subir capturas de pantalla o fotos</div><div style="font-size:0.62rem;color:rgba(154,136,128,0.6);margin-top:4px;">PNG, JPG · Máx. 5MB por imagen</div></div><div id="foto-preview" style="display:none;flex-wrap:wrap;gap:8px;justify-content:center;"></div></div></div><button class="bfl" onclick="showSuc('mu')">Crear mi cuenta gratuita →</button>
+      <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;">Al registrarte aceptas nuestros <a href="terminos-condiciones.html" style="color:var(--terra);">Términos</a> y <a href="terminos-condiciones.html" style="color:var(--terra);">Privacidad</a></p>
+    </div>
+    <div class="sucs" id="mu-suc" style="display:none;">
+      <div class="suci">✨</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px;">¡Ya eres parte de<br>He Knows She Knows!</h3>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:28px;">Te enviamos un correo de confirmación. Pronto podrás hacer tu primera pregunta gratis.</p>
+      <button class="bfl" onclick="closeM('mu')">Perfecto, ¡gracias!</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADVISOR -->
+<div class="mov" id="ma">
+  <div class="modal mdark">
+    <button class="mcl" onclick="closeM('ma')">✕</button>
+
+    <div id="as1">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd"></div><div class="fsd"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 1 de 4 · Tus datos</p>
+      <h2 class="mtt">Regístrate como<br><em>Advisor</em></h2>
+      <p class="msb">Tu identidad queda verificada pero nunca visible para los usuarios.</p>
+      <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ag')">Hombre</button><button class="chip" onclick="togCS(this,'ag')">Mujer</button></div></div>
+      <div class="frw"><div class="fg"><label class="flbl">Nombre completo</label><input class="finp" type="text" placeholder="Solo para verificación"></div><div class="fg"><label class="flbl">Edad</label><input class="finp" type="number" placeholder="18+" min="18"></div></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="frw"><div class="fg"><label class="flbl">Teléfono</label><input class="finp" type="tel" placeholder="+52 55 0000 0000"></div><div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Otra</option></select></div></div>
+      <div class="fg"><label class="flbl">Contraseña</label><input class="finp" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <button class="bfl" onclick="aN(1)">Continuar →</button>
+    </div>
+
+    <div id="as2" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 2 de 4 · Tu especialidad</p>
+      <h2 class="mtt">¿En qué eres<br><em>bueno/a?</em></h2>
+      <p class="msb">Selecciona todas las áreas en las que quieres dar consejos.</p>
+      <div class="fg"><label class="flbl">Áreas de expertise</label><div class="chips"><button class="chip" onclick="togC(this)">💔 Relaciones y pareja</button><button class="chip" onclick="togC(this)">👻 Ghosting e infidelidad</button><button class="chip" onclick="togC(this)">🧠 Cómo piensa el sexo opuesto</button><button class="chip" onclick="togC(this)">💪 Confianza y autoestima</button><button class="chip" onclick="togC(this)">👗 Styling y presencia</button><button class="chip" onclick="togC(this)">💬 Texting y comunicación</button><button class="chip" onclick="togC(this)">❤️‍🔥 Citas y conquista</button><button class="chip" onclick="togC(this)">🗣️ Desahogo real</button><button class="chip" onclick="togC(this)">👔 Vida y rutinas</button></div></div>
+      <div class="fg" style="margin-top:20px;"><label class="flbl">Bio profesional <span style="font-weight:300;letter-spacing:0;text-transform:none;">(mín. 50 caracteres)</span></label><textarea class="finp" rows="4" placeholder="Cuéntanos tu experiencia y por qué eres bueno/a dando consejos..." style="resize:vertical;"></textarea></div>
+      <div class="fg" style="margin-top:16px;"><label class="flbl">Idiomas en los que puedes dar consejos</label><div class="chips"><button class="chip" onclick="togC(this)">🇲🇽 Español</button><button class="chip" onclick="togC(this)">🇺🇸 English</button></div></div><div style="display:flex;gap:12px;"><button class="bfl bflo" onclick="aB(2)" style="flex:1;">← Atrás</button><button class="bfl" onclick="aN(2)" style="flex:2;">Continuar →</button></div>
+    </div>
+
+    <div id="as3" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 3 de 4 · Tu disponibilidad</p>
+      <h2 class="mtt">¿Cuándo estás<br><em>disponible?</em></h2>
+      <p class="msb">Define tus horarios. Puedes cambiarlos cuando quieras.</p>
+      <div class="fg"><label class="flbl">Horario semanal</label>
+        <div class="schg">
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h1')"><span class="dsl"></span></label><span class="dnm">Lunes</span><div class="dhr" id="h1"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>2:00 PM</option></select><span>a</span><select><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h2')"><span class="dsl"></span></label><span class="dnm">Martes</span><div class="dhr" id="h2"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option></select><span>a</span><select><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h3')"><span class="dsl"></span></label><span class="dnm">Miércoles</span><div class="dhr" id="h3"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option></select><span>a</span><select><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h4')"><span class="dsl"></span></label><span class="dnm">Jueves</span><div class="dhr" id="h4"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option></select><span>a</span><select><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h5')"><span class="dsl"></span></label><span class="dnm">Viernes</span><div class="dhr" id="h5"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option></select><span>a</span><select><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h6')"><span class="dsl"></span></label><span class="dnm">Sábado</span><div class="dhr" id="h6"><select><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option></select><span>a</span><select><option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option></select></div></div>
+          <div class="schd"><label class="dtog"><input type="checkbox" onchange="togD(this,'h7')"><span class="dsl"></span></label><span class="dnm">Domingo</span><div class="dhr" id="h7"><select><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option></select><span>a</span><select><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></div></div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:16px;"><label class="flbl">Precio por consulta (MXN)</label><input class="finp" type="number" placeholder="Ej. 150" min="50" step="10"><p style="font-size:0.68rem;color:rgba(247,243,238,0.35);margin-top:6px;">Mínimo $50 MXN · Tú decides cuánto cobrar</p></div>
+      <div style="display:flex;gap:12px;"><button class="bfl bflo" onclick="aB(3)" style="flex:1;">← Atrás</button><button class="bfl" onclick="aN(3)" style="flex:2;">Continuar →</button></div>
+    </div>
+
+    <div id="as4" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div></div>
+      <p class="mlb">Paso 4 de 4 · Tu plan · Todo en MXN</p>
+      <h2 class="mtt">Elige tu<br><em>membresía.</em></h2>
+      <p class="msb">Cancela cuando quieras. Todo en pesos mexicanos.</p>
+      <div class="fg"><div class="plno">
+        <div class="plop" onclick="selP(this)">
+          <div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div>
+          <div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Acceso completo</div><div class="plf">Cancela cuando quieras</div></div>
+        </div>
+        <div class="plop sel" onclick="selP(this)">
+          <div class="plsv">AHORRA 50%</div>
+          <div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div>
+          <div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Funciones premium</div><div class="plf">Verificación ✓ Premium</div><div class="plf">Prioridad en búsquedas</div></div>
+        </div>
+      </div></div>
+      <div class="fdv"></div>
+      <button class="bfl" onclick="showSuc('ma')">Completar registro →</button>
+      <div style="display:flex;justify-content:center;margin-top:12px;"><button class="bfl bflo" onclick="aB(4)" style="width:auto;padding:10px 24px;font-size:0.65rem;">← Atrás</button></div>
+      <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br>Pagos seguros en MXN · <strong>70-90% de ganancias</strong> · Sin mínimos</p>
+    </div>
+
+    <div class="sucs" id="ma-suc" style="display:none;">
+      <div class="suci">🎉</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--cream);margin-bottom:12px;">¡Ya eres Advisor!</h3>
+      <p style="font-size:0.88rem;color:rgba(247,243,238,0.5);line-height:1.7;margin-bottom:28px;">Revisaremos tu perfil en las próximas 24 horas. Te avisamos por correo cuando estés activo/a.</p>
+      <button class="bfl" onclick="closeM('ma')">¡Perfecto, gracias!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openM(id){document.getElementById(id).classList.add('active');document.body.style.overflow='hidden';}
+function closeM(id){document.getElementById(id).classList.remove('active');document.body.style.overflow='';}
+document.querySelectorAll('.mov').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this)closeM(this.id);});});
+function togC(b){b.classList.toggle('active');}
+function togCS(b,g){document.querySelectorAll('[onclick*="\''+g+'\'"]').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
+function togD(c,id){const el=document.getElementById(id);el.classList.toggle('on',c.checked);}
+function aN(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s+1)).style.display='block';}
+function aB(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s-1)).style.display='block';}
+function selP(el){document.querySelectorAll('.plop').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+function showPreview(input){
+  const preview=document.getElementById('foto-preview');
+  const placeholder=document.getElementById('upload-placeholder');
+  preview.style.display='flex';
+  placeholder.style.display='none';
+  Array.from(input.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const wrap=document.createElement('div');
+      wrap.style.cssText='position:relative;width:72px;height:72px;';
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      img.style.cssText='width:72px;height:72px;object-fit:cover;border-radius:4px;border:1px solid rgba(196,122,90,0.2);';
+      const del=document.createElement('button');
+      del.innerHTML='✕';
+      del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--terra);color:white;border:none;font-size:0.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+      del.onclick=e=>{e.stopPropagation();wrap.remove();if(!preview.children.length){preview.style.display='none';placeholder.style.display='block';}};
+      wrap.appendChild(img);wrap.appendChild(del);preview.appendChild(wrap);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function showSuc(id){
+  if(id==="ma"){
+    const stripeUrl=window.stripeAdv||"https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02";
+    setTimeout(function(){window.open(stripeUrl,"_blank");},1500);
+  }
+  if(id==='mu'){document.getElementById('mu-form').style.display='none';document.getElementById('mu-suc').style.display='block';}
+  else{['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});document.getElementById('ma-suc').style.display='block';}
+}
+</script>
+</body>
+</html>
+<script>
+// Language toggle
+function setLang(lang){
+  document.body.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.toLowerCase()===lang);
+  });
+  localStorage.setItem('hksk-lang', lang);
+}
+// Auto detect on load
+(function(){
+  const saved = localStorage.getItem('hksk-lang');
+  const browser = navigator.language || navigator.userLanguage;
+  const lang = saved || (browser.startsWith('es') ? 'es' : 'en');
+  document.body.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.toLowerCase()===lang);
+  });
+})();
+</script>

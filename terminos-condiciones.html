@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Términos y Condiciones · He Knows She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);}
+
+  /* NAV */
+  nav{background:var(--night);padding:18px 48px;display:flex;align-items:center;justify-content:space-between;}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--cream);text-decoration:none;}
+  .nav-logo span{color:var(--terra);font-style:italic;}
+  .nav-back{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,243,238,0.45);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--terra);}
+
+  /* HERO */
+  .hero{background:var(--night);padding:80px 80px 64px;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 50%,rgba(196,122,90,0.1),transparent 60%);}
+  .hero-label{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:600;position:relative;z-index:2;}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:20px;position:relative;z-index:2;}
+  .hero-title em{font-style:italic;color:var(--terra);}
+  .hero-meta{font-size:0.78rem;color:rgba(247,243,238,0.4);position:relative;z-index:2;line-height:1.7;}
+  .hero-meta strong{color:rgba(247,243,238,0.65);}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:0;max-width:1200px;margin:0 auto;padding:64px 48px;}
+
+  /* SIDEBAR */
+  .sidebar{position:sticky;top:32px;height:fit-content;padding-right:48px;}
+  .sidebar-title{font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;font-weight:600;}
+  .sidebar-links{display:flex;flex-direction:column;gap:4px;}
+  .sidebar-links a{font-size:0.78rem;color:var(--muted);text-decoration:none;padding:7px 12px;border-left:2px solid transparent;transition:all 0.2s;font-weight:300;}
+  .sidebar-links a:hover,.sidebar-links a.active{color:var(--terra);border-left-color:var(--terra);background:rgba(196,122,90,0.05);}
+
+  /* CONTENIDO */
+  .content{border-left:1px solid rgba(196,122,90,0.12);padding-left:64px;}
+  .sec-block{margin-bottom:64px;padding-bottom:64px;border-bottom:1px solid rgba(196,122,90,0.1);}
+  .sec-block:last-child{border-bottom:none;}
+  .sec-num{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(196,122,90,0.35);font-weight:300;margin-bottom:8px;}
+  .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--night);margin-bottom:20px;line-height:1.2;}
+  .sec-title em{font-style:italic;color:var(--terra);}
+  p{font-size:0.92rem;line-height:1.85;color:var(--slate);font-weight:300;margin-bottom:16px;}
+  p:last-child{margin-bottom:0;}
+  strong{font-weight:600;color:var(--night);}
+
+  /* LISTAS */
+  .list{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+  .list-item{display:flex;gap:12px;align-items:flex-start;}
+  .list-dot{width:5px;height:5px;border-radius:50%;background:var(--terra);margin-top:8px;flex-shrink:0;opacity:0.7;}
+  .list-txt{font-size:0.9rem;line-height:1.75;color:var(--slate);font-weight:300;}
+
+  /* HIGHLIGHT BOX */
+  .hbox{background:rgba(196,122,90,0.06);border-left:3px solid var(--terra);padding:20px 24px;margin:20px 0;border-radius:0 2px 2px 0;}
+  .hbox p{margin-bottom:0;font-size:0.88rem;}
+  .hbox-dark{background:rgba(26,20,16,0.04);border-left-color:var(--night);}
+  .hbox-gold{background:rgba(201,169,110,0.08);border-left-color:var(--gold);}
+
+  /* TABLA */
+  .tabla{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.85rem;}
+  .tabla th{background:var(--night);color:var(--cream);padding:12px 16px;text-align:left;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;font-weight:500;}
+  .tabla td{padding:12px 16px;border-bottom:1px solid rgba(196,122,90,0.1);color:var(--slate);font-weight:300;line-height:1.5;}
+  .tabla tr:hover td{background:rgba(196,122,90,0.03);}
+
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  .contact-card{background:var(--night);padding:24px;border-radius:2px;}
+  .contact-label{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;}
+  .contact-val{font-size:0.88rem;color:rgba(247,243,238,0.75);font-weight:300;line-height:1.6;}
+
+  /* FOOTER */
+  footer{background:var(--night);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:80px;}
+  .fl{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:rgba(247,243,238,0.4);}
+  .fl span{color:var(--terra);font-style:italic;}
+  .fc{font-size:0.63rem;color:rgba(247,243,238,0.22);}
+
+  @media(max-width:768px){
+    nav{padding:16px 20px;}
+    .hero{padding:48px 24px 40px;}
+    .layout{grid-template-columns:1fr;padding:40px 24px;gap:40px;}
+    .sidebar{position:static;padding-right:0;border-bottom:1px solid rgba(196,122,90,0.15);padding-bottom:32px;}
+    .content{border-left:none;padding-left:0;}
+    .contact-grid{grid-template-columns:1fr;}
+    footer{flex-direction:column;padding:32px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="heknows-sheknows.html" class="nav-logo">He Knows · <span>She Knows</span></a>
+  <a href="heknows-sheknows.html" class="nav-back">← Regresar al sitio</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-label">Documento legal · Última actualización: Mayo 2026</p>
+  <h1 class="hero-title">Términos y <em>Condiciones</em><br>de Uso</h1>
+  <p class="hero-meta">
+    <strong>He Knows She Knows S.A. de C.V.</strong> · Ciudad de México, México<br>
+    Al usar nuestra plataforma aceptas estos términos en su totalidad.
+  </p>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Índice</div>
+    <div class="sidebar-links">
+      <a href="#s1">1. Identificación</a>
+      <a href="#s2">2. Definiciones</a>
+      <a href="#s3">3. Aceptación</a>
+      <a href="#s4">4. Descripción del servicio</a>
+      <a href="#s5">5. Registro y cuenta</a>
+      <a href="#s6">6. Advisors</a>
+      <a href="#s7">7. Verificación de identidad</a>
+      <a href="#s8">8. Pagos y precios</a>
+      <a href="#s9">9. Comisiones Advisors</a>
+      <a href="#s10">10. Privacidad y anonimato</a>
+      <a href="#s11">11. Conducta prohibida</a>
+      <a href="#s12">12. Limitación de responsabilidad</a>
+      <a href="#s13">13. Propiedad intelectual</a>
+      <a href="#s14">14. Cancelación</a>
+      <a href="#s15">15. Ley aplicable</a>
+      <a href="#s16">16. Contacto</a>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <main class="content">
+
+    <!-- 1 -->
+    <div class="sec-block" id="s1">
+      <div class="sec-num">01</div>
+      <h2 class="sec-title">Identificación del <em>responsable</em></h2>
+      <p>Los presentes Términos y Condiciones regulan el uso de la plataforma digital denominada <strong>He Knows She Knows</strong>, operada por:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Razón social:</strong> He Knows She Knows S.A. de C.V.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Domicilio fiscal:</strong> Ciudad de México, México</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Sitio web:</strong> heknows-sheknows.com</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Correo de contacto:</strong> legal@heknows-sheknows.com</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Instagram:</strong> @heknows.sheknows</span></div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="sec-block" id="s2">
+      <div class="sec-num">02</div>
+      <h2 class="sec-title"><em>Definiciones</em></h2>
+      <p>Para efectos de estos Términos y Condiciones, se entenderá por:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Plataforma:</strong> El sitio web y los servicios digitales de He Knows She Knows.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Usuario:</strong> Toda persona que acceda, navegue o utilice la Plataforma para recibir consejos.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Advisor:</strong> Persona física verificada que presta servicios de orientación y consejo a través de la Plataforma.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Consulta:</strong> Interacción entre un Usuario y un Advisor mediante la cual se solicita y brinda un consejo.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Cuenta:</strong> Perfil creado por el Usuario o Advisor para acceder a las funciones de la Plataforma.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Contenido:</strong> Texto, mensajes, preguntas, respuestas y cualquier material generado por Usuarios o Advisors.</span></div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="sec-block" id="s3">
+      <div class="sec-num">03</div>
+      <h2 class="sec-title">Aceptación de <em>términos</em></h2>
+      <p>Al acceder, registrarse o utilizar cualquier función de la Plataforma, el Usuario y/o Advisor declara haber leído, entendido y aceptado en su totalidad los presentes Términos y Condiciones, así como nuestra Política de Privacidad.</p>
+      <div class="hbox">
+        <p>Si no estás de acuerdo con alguno de estos términos, debes abstenerte de usar la Plataforma. El uso continuado de la Plataforma implica la aceptación de cualquier modificación futura a estos Términos.</p>
+      </div>
+      <p>Para utilizar la Plataforma debes ser mayor de <strong>18 años</strong>. He Knows She Knows se reserva el derecho de solicitar comprobación de edad en cualquier momento.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="sec-block" id="s4">
+      <div class="sec-num">04</div>
+      <h2 class="sec-title">Descripción del <em>servicio</em></h2>
+      <p>He Knows She Knows es una plataforma digital que conecta a personas con Advisors verificados del sexo opuesto para recibir orientación, perspectiva y consejos sobre temas amorosos, relacionales y de vida personal.</p>
+      <div class="hbox hbox-gold">
+        <p><strong>Importante:</strong> Los consejos brindados por los Advisors son de carácter orientativo y representan opiniones personales basadas en experiencias propias. No sustituyen el consejo de profesionales de la salud mental, psicólogos, terapeutas o abogados.</p>
+      </div>
+      <p>He Knows She Knows <strong>no garantiza</strong> resultados específicos derivados de los consejos recibidos en la Plataforma. Los Advisors son personas independientes, no empleados de la empresa.</p>
+    </div>
+
+    <!-- 5 -->
+    <div class="sec-block" id="s5">
+      <div class="sec-num">05</div>
+      <h2 class="sec-title">Registro y <em>cuenta</em></h2>
+      <p>Para acceder a las funciones de la Plataforma es necesario crear una cuenta. Al registrarte te comprometes a:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Proporcionar información veraz y actualizada al momento del registro.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Mantener la confidencialidad de tu contraseña y credenciales de acceso.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Notificar de inmediato cualquier uso no autorizado de tu cuenta.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">No crear más de una cuenta por persona.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Ser mayor de 18 años al momento del registro.</span></div>
+      </div>
+      <p>He Knows She Knows se reserva el derecho de suspender o cancelar cuentas que incumplan estos términos, sin previo aviso y sin responsabilidad alguna.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="sec-block" id="s6">
+      <div class="sec-num">06</div>
+      <h2 class="sec-title">Régimen de los <em>Advisors</em></h2>
+      <p>Los Advisors son personas físicas independientes que prestan sus servicios a través de la Plataforma. Su relación con He Knows She Knows S.A. de C.V. es de <strong>prestación de servicios independientes</strong>, no de carácter laboral.</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Advisors son responsables del contenido de sus consejos y orientaciones.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Advisors deben mantener un comportamiento profesional, respetuoso y ético en todo momento.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Advisors no pueden ofrecer diagnósticos médicos, psicológicos, ni asesoría legal.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Advisors son responsables de cumplir con sus obligaciones fiscales conforme a la legislación mexicana.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">He Knows She Knows puede dar de baja a un Advisor en cualquier momento si incumple estos términos.</span></div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="sec-block" id="s7">
+      <div class="sec-num">07</div>
+      <h2 class="sec-title">Verificación de <em>identidad</em></h2>
+      <p>Para garantizar la autenticidad y seguridad de nuestra comunidad, todos los Advisors deben someterse a un proceso de verificación de identidad antes de activar su cuenta.</p>
+      <div class="hbox">
+        <p><strong>Documentos aceptados:</strong> Credencial para Votar (INE/IFE) vigente, Pasaporte mexicano vigente, o Cédula Profesional. El documento debe incluir fotografía.</p>
+      </div>
+      <p>Al enviar tu documento de identidad, aceptas y declaras lo siguiente:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">El documento es auténtico y corresponde a tu identidad real.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Tu fotografía e información de identificación serán almacenadas de forma segura y cifrada, exclusivamente para fines de verificación interna.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Tu documento de identidad NUNCA será visible para los usuarios de la Plataforma.</strong> Solo el personal autorizado de He Knows She Knows tiene acceso a dicha información.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los datos de identificación se almacenan conforme a lo establecido en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Puedes solicitar la eliminación de tus datos de identificación en cualquier momento mediante solicitud a nuestro correo legal.</span></div>
+      </div>
+      <div class="hbox hbox-dark">
+        <p>He Knows She Knows utiliza la información de identificación únicamente para verificar que los Advisors son personas reales y mayores de edad. Esta información no será compartida con terceros salvo requerimiento de autoridad competente.</p>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="sec-block" id="s8">
+      <div class="sec-num">08</div>
+      <h2 class="sec-title">Pagos, precios<br>y <em>facturación</em></h2>
+      <p>Todos los precios en la Plataforma están expresados en <strong>Pesos Mexicanos (MXN)</strong> e incluyen el Impuesto al Valor Agregado (IVA) cuando aplique.</p>
+
+      <p><strong>Planes para Usuarios:</strong></p>
+      <table class="tabla">
+        <tr><th>Plan</th><th>Precio</th><th>Consultas</th></tr>
+        <tr><td>Explorador</td><td>$0 MXN</td><td>1 pública/mes</td></tr>
+        <tr><td>Premium</td><td>$199 MXN/mes</td><td>5 privadas/mes</td></tr>
+        <tr><td>Elite</td><td>$299 MXN/mes</td><td>Ilimitadas</td></tr>
+      </table>
+
+      <p><strong>Membresía para Advisors:</strong></p>
+      <table class="tabla">
+        <tr><th>Plan</th><th>Precio</th><th>Comisión</th></tr>
+        <tr><td>Mensual</td><td>$99 MXN/mes</td><td>70% de ganancias</td></tr>
+        <tr><td>Anual</td><td>$999 MXN/año</td><td>90% de ganancias</td></tr>
+      </table>
+
+      <p>Los pagos se procesan a través de <strong>Stripe</strong>, plataforma de pagos segura y certificada PCI DSS. He Knows She Knows no almacena datos de tarjetas de crédito o débito directamente.</p>
+      <div class="hbox">
+        <p>Las suscripciones se renuevan automáticamente al vencimiento del periodo contratado. Puedes cancelar tu suscripción en cualquier momento desde tu perfil. La cancelación aplica al siguiente ciclo de facturación; no se realizan reembolsos por periodos en curso.</p>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="sec-block" id="s9">
+      <div class="sec-num">09</div>
+      <h2 class="sec-title">Comisiones y pagos<br>a <em>Advisors</em></h2>
+      <p>Los Advisors recibirán el porcentaje correspondiente a su plan sobre cada consulta pagada que completen satisfactoriamente:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Plan Mensual:</strong> 70% del valor de cada consulta.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt"><strong>Plan Anual:</strong> 90% del valor de cada consulta.</span></div>
+      </div>
+      <p>He Knows She Knows retiene el porcentaje restante como comisión por el uso de la Plataforma, procesamiento de pagos y servicios de soporte.</p>
+      <div class="hbox hbox-gold">
+        <p><strong>Pagos a Advisors:</strong> Los pagos se realizan mensualmente durante los primeros 5 días hábiles del mes siguiente al período de ganancias. El Advisor debe proporcionar datos bancarios válidos en México para recibir su pago. He Knows She Knows no realiza pagos en efectivo.</p>
+      </div>
+      <p>Los Advisors son responsables de declarar sus ingresos ante el Servicio de Administración Tributaria (SAT) conforme a la legislación fiscal mexicana vigente. He Knows She Knows emitirá los CFDIs correspondientes cuando aplique.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="sec-block" id="s10">
+      <div class="sec-num">10</div>
+      <h2 class="sec-title">Privacidad y <em>anonimato</em></h2>
+      <p>He Knows She Knows está diseñada para proteger la privacidad de sus Usuarios. El anonimato es uno de los valores fundamentales de la Plataforma.</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Usuarios pueden registrarse con un nombre de usuario anónimo que no revele su identidad real.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Advisors nunca conocerán el nombre real, fotografía, teléfono ni datos de contacto de los Usuarios.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los Usuarios nunca conocerán el nombre real ni datos personales de los Advisors.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">He Knows She Knows recopila únicamente los datos necesarios para prestar el servicio, conforme a su Política de Privacidad.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Los datos personales son tratados conforme a la LFPDPPP y su Reglamento.</span></div>
+      </div>
+      <div class="hbox hbox-dark">
+        <p>He Knows She Knows podrá revelar información de usuarios ante requerimiento de autoridad judicial o administrativa competente, conforme a lo establecido por la legislación mexicana aplicable.</p>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="sec-block" id="s11">
+      <div class="sec-num">11</div>
+      <h2 class="sec-title">Conducta <em>prohibida</em></h2>
+      <p>Está estrictamente prohibido en la Plataforma:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Publicar contenido sexual explícito, obsceno o pornográfico.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Acosar, amenazar o intimidar a otros Usuarios o Advisors.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Intentar obtener o revelar datos personales de otros usuarios.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Suplantar la identidad de otra persona.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Usar la Plataforma para actividades ilegales, fraude o engaño.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Ofrecer o solicitar servicios sexuales de cualquier tipo.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Compartir información de contacto personal para evadir el sistema de la Plataforma.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Publicar contenido que incite a la violencia, discriminación o actividades delictivas.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Usar bots, scripts o medios automatizados para interactuar con la Plataforma.</span></div>
+      </div>
+      <p>El incumplimiento de estas prohibiciones resultará en la suspensión inmediata y permanente de la cuenta, sin derecho a reembolso, y podrá derivar en acciones legales.</p>
+    </div>
+
+    <!-- 12 -->
+    <div class="sec-block" id="s12">
+      <div class="sec-num">12</div>
+      <h2 class="sec-title">Limitación de <em>responsabilidad</em></h2>
+      <p>He Knows She Knows S.A. de C.V. no será responsable por:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Las decisiones que el Usuario tome con base en los consejos recibidos de los Advisors.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">La exactitud, veracidad o conveniencia de los consejos brindados por los Advisors.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Daños directos, indirectos, incidentales o consecuentes derivados del uso de la Plataforma.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Interrupciones del servicio por causas de fuerza mayor o mantenimiento técnico.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Conductas de terceros (Advisors u otros Usuarios) dentro de la Plataforma.</span></div>
+      </div>
+      <div class="hbox">
+        <p>La responsabilidad máxima de He Knows She Knows hacia cualquier Usuario o Advisor estará limitada al monto pagado por dicha persona en los últimos 3 meses de uso de la Plataforma.</p>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="sec-block" id="s13">
+      <div class="sec-num">13</div>
+      <h2 class="sec-title">Propiedad <em>intelectual</em></h2>
+      <p>Todos los elementos de la Plataforma — incluyendo diseño, logotipos, textos, imágenes, código fuente y nombre comercial — son propiedad exclusiva de <strong>He Knows She Knows S.A. de C.V.</strong> y están protegidos por las leyes de propiedad intelectual mexicanas y los tratados internacionales aplicables.</p>
+      <p>Queda prohibida la reproducción, distribución o uso comercial de cualquier elemento de la Plataforma sin autorización expresa por escrito de He Knows She Knows S.A. de C.V.</p>
+      <p>El Usuario y/o Advisor otorgan a He Knows She Knows una licencia no exclusiva, gratuita y mundial para usar el contenido que publiquen en la Plataforma, únicamente con fines de operación y mejora del servicio.</p>
+    </div>
+
+    <!-- 14 -->
+    <div class="sec-block" id="s14">
+      <div class="sec-num">14</div>
+      <h2 class="sec-title">Cancelación y<br><em>terminación</em></h2>
+      <p><strong>Por parte del Usuario o Advisor:</strong> Puedes cancelar tu cuenta en cualquier momento desde la configuración de tu perfil o mediante solicitud por correo electrónico. La cancelación de una suscripción activa aplica al siguiente ciclo de facturación.</p>
+      <p><strong>Por parte de He Knows She Knows:</strong> Nos reservamos el derecho de suspender o cancelar cuentas que:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Incumplan estos Términos y Condiciones.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Realicen conductas prohibidas o actividades fraudulentas.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Proporcionen información falsa durante el registro o verificación.</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Representen un riesgo para la seguridad de la comunidad.</span></div>
+      </div>
+    </div>
+
+    <!-- 15 -->
+    <div class="sec-block" id="s15">
+      <div class="sec-num">15</div>
+      <h2 class="sec-title">Ley aplicable y<br><em>jurisdicción</em></h2>
+      <p>Los presentes Términos y Condiciones se rigen por las leyes de los <strong>Estados Unidos Mexicanos</strong>, en particular por:</p>
+      <div class="list">
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Código Civil Federal</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Ley Federal de Protección al Consumidor (PROFECO)</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Ley Federal de Protección de Datos Personales en Posesión de los Particulares</span></div>
+        <div class="list-item"><span class="list-dot"></span><span class="list-txt">Ley de Comercio Electrónico</span></div>
+      </div>
+      <p>Para cualquier controversia derivada de estos Términos, las partes se someten a la jurisdicción de los tribunales competentes de la <strong>Ciudad de México</strong>, renunciando expresamente a cualquier otro fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</p>
+      <div class="hbox">
+        <p>He Knows She Knows se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios serán notificados por correo electrónico y/o mediante aviso en la Plataforma con al menos 15 días de anticipación.</p>
+      </div>
+    </div>
+
+    <!-- 16 -->
+    <div class="sec-block" id="s16">
+      <div class="sec-num">16</div>
+      <h2 class="sec-title">Contacto y<br><em>soporte legal</em></h2>
+      <p>Para cualquier consulta, aclaración o ejercicio de derechos ARCO (Acceso, Rectificación, Cancelación u Oposición) sobre tus datos personales, puedes contactarnos a través de:</p>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-label">Correo legal</div>
+          <div class="contact-val">legal@heknows-sheknows.com</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-label">Soporte general</div>
+          <div class="contact-val">hola@heknows-sheknows.com</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-label">Instagram</div>
+          <div class="contact-val">@heknows.sheknows</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-label">Domicilio fiscal</div>
+          <div class="contact-val">Ciudad de México, México</div>
+        </div>
+      </div>
+      <p style="margin-top:20px;">El tiempo de respuesta a solicitudes ARCO es de máximo <strong>20 días hábiles</strong> conforme a lo establecido en la LFPDPPP.</p>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <div class="fl">He Knows · <span>She Knows</span></div>
+  <div class="fc">© 2026 He Knows She Knows S.A. de C.V. · Ciudad de México · Todos los derechos reservados</div>
+</footer>
+
+<script>
+// Highlight active section in sidebar
+const sections = document.querySelectorAll('.sec-block');
+const links = document.querySelectorAll('.sidebar-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

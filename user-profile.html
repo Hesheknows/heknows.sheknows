@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Perfil · He Knows She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;--bg:#EDEBE8;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;}
+
+  /* NAV */
+  nav{background:var(--night);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:300;letter-spacing:0.24em;text-transform:uppercase;color:var(--cream);text-decoration:none;}
+  .nav-logo span{color:var(--terra);font-style:italic;}
+  .nav-back{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,243,238,0.45);text-decoration:none;transition:color 0.2s;background:rgba(255,255,255,0.06);padding:7px 14px;border-radius:2px;}
+  .nav-back:hover{color:var(--terra);}
+
+  /* LAYOUT */
+  .layout{max-width:900px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:280px 1fr;gap:24px;}
+
+  /* SIDEBAR PERFIL */
+  .profile-card{background:var(--night);border-radius:4px;padding:28px 24px;position:sticky;top:80px;}
+  .profile-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(196,122,90,0.12),transparent 55%);border-radius:4px;pointer-events:none;}
+  .profile-av{width:64px;height:64px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:white;margin:0 auto 14px;border:2px solid rgba(201,169,110,0.3);position:relative;z-index:2;}
+  .profile-handle{font-size:0.88rem;font-weight:600;color:var(--cream);text-align:center;margin-bottom:4px;position:relative;z-index:2;}
+  .profile-anon{font-size:0.62rem;color:rgba(247,243,238,0.4);text-align:center;margin-bottom:16px;position:relative;z-index:2;}
+  .anon-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(196,122,90,0.12);border:1px solid rgba(196,122,90,0.25);padding:4px 12px;border-radius:10px;margin-bottom:20px;position:relative;z-index:2;}
+  .anon-txt{font-size:0.52rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--terra);font-weight:600;}
+  .profile-divider{height:1px;background:rgba(201,169,110,0.12);margin:16px 0;position:relative;z-index:2;}
+  .profile-stat-row{display:flex;justify-content:space-around;position:relative;z-index:2;margin-bottom:20px;}
+  .pstat{text-align:center;}
+  .pstat-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--terra);}
+  .pstat-lbl{font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,243,238,0.35);margin-top:2px;}
+  .sidebar-nav{display:flex;flex-direction:column;gap:2px;position:relative;z-index:2;}
+  .snav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:3px;cursor:pointer;transition:all 0.2s;border-left:2px solid transparent;text-decoration:none;}
+  .snav-item:hover{background:rgba(255,255,255,0.05);}
+  .snav-item.active{background:rgba(196,122,90,0.1);border-left-color:var(--terra);}
+  .snav-ico{font-size:0.85rem;width:18px;text-align:center;color:rgba(247,243,238,0.35);}
+  .snav-item.active .snav-ico{color:var(--terra);}
+  .snav-lbl{font-size:0.72rem;color:rgba(247,243,238,0.55);font-weight:300;}
+  .snav-item.active .snav-lbl{color:var(--cream);font-weight:500;}
+  .btn-upgrade{width:100%;padding:11px;background:var(--terra);color:white;border:none;border-radius:3px;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;margin-top:20px;transition:background 0.2s;position:relative;z-index:2;}
+  .btn-upgrade:hover{background:var(--gold);color:var(--night);}
+
+  /* MAIN CONTENT */
+  .main-content{display:flex;flex-direction:column;gap:20px;}
+
+  /* SECCIONES */
+  .sec{background:var(--cream);border-radius:4px;overflow:hidden;border:1px solid rgba(196,122,90,0.1);}
+  .sec-head{padding:16px 20px;border-bottom:1px solid rgba(196,122,90,0.1);display:flex;align-items:center;justify-content:space-between;}
+  .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--night);}
+  .sec-title em{font-style:italic;color:var(--terra);}
+  .sec-action{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--terra);cursor:pointer;background:none;border:1px solid rgba(196,122,90,0.25);padding:5px 12px;border-radius:2px;font-family:'DM Sans',sans-serif;}
+
+  /* PLAN ACTUAL */
+  .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(196,122,90,0.1);}
+  .plan-box{background:var(--cream);padding:20px;}
+  .plan-box-dark{background:var(--night);padding:20px;}
+  .plan-lbl{font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+  .plan-lbl-w{color:rgba(247,243,238,0.38);}
+  .plan-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--terra);}
+  .plan-val-sm{font-size:0.88rem;font-weight:500;color:var(--night);margin-top:4px;}
+  .plan-val-sm-w{color:rgba(247,243,238,0.7);}
+  .credits-wrap{padding:20px;}
+  .credits-lbl{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;display:flex;justify-content:space-between;}
+  .credits-bar{height:6px;background:rgba(196,122,90,0.12);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+  .credits-fill{height:100%;background:linear-gradient(90deg,var(--terra),var(--gold));border-radius:3px;width:40%;}
+  .credits-note{font-size:0.65rem;color:var(--muted);}
+  .credits-note strong{color:var(--terra);}
+  .plan-features{padding:16px 20px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(196,122,90,0.08);}
+  .plan-feat{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--slate);font-weight:300;}
+  .plan-check{color:var(--terra);font-size:0.8rem;font-weight:600;flex-shrink:0;}
+
+  /* HISTORIAL */
+  .history-list{display:flex;flex-direction:column;}
+  .hist-item{padding:16px 20px;border-bottom:1px solid rgba(196,122,90,0.08);display:flex;align-items:flex-start;gap:14px;cursor:pointer;transition:background 0.2s;}
+  .hist-item:last-child{border-bottom:none;}
+  .hist-item:hover{background:rgba(196,122,90,0.03);}
+  .hist-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;color:white;flex-shrink:0;}
+  .av-m{background:var(--night);}
+  .av-f{background:var(--terra);}
+  .hist-info{flex:1;}
+  .hist-advisor{font-size:0.78rem;font-weight:500;color:var(--night);margin-bottom:3px;}
+  .hist-preview{font-size:0.7rem;color:var(--muted);font-weight:300;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;}
+  .hist-tag{font-size:0.55rem;padding:2px 8px;border-radius:10px;background:rgba(196,122,90,0.08);color:var(--terra);font-weight:500;margin-top:5px;display:inline-block;}
+  .hist-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+  .hist-date{font-size:0.6rem;color:var(--muted);}
+  .hist-rating{color:var(--gold);font-size:0.65rem;letter-spacing:1px;}
+  .hist-price{font-size:0.62rem;color:var(--muted);}
+
+  /* FAVORITOS */
+  .favs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;}
+  .fav-card{background:white;border-radius:3px;padding:14px;border:1px solid rgba(196,122,90,0.1);display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;}
+  .fav-card:hover{border-color:rgba(196,122,90,0.3);}
+  .fav-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;color:white;flex-shrink:0;}
+  .fav-info{flex:1;}
+  .fav-handle{font-size:0.72rem;font-weight:600;color:var(--night);}
+  .fav-sub{font-size:0.6rem;color:var(--muted);margin-top:1px;}
+  .fav-rating{font-size:0.62rem;color:var(--gold);}
+  .fav-heart{color:var(--terra);font-size:0.85rem;}
+
+  /* CONFIGURACIÓN */
+  .config-list{display:flex;flex-direction:column;}
+  .config-item{padding:14px 20px;border-bottom:1px solid rgba(196,122,90,0.08);display:flex;align-items:center;gap:14px;}
+  .config-item:last-child{border-bottom:none;}
+  .config-ico{width:34px;height:34px;border-radius:50%;background:rgba(196,122,90,0.08);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+  .config-info{flex:1;}
+  .config-lbl{font-size:0.78rem;font-weight:500;color:var(--night);}
+  .config-sub{font-size:0.65rem;color:var(--muted);font-weight:300;margin-top:2px;}
+  .config-action{font-size:0.65rem;color:var(--terra);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;font-weight:500;}
+  .toggle-wrap{display:flex;align-items:center;gap:8px;}
+  .toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+  .toggle input{opacity:0;width:0;height:0;}
+  .toggle-sl{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.3);border-radius:22px;transition:0.3s;}
+  .toggle-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;}
+  input:checked+.toggle-sl{background:var(--terra);}
+  input:checked+.toggle-sl::before{transform:translateX(18px);}
+  .danger-zone{padding:16px 20px;}
+  .btn-danger{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:#e05252;background:none;border:1px solid rgba(224,82,82,0.25);padding:8px 16px;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;}
+  .btn-danger:hover{background:rgba(224,82,82,0.05);}
+
+  /* EMPTY STATE */
+  .empty{padding:40px 20px;text-align:center;}
+  .empty-ico{font-size:2.5rem;margin-bottom:12px;}
+  .empty-txt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--muted);font-style:italic;}
+
+  @media(max-width:768px){
+    .layout{grid-template-columns:1fr;padding:20px 16px;}
+    .profile-card{position:static;}
+    .plan-grid{grid-template-columns:1fr;}
+    .favs-grid{grid-template-columns:1fr;}
+    nav{padding:12px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="heknows-sheknows.html" class="nav-logo">He Knows · <span>She Knows</span></a>
+  <a href="index.html" class="nav-back">← Volver al inicio</a>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="profile-card">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="profile-av">K</div>
+        <div class="profile-handle">@usuaria_k</div>
+        <div class="profile-anon">Ciudad de México · Miembro desde Mayo 2026</div>
+        <div class="anon-badge"><span>🔒</span><span class="anon-txt">Perfil anónimo</span></div>
+      </div>
+      <div class="profile-divider"></div>
+      <div class="profile-stat-row">
+        <div class="pstat"><div class="pstat-val">8</div><div class="pstat-lbl">Consultas</div></div>
+        <div class="pstat"><div class="pstat-val">4</div><div class="pstat-lbl">Favoritos</div></div>
+        <div class="pstat"><div class="pstat-val">★4.8</div><div class="pstat-lbl">Avg dado</div></div>
+      </div>
+      <div class="profile-divider"></div>
+      <div class="sidebar-nav">
+        <a class="snav-item active" href="#plan"><span class="snav-ico">💳</span><span class="snav-lbl">Mi plan</span></a>
+        <a class="snav-item" href="#historial"><span class="snav-ico">💬</span><span class="snav-lbl">Historial de consultas</span></a>
+        <a class="snav-item" href="#favoritos"><span class="snav-ico">⭐</span><span class="snav-lbl">Mis favoritos</span></a>
+        <a class="snav-item" href="#config"><span class="snav-ico">⚙️</span><span class="snav-lbl">Configuración</span></a>
+      </div>
+      <button class="btn-upgrade">Mejorar plan →</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- PLAN ACTUAL -->
+    <div class="sec" id="plan">
+      <div class="sec-head">
+        <div class="sec-title">Mi <em>plan actual</em></div>
+        <button class="sec-action">Cambiar plan</button>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-box">
+          <div class="plan-lbl">Plan activo</div>
+          <div class="plan-val">Premium</div>
+          <div class="plan-val-sm">$199 MXN / mes</div>
+        </div>
+        <div class="plan-box-dark">
+          <div class="plan-lbl plan-lbl-w">Próxima renovación</div>
+          <div class="plan-val">Jun 18</div>
+          <div class="plan-val-sm plan-val-sm-w">Renovación automática</div>
+        </div>
+      </div>
+      <div class="credits-wrap">
+        <div class="credits-lbl">
+          <span>Créditos del mes</span>
+          <span style="color:var(--terra);font-weight:600;">2 de 5 usados</span>
+        </div>
+        <div class="credits-bar"><div class="credits-fill"></div></div>
+        <div class="credits-note">Te quedan <strong>3 consultas privadas</strong> este mes · Se renuevan el 18 de Junio</div>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feat"><span class="plan-check">✓</span>5 consultas privadas al mes</div>
+        <div class="plan-feat"><span class="plan-check">✓</span>Elige tu advisor por rating</div>
+        <div class="plan-feat"><span class="plan-check">✓</span>Respuesta prioritaria en 12h</div>
+        <div class="plan-feat"><span class="plan-check">✓</span>Acceso completo a casos públicos</div>
+        <div class="plan-feat"><span class="plan-check">✓</span>10 créditos extra incluidos</div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="sec" id="historial">
+      <div class="sec-head">
+        <div class="sec-title"><em>Historial</em> de consultas</div>
+        <button class="sec-action">Ver todas</button>
+      </div>
+      <div class="history-list">
+        <div class="hist-item">
+          <div class="hist-av av-m">M</div>
+          <div class="hist-info">
+            <div class="hist-advisor">@marcos_real · Hombre</div>
+            <div class="hist-preview">"Cuando desaparece no es que perdió el interés. Es que no sabe cómo manejar lo que siente..."</div>
+            <span class="hist-tag">👻 Ghosting</span>
+          </div>
+          <div class="hist-meta">
+            <div class="hist-date">Hoy · 2:54 p.m.</div>
+            <div class="hist-rating">★★★★★</div>
+            <div class="hist-price">$150 MXN</div>
+          </div>
+        </div>
+        <div class="hist-item">
+          <div class="hist-av av-f">S</div>
+          <div class="hist-info">
+            <div class="hist-advisor">@sofia_honesta · Mujer</div>
+            <div class="hist-preview">"Lo que hace sentir valorado a un hombre no es lo que crees. Los hombres necesitan sentirse..."</div>
+            <span class="hist-tag">💔 Relaciones</span>
+          </div>
+          <div class="hist-meta">
+            <div class="hist-date">Hace 3 días</div>
+            <div class="hist-rating">★★★★★</div>
+            <div class="hist-price">$200 MXN</div>
+          </div>
+        </div>
+        <div class="hist-item">
+          <div class="hist-av av-m">R</div>
+          <div class="hist-info">
+            <div class="hist-advisor">@rodrigo_sin_filtro · Hombre</div>
+            <div class="hist-preview">"Un hombre que no da el paso después de 3 meses no es que tenga miedo, es que está..."</div>
+            <span class="hist-tag">🧠 Cómo piensa él</span>
+          </div>
+          <div class="hist-meta">
+            <div class="hist-date">Hace 1 semana</div>
+            <div class="hist-rating">★★★★☆</div>
+            <div class="hist-price">$100 MXN</div>
+          </div>
+        </div>
+        <div class="hist-item">
+          <div class="hist-av av-f">V</div>
+          <div class="hist-info">
+            <div class="hist-advisor">@vale_perspectiva · Mujer</div>
+            <div class="hist-preview">"El styling que proyectas habla antes de que digas una palabra. Lo primero que nota un hombre..."</div>
+            <span class="hist-tag">👗 Styling</span>
+          </div>
+          <div class="hist-meta">
+            <div class="hist-date">Hace 2 semanas</div>
+            <div class="hist-rating">★★★★★</div>
+            <div class="hist-price">$180 MXN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAVORITOS -->
+    <div class="sec" id="favoritos">
+      <div class="sec-head">
+        <div class="sec-title">Mis <em>favoritos</em></div>
+      </div>
+      <div class="favs-grid">
+        <div class="fav-card">
+          <div class="fav-av av-m">M</div>
+          <div class="fav-info">
+            <div class="fav-handle">@marcos_real</div>
+            <div class="fav-sub">Hombre · Ghosting · $150 MXN</div>
+            <div class="fav-rating">★ 4.9</div>
+          </div>
+          <div class="fav-heart">♥</div>
+        </div>
+        <div class="fav-card">
+          <div class="fav-av av-f">S</div>
+          <div class="fav-info">
+            <div class="fav-handle">@sofia_honesta</div>
+            <div class="fav-sub">Mujer · Pareja · $200 MXN</div>
+            <div class="fav-rating">★ 5.0</div>
+          </div>
+          <div class="fav-heart">♥</div>
+        </div>
+        <div class="fav-card">
+          <div class="fav-av av-f">V</div>
+          <div class="fav-info">
+            <div class="fav-handle">@vale_perspectiva</div>
+            <div class="fav-sub">Mujer · Styling · $180 MXN</div>
+            <div class="fav-rating">★ 4.8</div>
+          </div>
+          <div class="fav-heart">♥</div>
+        </div>
+        <div class="fav-card" style="border:1.5px dashed rgba(196,122,90,0.2);background:transparent;justify-content:center;flex-direction:column;text-align:center;gap:6px;">
+          <div style="font-size:1.2rem;color:rgba(196,122,90,0.3);">+</div>
+          <div style="font-size:0.68rem;color:var(--muted);">Explorar advisors</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIGURACIÓN -->
+    <div class="sec" id="config">
+      <div class="sec-head">
+        <div class="sec-title"><em>Configuración</em> de cuenta</div>
+      </div>
+      <div class="config-list">
+
+        <div class="config-item">
+          <div class="config-ico">🔒</div>
+          <div class="config-info">
+            <div class="config-lbl">Anonimato</div>
+            <div class="config-sub">Tu nombre real nunca es visible para nadie en la plataforma</div>
+          </div>
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-sl"></span></label>
+          </div>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">👤</div>
+          <div class="config-info">
+            <div class="config-lbl">Nombre de usuario</div>
+            <div class="config-sub">@usuaria_k</div>
+          </div>
+          <button class="config-action">Cambiar</button>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">📧</div>
+          <div class="config-info">
+            <div class="config-lbl">Correo electrónico</div>
+            <div class="config-sub">k***@gmail.com · Verificado ✓</div>
+          </div>
+          <button class="config-action">Cambiar</button>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">🔑</div>
+          <div class="config-info">
+            <div class="config-lbl">Contraseña</div>
+            <div class="config-sub">Última actualización hace 30 días</div>
+          </div>
+          <button class="config-action">Cambiar</button>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">🔔</div>
+          <div class="config-info">
+            <div class="config-lbl">Notificaciones</div>
+            <div class="config-sub">Recibir aviso cuando un advisor responde</div>
+          </div>
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-sl"></span></label>
+          </div>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">💳</div>
+          <div class="config-info">
+            <div class="config-lbl">Método de pago</div>
+            <div class="config-sub">•••• •••• •••• 9005 · Amex</div>
+          </div>
+          <button class="config-action">Cambiar</button>
+        </div>
+
+        <div class="config-item">
+          <div class="config-ico">📋</div>
+          <div class="config-info">
+            <div class="config-lbl">Términos y condiciones</div>
+            <div class="config-sub">Última versión aceptada: Mayo 2026</div>
+          </div>
+          <a href="terminos-condiciones.html" class="config-action">Ver</a>
+        </div>
+
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div class="danger-zone" style="border-top:1px solid rgba(196,122,90,0.1);">
+        <div style="font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600;">Zona de riesgo</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-danger">Cancelar suscripción</button>
+          <button class="btn-danger">Eliminar mi cuenta</button>
+        </div>
+        <div style="font-size:0.62rem;color:var(--muted);margin-top:10px;font-weight:300;line-height:1.6;">Al eliminar tu cuenta se borran todos tus datos personales conforme a la LFPDPPP. Esta acción no puede deshacerse.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
