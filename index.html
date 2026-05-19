@@ -257,7 +257,8 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <a href="#advsec"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
     <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <a href="#" id="login-btn" onclick="netlifyIdentity.open();return false;" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
-    <a href="#" id="logout-btn" onclick="netlifyIdentity.logout();return false;" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Cerrar sesión</span><span class="en">Log Out</span></a>
+    <a href="/perfil.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <a href="#" id="logout-btn" onclick="netlifyIdentity.logout();return false;" class="nav-cta" style="display:none;background:var(--slate);"><span class="es">Cerrar sesión</span><span class="en">Log Out</span></a>
   </div>
 </nav>
 
@@ -745,16 +746,20 @@ function setLang(lang){
 netlifyIdentity.on('init', user => {
   if (user) {
     document.getElementById('login-btn').style.display = 'none';
-    document.getElementById('logout-btn').style.display = 'inline-block';
+    document.getElementById('logout-btn').style.display = 'none';
+    document.getElementById('profile-btn').style.display = 'inline-block';
   }
 });
 netlifyIdentity.on('login', user => {
   document.getElementById('login-btn').style.display = 'none';
-  document.getElementById('logout-btn').style.display = 'inline-block';
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('profile-btn').style.display = 'inline-block';
   netlifyIdentity.close();
+  window.location.href = '/perfil.html';
 });
 netlifyIdentity.on('logout', () => {
   document.getElementById('login-btn').style.display = 'inline-block';
   document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('profile-btn').style.display = 'none';
 });
 </script>
