@@ -15,7 +15,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-logo span{color:var(--terra);font-style:italic;}
 .nav-links{display:flex;gap:20px;align-items:center;}
 .nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
-.nav-links a:hover,.nav-links a.active{color:var(--terra);}
+.nav-links a:hover{color:var(--terra);}
 .nav-email{font-size:0.72rem;color:var(--muted);}
 .btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
 .btn-logout:hover{background:var(--terra);color:white;}
@@ -55,7 +55,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <nav>
   <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
-    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="dashboard.html">Dashboard</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="perfil.html">Mi perfil</a>
     <span class="nav-email" id="nav-email"></span>
@@ -76,7 +76,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="stats">
     <div class="stat"><div class="stat-n">0</div><div class="stat-l">Preguntas hechas</div></div>
     <div class="stat"><div class="stat-n">0</div><div class="stat-l">Respuestas recibidas</div></div>
-    <div class="stat"><div class="stat-n" id="stat-plan">Free</div><div class="stat-l">Tu plan actual</div></div>
+    <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Tu plan actual</div></div>
   </div>
   <div class="section-label">Acciones rápidas</div>
   <div class="actions">
@@ -104,21 +104,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </div>
 <script src="supabase.js"></script>
 <script>
+let _checking = false;
 (async () => {
-  const session = await HKSK.getSession();
-  if (!session) { window.location.href = '/'; return; }
-  const user = session.user;
-  document.getElementById('nav-email').textContent = user.email;
-  const profile = await HKSK.getProfile(user.id);
-  if (!profile) {
-    await HKSK.saveProfile(user.id, user.email, { role: 'user' });
+  if (_checking) return;
+  _checking = true;
+  try {
+    const session = await HKSK.getSession();
+    if (!session) {
+      window.location.replace('/login.html');
+      return;
+    }
+    const user = session.user;
+    document.getElementById('nav-email').textContent = user.email;
+    const profile = await HKSK.getProfile(user.id);
+    if (!profile) await HKSK.saveProfile(user.id, user.email, { role: 'user' });
+    const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
+    document.getElementById('welcome-name').textContent = name;
+    if (!profile?.full_name || !profile?.bio) {
+      document.getElementById('alert-perfil').style.display = 'flex';
+    }
+  } finally {
+    document.getElementById('loader').classList.add('gone');
   }
-  const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
-  document.getElementById('welcome-name').textContent = name;
-  if (!profile?.full_name || !profile?.bio) {
-    document.getElementById('alert-perfil').style.display = 'flex';
-  }
-  document.getElementById('loader').classList.add('gone');
 })();
 </script>
 </body>
