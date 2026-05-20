@@ -1,17 +1,34 @@
 // netlify/functions/auth-register.js
 
 exports.handler = async (event) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  };
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidalch.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTczMjMsImV4cCI6MjA5NDc3MzMyM30.a8t8km5BIYODC6Sp_rWE8XCJ1yfHwfdcLjrpN5nBms0';
+  const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  const SUPABASE_KEY = 'sb_secret_-rYCDZ5-BMzP13bDqvJtTg_FmtYp-7E';
 
+  let email, password;
   try {
-    const { email, password } = JSON.parse(event.body);
+    const body = JSON.parse(event.body);
+    email = body.email;
+    password = body.password;
+  } catch(e) {
+    return { statusCode: 200, headers, body: JSON.stringify({ error: 'Body inválido: ' + e.message }) };
+  }
 
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+  if (!email || !password) {
+    return { statusCode: 200, headers, body: JSON.stringify({ error: 'Falta email o contraseña' }) };
+  }
+
+  let supabaseRes, supabaseData;
+  try {
+    supabaseRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,22 +37,33 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({ email, password })
     });
+    supabaseData = await supabaseRes.json();
+  } catch(e) {
+    return { statusCode: 200, headers, body: JSON.stringify({ error: 'Error conectando con Supabase: ' + e.message }) };
+  }
 
-    const data = await res.json();
-
+  // Siempre regresamos 200 para que el browser muestre el error real
+  if (supabaseData.error || supabaseData.error_description || supabaseData.msg) {
     return {
-      statusCode: res.status,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-  } catch (err) {
-    return {
-      statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: err.message })
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        error: supabaseData.error_description || supabaseData.msg || supabaseData.error,
+        supabase_status: supabaseRes.status,
+        raw: supabaseData
+      })
     };
   }
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({
+      success: true,
+      access_token: supabaseData.session?.access_token || supabaseData.access_token || null,
+      refresh_token: supabaseData.session?.refresh_token || supabaseData.refresh_token || null,
+      user: supabaseData.user,
+      email_confirmation_required: !supabaseData.session && !supabaseData.access_token
+    })
+  };
 };
