@@ -161,8 +161,9 @@ const chips = {};
 
 (async () => {
   try {
-    const session = await HKSK.getSession();
-    if (!session) {
+    let session = null;
+    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+    if (!session?.access_token) {
       window.location.replace('/login.html');
       return;
     }
