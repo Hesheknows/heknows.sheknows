@@ -251,6 +251,8 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 
 <nav>
   <div class="nav-logo">He Knows · <span>She Knows</span></div>
+    <a href="/login.html" id="login-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--night);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Entrar</a>
+    <a href="/dashboard.html" id="profile-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--terra);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Mi perfil</a>
   <div class="nav-links">
     <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
     <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
@@ -607,15 +609,21 @@ function showSuc(id){
 </script>
 
 <script>
-// Nav auth state con Supabase
-(async () => {
+// Nav auth state
+(function() {
   try {
-    const { data } = await HKSK.db.auth.getSession();
-    if (data.session) {
+    const session = JSON.parse(localStorage.getItem('hksk-session'));
+    if (session?.access_token) {
       document.getElementById('login-btn').style.display = 'none';
       document.getElementById('profile-btn').style.display = 'inline-block';
+      document.getElementById('login-btn-mobile').style.display = 'none';
+      document.getElementById('profile-btn-mobile').style.display = 'inline-block';
+    } else {
+      document.getElementById('login-btn-mobile').style.display = 'inline-block';
     }
-  } catch(e) {}
+  } catch(e) {
+    document.getElementById('login-btn-mobile').style.display = 'inline-block';
+  }
 })();
 </script>
 </body>
