@@ -100,6 +100,23 @@ input:checked+.tog-sl::before{transform:translateX(22px);}
 .btn-save-advisor:hover{background:var(--gold);color:var(--night);}
 .btn-save-advisor:disabled{opacity:0.5;cursor:default;}
 
+/* SUBSCRIPTION SECTION */
+.sub-section{background:white;border:1px solid rgba(196,122,90,0.15);border-radius:4px;padding:28px 32px;margin-bottom:44px;}
+.sub-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:8px;}
+.sub-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);}
+.sub-badge{display:inline-block;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:600;}
+.sub-badge.free{background:rgba(154,136,128,0.12);color:var(--muted);}
+.sub-badge.premium{background:rgba(196,122,90,0.12);color:var(--terra);}
+.sub-badge.elite{background:var(--night);color:var(--gold);}
+.sub-badge.advisor_mensual{background:rgba(196,122,90,0.12);color:var(--terra);}
+.sub-badge.advisor_anual{background:var(--night);color:var(--gold);}
+.sub-info{font-size:0.8rem;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.sub-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-upgrade{background:var(--terra);color:white;padding:9px 20px;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;text-decoration:none;display:inline-block;}
+.btn-upgrade:hover{background:var(--night);}
+.btn-cancel-sub{background:transparent;border:1px solid rgba(61,53,48,0.2);color:var(--muted);padding:9px 20px;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;}
+.btn-cancel-sub:hover{border-color:var(--terra);color:var(--terra);}
+
 /* PRIVACY SECTION */
 .privacy-section{background:white;border:1px solid rgba(196,122,90,0.15);border-radius:4px;padding:28px 32px;margin-bottom:44px;}
 .privacy-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -222,6 +239,18 @@ input:checked+.tog-sm-sl::before{transform:translateX(18px);}
 
   <div class="divider"></div>
 
+  <!-- SUSCRIPCIÓN -->
+  <div class="sub-section" id="sub-section">
+    <div class="sub-hd">
+      <div class="sub-title">💳 Mi suscripción</div>
+      <span class="sub-badge free" id="sub-badge">Free</span>
+    </div>
+    <div class="sub-info" id="sub-info">Sin suscripción activa.</div>
+    <div class="sub-actions" id="sub-actions"></div>
+  </div>
+
+  <div class="divider"></div>
+
   <!-- PRIVACIDAD -->
   <div class="privacy-section">
     <div class="privacy-hd">
@@ -324,6 +353,7 @@ const chips = {};
     // Cargar perfil de advisor si existe
     ADVISOR_PROFILE = await HKSK.getAdvisorProfile(USER.id);
     renderProfile();
+    renderSubscription();
     renderAdvisor();
   } finally {
     document.getElementById('loader').classList.add('gone');
@@ -527,6 +557,55 @@ function onPrivacyToggle(checked) {
   HKSK.saveProfile(USER.id, USER.email, { is_anonymous: checked });
   PROFILE.is_anonymous = checked;
   showToast(checked ? '🔒 Anonimato activado' : 'Anonimato desactivado');
+}
+
+function renderSubscription() {
+  const p = PROFILE || {};
+  const plan = p.plan || 'free';
+  const activatedAt = p.plan_activated_at ? new Date(p.plan_activated_at).toLocaleDateString('es-MX', {day:'numeric',month:'long',year:'numeric'}) : null;
+
+  const badge = document.getElementById('sub-badge');
+  const info = document.getElementById('sub-info');
+  const actions = document.getElementById('sub-actions');
+
+  badge.className = `sub-badge ${plan}`;
+
+  const planNames = {
+    'free': 'Explorador · Gratis',
+    'premium': 'Premium · $199 MXN/mes',
+    'elite': 'Elite · $299 MXN/mes',
+    'advisor_mensual': 'Advisor Mensual · $99 MXN/mes',
+    'advisor_anual': 'Advisor Anual · $999 MXN/año'
+  };
+
+  badge.textContent = planNames[plan] || 'Explorador · Gratis';
+
+  if (plan === 'free') {
+    info.textContent = 'Plan gratuito. Haz hasta 1 pregunta pública al mes. Mejora para obtener más.';
+    actions.innerHTML = `
+      <a href="/#precios" class="btn-upgrade">Ver planes →</a>
+    `;
+  } else {
+    info.textContent = activatedAt ? `Activo desde el ${activatedAt}` : 'Plan activo';
+
+    let upgradeBtn = '';
+    if (plan === 'premium') {
+      upgradeBtn = `<a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" target="_blank" class="btn-upgrade">Upgrade a Elite →</a>`;
+    } else if (plan === 'advisor_mensual') {
+      upgradeBtn = `<a href="https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02" target="_blank" class="btn-upgrade">Upgrade a Anual (ahorra 50%) →</a>`;
+    }
+
+    actions.innerHTML = `
+      ${upgradeBtn}
+      <button class="btn-cancel-sub" onclick="cancelSub()">Cancelar suscripción</button>
+    `;
+  }
+}
+
+function cancelSub() {
+  if (confirm('¿Estás segura de que quieres cancelar tu suscripción? Perderás acceso al finalizar el período.')) {
+    showToast('Para cancelar escríbenos a hola@he-sheknows.com y lo procesamos en 24h.');
+  }
 }
 
 function showToast(msg, isErr=false) {
