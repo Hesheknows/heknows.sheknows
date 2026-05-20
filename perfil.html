@@ -226,15 +226,31 @@ async function saveSection(section) {
 document.getElementById('avatar-input').addEventListener('change', async function() {
   const file = this.files[0]; if (!file) return;
   showToast('Subiendo foto…');
-  const url = await HKSK.uploadAvatar(USER.id, file);
-  if (url) {
-    await HKSK.saveProfile(USER.id, USER.email, { avatar_url: url });
-    PROFILE.avatar_url = url;
-    document.getElementById('av-img').src = url;
-    document.getElementById('av-img').style.display = 'block';
-    document.getElementById('av-initial').style.display = 'none';
-    showToast('✓ Foto actualizada');
-  } else showToast('Error al subir foto', true);
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const res = await fetch('/.netlify/functions/avatar-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: USER.id, fileBase64: base64, fileName: file.name, fileType: file.type })
+    });
+    const data = await res.json();
+    if (data.success) {
+      PROFILE.avatar_url = data.url;
+      document.getElementById('av-img').src = data.url + '?t=' + Date.now();
+      document.getElementById('av-img').style.display = 'block';
+      document.getElementById('av-initial').style.display = 'none';
+      showToast('✓ Foto actualizada');
+    } else {
+      showToast('Error: ' + (data.error || 'No se pudo subir'), true);
+    }
+  } catch(e) {
+    showToast('Error al subir foto', true);
+  }
 });
 
 function showToast(msg, isErr=false) {
