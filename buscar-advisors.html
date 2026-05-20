@@ -117,15 +117,30 @@ async function loadAdvisors() {
   const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?role=eq.advisor&select=id,full_name,avatar_url,bio,advisor_profiles(specialty,price_per_session,available,bio)`, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
+    // Traer perfiles de advisors
+    const profilesRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?role=eq.advisor&select=id,full_name,avatar_url,bio`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
-    ALL_ADVISORS = await res.json();
+    const profiles = await profilesRes.json();
+
+    if (!profiles || profiles.length === 0) { renderAdvisors([]); return; }
+
+    // Traer advisor_profiles
+    const ids = profiles.map(p => p.id).join(',');
+    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?id=in.(${ids})&select=id,specialty,price_per_session,available,bio`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const advProfiles = await advRes.json();
+
+    // Combinar
+    ALL_ADVISORS = profiles.map(p => ({
+      ...p,
+      adv: advProfiles.find(a => a.id === p.id) || {}
+    }));
+
     renderAdvisors(ALL_ADVISORS);
   } catch(e) {
+    console.error('loadAdvisors error:', e);
     renderAdvisors([]);
   }
 }
@@ -135,7 +150,7 @@ function filterBy(btn, keyword) {
   btn.classList.add('on');
   const filtered = keyword
     ? ALL_ADVISORS.filter(a => {
-        const spec = (a.advisor_profiles?.[0]?.specialty || a.advisor_profiles?.specialty || '').toLowerCase();
+        const spec = (a.adv?.specialty || '').toLowerCase();
         return spec.includes(keyword.toLowerCase());
       })
     : ALL_ADVISORS;
@@ -154,7 +169,7 @@ function renderAdvisors(list) {
   }
   grid.innerHTML = list.map(a => {
     // Supabase puede regresar advisor_profiles como array o como objeto
-    const adv = Array.isArray(a.advisor_profiles) ? (a.advisor_profiles[0] || {}) : (a.advisor_profiles || {});
+    const adv = a.adv || {};
     const name = a.full_name || 'Advisor';
     const initial = name[0]?.toUpperCase() || 'A';
     const available = adv.available !== false;
