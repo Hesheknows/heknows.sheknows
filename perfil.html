@@ -30,7 +30,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .ph-info{flex:1;padding-top:4px;}
 .ph-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;line-height:1.1;margin-bottom:6px;}
 .ph-email{font-size:0.78rem;color:var(--muted);margin-bottom:14px;}
+.ph-badges{display:flex;gap:8px;flex-wrap:wrap;}
 .ph-role{display:inline-block;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:600;background:rgba(196,122,90,0.1);color:var(--terra);}
+.ph-role.advisor{background:var(--night);color:var(--gold);}
 .section{margin-bottom:44px;}
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;}
@@ -58,6 +60,46 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .chips-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
 .chip{padding:5px 13px;border:1px solid rgba(196,122,90,0.22);border-radius:20px;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:var(--slate);background:white;}
 .chip.on{background:var(--terra);border-color:var(--terra);color:white;}
+
+/* ADVISOR TOGGLE SECTION */
+.advisor-toggle-section{background:var(--night);border-radius:4px;padding:32px;margin-bottom:44px;position:relative;overflow:hidden;}
+.advisor-toggle-section::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(196,122,90,0.08);}
+.adv-toggle-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.adv-toggle-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--cream);}
+.adv-toggle-title em{font-style:italic;color:var(--gold);}
+.adv-toggle-sub{font-size:0.78rem;color:rgba(247,243,238,0.45);line-height:1.6;max-width:440px;margin-bottom:20px;}
+
+/* Toggle switch */
+.toggle-wrap{display:flex;align-items:center;gap:12px;}
+.toggle-label{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.5);font-weight:500;}
+.toggle-label.active{color:var(--gold);}
+.tog{position:relative;width:48px;height:26px;cursor:pointer;}
+.tog input{opacity:0;width:0;height:0;}
+.tog-sl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.3);border-radius:26px;transition:0.3s;}
+.tog-sl::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;}
+input:checked+.tog-sl{background:var(--terra);}
+input:checked+.tog-sl::before{transform:translateX(22px);}
+
+/* Advisor fields section */
+.advisor-fields{display:none;margin-top:28px;padding-top:28px;border-top:1px solid rgba(201,169,110,0.15);}
+.advisor-fields.show{display:block;}
+.advisor-fields .field label{color:rgba(247,243,238,0.5);}
+.advisor-fields .field input,
+.advisor-fields .field textarea,
+.advisor-fields .field select{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
+.advisor-fields .field input::placeholder,
+.advisor-fields .field textarea::placeholder{color:rgba(247,243,238,0.25);}
+.advisor-fields .field input:focus,
+.advisor-fields .field textarea:focus,
+.advisor-fields .field select:focus{border-color:var(--gold);}
+.advisor-fields .chip{border-color:rgba(201,169,110,0.2);color:rgba(247,243,238,0.6);background:transparent;}
+.advisor-fields .chip.on{background:var(--terra);border-color:var(--terra);color:white;}
+.advisor-fields .sec-label{color:var(--gold);}
+.advisor-fields .field select option{background:var(--night);color:var(--cream);}
+.btn-save-advisor{background:var(--terra);color:white;padding:11px 26px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;}
+.btn-save-advisor:hover{background:var(--gold);color:var(--night);}
+.btn-save-advisor:disabled{opacity:0.5;cursor:default;}
+
 .toast{position:fixed;bottom:28px;right:28px;background:var(--night);color:var(--cream);padding:13px 22px;border-radius:2px;font-size:0.78rem;opacity:0;transform:translateY(6px);transition:all 0.28s;z-index:999;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.err{background:#7A2A1A;}
@@ -66,7 +108,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
 .loader-logo span{color:var(--terra);font-style:italic;}
 @keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
-@media(max-width:768px){nav{padding:15px 20px;}.profile-hero{flex-direction:column;gap:18px;}.field-2{grid-template-columns:1fr;}.page{padding-top:85px;}}
+@media(max-width:768px){nav{padding:15px 20px;}.profile-hero{flex-direction:column;gap:18px;}.field-2{grid-template-columns:1fr;}.page{padding-top:85px;}.advisor-toggle-section{padding:24px;}}
 </style>
 </head>
 <body>
@@ -82,6 +124,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   </div>
 </nav>
 <div class="page">
+
+  <!-- HERO -->
   <div class="profile-hero">
     <div class="av-wrap">
       <div class="av" id="av-circle">
@@ -94,9 +138,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="ph-info">
       <div class="ph-name" id="ph-name">—</div>
       <div class="ph-email" id="ph-email">—</div>
-      <span class="ph-role" id="ph-role">Usuario</span>
+      <div class="ph-badges">
+        <span class="ph-role" id="ph-role">Usuario</span>
+        <span class="ph-role advisor" id="ph-role-advisor" style="display:none;">✓ Advisor</span>
+      </div>
     </div>
   </div>
+
+  <!-- INFO PERSONAL -->
   <div class="section" id="sec-info">
     <div class="sec-hd">
       <div class="sec-title">Información personal</div>
@@ -133,7 +182,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       </div>
     </div>
   </div>
+
   <div class="divider"></div>
+
+  <!-- BIO -->
   <div class="section" id="sec-bio">
     <div class="sec-hd">
       <div class="sec-title">Bio</div>
@@ -152,11 +204,73 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       </div>
     </div>
   </div>
+
+  <div class="divider"></div>
+
+  <!-- ADVISOR TOGGLE — estilo Airbnb -->
+  <div class="advisor-toggle-section">
+    <div class="adv-toggle-hd">
+      <div>
+        <div class="adv-toggle-title">Conviértete en <em>Advisor</em></div>
+      </div>
+      <div class="toggle-wrap">
+        <span class="toggle-label" id="tog-off-label">Inactivo</span>
+        <label class="tog">
+          <input type="checkbox" id="advisor-toggle" onchange="onAdvisorToggle(this.checked)">
+          <span class="tog-sl"></span>
+        </label>
+        <span class="toggle-label active" id="tog-on-label" style="display:none;">Activo</span>
+      </div>
+    </div>
+    <p class="adv-toggle-sub">Activa tu modo Advisor para dar consejos y ganar dinero. Tu perfil aparecerá en el directorio de advisors y los usuarios podrán contactarte.</p>
+
+    <!-- Campos advisor — se muestran al activar -->
+    <div class="advisor-fields" id="advisor-fields">
+      <div class="field-2">
+        <div class="field">
+          <label>Especialidad principal</label>
+          <select id="adv-specialty">
+            <option value="">Selecciona</option>
+            <option>💔 Relaciones y pareja</option>
+            <option>👻 Ghosting e infidelidad</option>
+            <option>🧠 Cómo piensa el sexo opuesto</option>
+            <option>💪 Confianza y autoestima</option>
+            <option>👗 Styling y presencia</option>
+            <option>💬 Texting y comunicación</option>
+            <option>❤️‍🔥 Citas y conquista</option>
+            <option>🗣️ Desahogo real</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Precio por consulta (MXN)</label>
+          <input type="number" id="adv-price" placeholder="Ej. 150" min="50" step="10">
+        </div>
+      </div>
+      <div class="field">
+        <label>Bio como Advisor</label>
+        <textarea id="adv-bio" placeholder="¿Por qué eres bueno/a dando consejos? ¿Qué experiencia tienes?" style="min-height:110px;"></textarea>
+      </div>
+      <div class="field">
+        <label>Años de experiencia</label>
+        <div class="chips-row">
+          <button class="chip" onclick="selChip(this,'exp','Menos de 1 año')">-1 año</button>
+          <button class="chip" onclick="selChip(this,'exp','1-3 años')">1-3 años</button>
+          <button class="chip" onclick="selChip(this,'exp','3-5 años')">3-5 años</button>
+          <button class="chip" onclick="selChip(this,'exp','Más de 5 años')">+5 años</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-save-advisor" id="btn-save-advisor" onclick="saveAdvisor()">Guardar perfil de Advisor</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 <script src="supabase.js"></script>
 <script>
 let USER = null;
 let PROFILE = null;
+let ADVISOR_PROFILE = null;
 const chips = {};
 
 (async () => {
@@ -174,7 +288,10 @@ const chips = {};
       await HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
       PROFILE = await HKSK.getProfile(USER.id);
     }
+    // Cargar perfil de advisor si existe
+    ADVISOR_PROFILE = await HKSK.getAdvisorProfile(USER.id);
     renderProfile();
+    renderAdvisor();
   } finally {
     document.getElementById('loader').classList.add('gone');
   }
@@ -186,8 +303,11 @@ function renderProfile() {
   const initial = name ? name[0].toUpperCase() : USER.email[0].toUpperCase();
   document.getElementById('ph-name').textContent = name || USER.email;
   document.getElementById('ph-email').textContent = USER.email;
-  document.getElementById('ph-role').textContent = p.role === 'advisor' ? 'Advisor' : 'Usuario';
+  document.getElementById('ph-role').textContent = 'Usuario';
   document.getElementById('av-initial').textContent = initial;
+  if (p.role === 'advisor') {
+    document.getElementById('ph-role-advisor').style.display = 'inline-block';
+  }
   if (p.avatar_url) {
     document.getElementById('av-img').src = p.avatar_url;
     document.getElementById('av-img').style.display = 'block';
@@ -202,6 +322,52 @@ function renderProfile() {
   document.getElementById('inp-name').value = name;
   document.getElementById('inp-bio').value = p.bio || '';
   if (p.city) { const s = document.getElementById('inp-city'); for(let o of s.options) if(o.value===p.city){o.selected=true;break;} }
+}
+
+function renderAdvisor() {
+  const isAdvisor = PROFILE?.role === 'advisor';
+  const tog = document.getElementById('advisor-toggle');
+  tog.checked = isAdvisor;
+  document.getElementById('tog-off-label').style.display = isAdvisor ? 'none' : 'inline';
+  document.getElementById('tog-on-label').style.display = isAdvisor ? 'inline' : 'none';
+  if (isAdvisor) {
+    document.getElementById('advisor-fields').classList.add('show');
+  }
+  // Rellenar campos si ya tiene perfil de advisor
+  if (ADVISOR_PROFILE) {
+    const ap = ADVISOR_PROFILE;
+    if (ap.specialty) {
+      const sel = document.getElementById('adv-specialty');
+      for(let o of sel.options) if(o.value===ap.specialty){o.selected=true;break;}
+    }
+    if (ap.price_per_session) document.getElementById('adv-price').value = ap.price_per_session;
+    if (ap.bio) document.getElementById('adv-bio').value = ap.bio;
+    if (ap.years_experience) {
+      document.querySelectorAll('#advisor-fields .chip').forEach(c => {
+        if (c.textContent.trim().includes(ap.years_experience) || ap.years_experience.includes(c.textContent.trim())) {
+          c.classList.add('on');
+          chips['exp'] = ap.years_experience;
+        }
+      });
+    }
+  }
+}
+
+function onAdvisorToggle(checked) {
+  document.getElementById('tog-off-label').style.display = checked ? 'none' : 'inline';
+  document.getElementById('tog-on-label').style.display = checked ? 'inline' : 'none';
+  const fields = document.getElementById('advisor-fields');
+  if (checked) {
+    fields.classList.add('show');
+    showToast('¡Completa tu perfil de Advisor para aparecer en el directorio!');
+  } else {
+    fields.classList.remove('show');
+    // Desactivar modo advisor
+    HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
+    PROFILE.role = 'user';
+    document.getElementById('ph-role-advisor').style.display = 'none';
+    showToast('Modo Advisor desactivado');
+  }
 }
 
 function toggleEdit(s) { document.getElementById('sec-'+s).classList.toggle('is-editing'); }
@@ -221,6 +387,44 @@ async function saveSection(section) {
   btn.disabled = false; btn.textContent = 'Guardar';
   if (ok) { Object.assign(PROFILE, fields); renderProfile(); toggleEdit(section); showToast('✓ Cambios guardados'); }
   else showToast('Error al guardar', true);
+}
+
+async function saveAdvisor() {
+  const btn = document.getElementById('btn-save-advisor');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+
+  const specialty = document.getElementById('adv-specialty').value;
+  const price = document.getElementById('adv-price').value;
+  const bio = document.getElementById('adv-bio').value.trim();
+  const exp = chips['exp'] || ADVISOR_PROFILE?.years_experience || '';
+
+  if (!specialty || !price || !bio) {
+    showToast('Completa especialidad, precio y bio', true);
+    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
+    return;
+  }
+
+  // Guardar en advisor_profiles
+  const okAdv = await HKSK.saveAdvisorProfile(USER.id, {
+    specialty,
+    price_per_session: parseInt(price),
+    bio,
+    years_experience: exp,
+    available: true
+  });
+
+  // Actualizar rol en profiles
+  const okProfile = await HKSK.saveProfile(USER.id, USER.email, { role: 'advisor' });
+
+  btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
+
+  if (okAdv && okProfile) {
+    PROFILE.role = 'advisor';
+    document.getElementById('ph-role-advisor').style.display = 'inline-block';
+    showToast('✓ Perfil de Advisor guardado');
+  } else {
+    showToast('Error al guardar', true);
+  }
 }
 
 document.getElementById('avatar-input').addEventListener('change', async function() {
@@ -257,7 +461,7 @@ function showToast(msg, isErr=false) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast'+(isErr?' err':'');
   setTimeout(()=>t.classList.add('show'),10);
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
 </body>
