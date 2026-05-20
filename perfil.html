@@ -100,6 +100,21 @@ input:checked+.tog-sl::before{transform:translateX(22px);}
 .btn-save-advisor:hover{background:var(--gold);color:var(--night);}
 .btn-save-advisor:disabled{opacity:0.5;cursor:default;}
 
+/* PRIVACY SECTION */
+.privacy-section{background:white;border:1px solid rgba(196,122,90,0.15);border-radius:4px;padding:28px 32px;margin-bottom:44px;}
+.privacy-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.privacy-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);display:flex;align-items:center;gap:10px;}
+.privacy-sub{font-size:0.8rem;color:var(--muted);line-height:1.65;max-width:480px;}
+.privacy-toggle-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.privacy-tog-label{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+.privacy-tog-label.on{color:var(--terra);}
+.tog-sm{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+.tog-sm input{opacity:0;width:0;height:0;}
+.tog-sm-sl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.25);border-radius:22px;transition:0.3s;}
+.tog-sm-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+input:checked+.tog-sm-sl{background:var(--terra);}
+input:checked+.tog-sm-sl::before{transform:translateX(18px);}
+
 .toast{position:fixed;bottom:28px;right:28px;background:var(--night);color:var(--cream);padding:13px 22px;border-radius:2px;font-size:0.78rem;opacity:0;transform:translateY(6px);transition:all 0.28s;z-index:999;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.err{background:#7A2A1A;}
@@ -207,6 +222,22 @@ input:checked+.tog-sl::before{transform:translateX(22px);}
 
   <div class="divider"></div>
 
+  <!-- PRIVACIDAD -->
+  <div class="privacy-section">
+    <div class="privacy-hd">
+      <div class="privacy-title">🔒 Privacidad y anonimato</div>
+      <div class="privacy-toggle-wrap">
+        <span class="privacy-tog-label" id="priv-off">Desactivado</span>
+        <span class="privacy-tog-label on" id="priv-on" style="display:none;">Activo</span>
+        <label class="tog-sm">
+          <input type="checkbox" id="privacy-toggle" onchange="onPrivacyToggle(this.checked)">
+          <span class="tog-sm-sl"></span>
+        </label>
+      </div>
+    </div>
+    <p class="privacy-sub">Cuando está activo, los advisors solo ven tu alias — nunca tu nombre real ni tu foto. Tu identidad queda completamente protegida.</p>
+  </div>
+
   <!-- ADVISOR TOGGLE — estilo Airbnb -->
   <div class="advisor-toggle-section">
     <div class="adv-toggle-hd">
@@ -226,38 +257,40 @@ input:checked+.tog-sl::before{transform:translateX(22px);}
 
     <!-- Campos advisor — se muestran al activar -->
     <div class="advisor-fields" id="advisor-fields">
-      <div class="field-2">
-        <div class="field">
-          <label>Especialidad principal</label>
-          <select id="adv-specialty">
-            <option value="">Selecciona</option>
-            <option>💔 Relaciones y pareja</option>
-            <option>👻 Ghosting e infidelidad</option>
-            <option>🧠 Cómo piensa el sexo opuesto</option>
-            <option>💪 Confianza y autoestima</option>
-            <option>👗 Styling y presencia</option>
-            <option>💬 Texting y comunicación</option>
-            <option>❤️‍🔥 Citas y conquista</option>
-            <option>🗣️ Desahogo real</option>
-          </select>
+      <div class="field">
+        <label>Especialidades</label>
+        <div class="chips-row">
+          <button class="chip adv-spec" onclick="togSpec(this)">💔 Relaciones y pareja</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">👻 Ghosting e infidelidad</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">🧠 Cómo piensa el sexo opuesto</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">💪 Confianza y autoestima</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">👗 Styling y presencia</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">💬 Texting y comunicación</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">❤️‍🔥 Citas y conquista</button>
+          <button class="chip adv-spec" onclick="togSpec(this)">🗣️ Desahogo real</button>
         </div>
-        <div class="field">
-          <label>Precio por consulta (MXN)</label>
-          <input type="number" id="adv-price" placeholder="Ej. 150" min="50" step="10">
+      </div>
+      <div class="field">
+        <label>Estado civil</label>
+        <div class="chips-row">
+          <button class="chip" onclick="selChipAdv(this,'civil','Soltero/a')">Soltero/a</button>
+          <button class="chip" onclick="selChipAdv(this,'civil','En relación')">En relación</button>
+          <button class="chip" onclick="selChipAdv(this,'civil','Casado/a')">Casado/a</button>
+          <button class="chip" onclick="selChipAdv(this,'civil','Divorciado/a')">Divorciado/a</button>
+          <button class="chip" onclick="selChipAdv(this,'civil','Viudo/a')">Viudo/a</button>
         </div>
+      </div>
+      <div class="field" id="field-years" style="display:none;">
+        <label>Años en la relación / matrimonio</label>
+        <input type="number" id="adv-years" placeholder="Ej. 5" min="0" max="60">
+      </div>
+      <div class="field">
+        <label>Precio por consulta (MXN)</label>
+        <input type="number" id="adv-price" placeholder="Ej. 150" min="50" step="10">
       </div>
       <div class="field">
         <label>Bio como Advisor</label>
         <textarea id="adv-bio" placeholder="¿Por qué eres bueno/a dando consejos? ¿Qué experiencia tienes?" style="min-height:110px;"></textarea>
-      </div>
-      <div class="field">
-        <label>Años de experiencia</label>
-        <div class="chips-row">
-          <button class="chip" onclick="selChip(this,'exp','Menos de 1 año')">-1 año</button>
-          <button class="chip" onclick="selChip(this,'exp','1-3 años')">1-3 años</button>
-          <button class="chip" onclick="selChip(this,'exp','3-5 años')">3-5 años</button>
-          <button class="chip" onclick="selChip(this,'exp','Más de 5 años')">+5 años</button>
-        </div>
       </div>
       <div class="btn-row">
         <button class="btn-save-advisor" id="btn-save-advisor" onclick="saveAdvisor()">Guardar perfil de Advisor</button>
@@ -319,6 +352,12 @@ function renderProfile() {
   const bioEl = document.getElementById('view-bio');
   if (p.bio) { bioEl.textContent = p.bio; bioEl.classList.remove('empty'); }
   else { bioEl.textContent = 'Aún no has escrito una bio.'; bioEl.classList.add('empty'); }
+  // Privacy toggle
+  const privToggle = document.getElementById('privacy-toggle');
+  privToggle.checked = !!p.is_anonymous;
+  document.getElementById('priv-off').style.display = p.is_anonymous ? 'none' : 'inline';
+  document.getElementById('priv-on').style.display = p.is_anonymous ? 'inline' : 'none';
+
   document.getElementById('inp-name').value = name;
   document.getElementById('inp-bio').value = p.bio || '';
   if (p.city) { const s = document.getElementById('inp-city'); for(let o of s.options) if(o.value===p.city){o.selected=true;break;} }
@@ -337,18 +376,24 @@ function renderAdvisor() {
   if (ADVISOR_PROFILE) {
     const ap = ADVISOR_PROFILE;
     if (ap.specialty) {
-      const sel = document.getElementById('adv-specialty');
-      for(let o of sel.options) if(o.value===ap.specialty){o.selected=true;break;}
+      const specs = ap.specialty.split(', ');
+      document.querySelectorAll('.adv-spec').forEach(c => {
+        if (specs.some(s => c.textContent.trim().includes(s) || s.includes(c.textContent.trim()))) {
+          c.classList.add('on');
+        }
+      });
     }
     if (ap.price_per_session) document.getElementById('adv-price').value = ap.price_per_session;
     if (ap.bio) document.getElementById('adv-bio').value = ap.bio;
-    if (ap.years_experience) {
-      document.querySelectorAll('#advisor-fields .chip').forEach(c => {
-        if (c.textContent.trim().includes(ap.years_experience) || ap.years_experience.includes(c.textContent.trim())) {
-          c.classList.add('on');
-          chips['exp'] = ap.years_experience;
-        }
+    if (ap.civil_status) {
+      chips['civil'] = ap.civil_status;
+      document.querySelectorAll('#advisor-fields .chips-row:nth-child(2) .chip').forEach(c => {
+        if (c.textContent.trim() === ap.civil_status) c.classList.add('on');
       });
+      if (ap.civil_status === 'Casado/a' || ap.civil_status === 'En relación') {
+        document.getElementById('field-years').style.display = 'block';
+        if (ap.years_together) document.getElementById('adv-years').value = ap.years_together;
+      }
     }
   }
 }
@@ -389,31 +434,43 @@ async function saveSection(section) {
   else showToast('Error al guardar', true);
 }
 
+function togSpec(el) { el.classList.toggle('on'); }
+
+function selChipAdv(el, key, val) {
+  el.closest('.chips-row').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  chips[key] = val;
+  // Mostrar campo de años si es casado/en relación
+  const showYears = val === 'Casado/a' || val === 'En relación';
+  document.getElementById('field-years').style.display = showYears ? 'block' : 'none';
+}
+
 async function saveAdvisor() {
   const btn = document.getElementById('btn-save-advisor');
   btn.disabled = true; btn.textContent = 'Guardando…';
 
-  const specialty = document.getElementById('adv-specialty').value;
+  // Especialidades multiselect
+  const specialties = Array.from(document.querySelectorAll('.adv-spec.on')).map(c => c.textContent.trim());
   const price = document.getElementById('adv-price').value;
   const bio = document.getElementById('adv-bio').value.trim();
-  const exp = chips['exp'] || ADVISOR_PROFILE?.years_experience || '';
+  const civil = chips['civil'] || ADVISOR_PROFILE?.civil_status || '';
+  const years = document.getElementById('adv-years').value || '';
 
-  if (!specialty || !price || !bio) {
-    showToast('Completa especialidad, precio y bio', true);
+  if (specialties.length === 0 || !price || !bio) {
+    showToast('Elige al menos una especialidad, precio y bio', true);
     btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
     return;
   }
 
-  // Guardar en advisor_profiles
   const okAdv = await HKSK.saveAdvisorProfile(USER.id, {
-    specialty,
+    specialty: specialties.join(', '),
     price_per_session: parseInt(price),
     bio,
-    years_experience: exp,
+    civil_status: civil,
+    years_together: years ? parseInt(years) : null,
     available: true
   });
 
-  // Actualizar rol en profiles
   const okProfile = await HKSK.saveProfile(USER.id, USER.email, { role: 'advisor' });
 
   btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
@@ -456,6 +513,14 @@ document.getElementById('avatar-input').addEventListener('change', async functio
     showToast('Error al subir foto', true);
   }
 });
+
+function onPrivacyToggle(checked) {
+  document.getElementById('priv-off').style.display = checked ? 'none' : 'inline';
+  document.getElementById('priv-on').style.display = checked ? 'inline' : 'none';
+  HKSK.saveProfile(USER.id, USER.email, { is_anonymous: checked });
+  PROFILE.is_anonymous = checked;
+  showToast(checked ? '🔒 Anonimato activado' : 'Anonimato desactivado');
+}
 
 function showToast(msg, isErr=false) {
   const t = document.getElementById('toast');
