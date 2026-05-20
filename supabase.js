@@ -1,7 +1,7 @@
 // supabase.js — He Knows · She Knows
 
-const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidalch.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTczMjMsImV4cCI6MjA5NDc3MzMyM30.a8t8km5BIYODC6Sp_rWE8XCJ1yfHwfdcLjrpN5nBms0';
+const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
