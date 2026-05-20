@@ -462,25 +462,32 @@ async function saveAdvisor() {
     return;
   }
 
-  const okAdv = await HKSK.saveAdvisorProfile(USER.id, {
-    specialty: specialties.join(', '),
-    price_per_session: parseInt(price),
-    bio,
-    civil_status: civil,
-    years_together: years ? parseInt(years) : null,
-    available: true
-  });
-
-  const okProfile = await HKSK.saveProfile(USER.id, USER.email, { role: 'advisor' });
-
-  btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
-
-  if (okAdv && okProfile) {
-    PROFILE.role = 'advisor';
-    document.getElementById('ph-role-advisor').style.display = 'inline-block';
-    showToast('✓ Perfil de Advisor guardado');
-  } else {
-    showToast('Error al guardar', true);
+  try {
+    const res = await fetch('/.netlify/functions/save-advisor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: USER.id,
+        specialty: specialties.join(', '),
+        price_per_session: parseInt(price),
+        bio,
+        civil_status: civil,
+        years_together: years ? parseInt(years) : null,
+        available: true
+      })
+    });
+    const data = await res.json();
+    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
+    if (data.success) {
+      PROFILE.role = 'advisor';
+      document.getElementById('ph-role-advisor').style.display = 'inline-block';
+      showToast('✓ Perfil de Advisor guardado');
+    } else {
+      showToast('Error: ' + (data.error || 'No se pudo guardar'), true);
+    }
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
+    showToast('Error de conexión', true);
   }
 }
 
