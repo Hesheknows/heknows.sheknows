@@ -23,7 +23,7 @@ exports.handler = async (event) => {
     const buffer = Buffer.from(fileBase64, 'base64');
     const path = `${userId}.jpg`;
 
-    const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${path}`, {
+    const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/Avatars/${path}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -48,7 +48,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/avatars/${path}`;
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/Avatars/${path}`;
 
     // Actualizar avatar_url en profiles
     const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
