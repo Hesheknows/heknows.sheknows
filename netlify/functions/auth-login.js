@@ -5,11 +5,20 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidalch.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTczMjMsImV4cCI6MjA5NDc3MzMyM30.a8t8km5BIYODC6Sp_rWE8XCJ1yfHwfdcLjrpN5nBms0';
+  const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  // ⚠️ REEMPLAZA ESTA KEY con la "anon public" de Supabase → Settings → API
+  const SUPABASE_KEY = 'sb_secret_-rYCDZ5-BMzP13bDqvJtTg_FmtYp-7E';
 
   try {
     const { email, password } = JSON.parse(event.body);
+
+    if (!email || !password) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Email y contraseña son requeridos' })
+      };
+    }
 
     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
@@ -22,19 +31,33 @@ exports.handler = async (event) => {
     });
 
     const data = await res.json();
+    console.log('Supabase login response:', res.status, JSON.stringify(data));
+
+    if (!res.ok || data.error || data.error_description) {
+      let mensaje = data.error_description || data.msg || data.error || 'Credenciales incorrectas';
+      // Mensajes amigables
+      if (mensaje.includes('Invalid login credentials')) mensaje = 'Correo o contraseña incorrectos';
+      if (mensaje.includes('Email not confirmed')) mensaje = 'Debes confirmar tu email primero. Revisa tu bandeja.';
+      if (mensaje.includes('Email logins are disabled')) mensaje = 'Login por email desactivado en Supabase Settings';
+
+      return {
+        statusCode: 401,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: mensaje, raw: data })
+      };
+    }
 
     return {
-      statusCode: res.status,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify(data) // { access_token, refresh_token, user, ... }
     };
+
   } catch (err) {
+    console.error('auth-login error:', err);
     return {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: err.message })
     };
   }
