@@ -104,25 +104,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </div>
 <script src="supabase.js"></script>
 <script>
-let _checking = false;
 (async () => {
-  if (_checking) return;
-  _checking = true;
   try {
-    const session = await HKSK.getSession();
-    if (!session) {
+    // Leer sesión guardada por login.html
+    let session = null;
+    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+
+    if (!session?.access_token) {
       window.location.replace('/login.html');
       return;
     }
+
     const user = session.user;
     document.getElementById('nav-email').textContent = user.email;
-    const profile = await HKSK.getProfile(user.id);
-    if (!profile) await HKSK.saveProfile(user.id, user.email, { role: 'user' });
-    const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
-    document.getElementById('welcome-name').textContent = name;
-    if (!profile?.full_name || !profile?.bio) {
-      document.getElementById('alert-perfil').style.display = 'flex';
+
+    // Intentar cargar perfil
+    try {
+      const profile = await HKSK.getProfile(user.id);
+      const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
+      document.getElementById('welcome-name').textContent = name;
+      if (!profile?.full_name || !profile?.bio) {
+        document.getElementById('alert-perfil').style.display = 'flex';
+      }
+    } catch(e) {
+      document.getElementById('welcome-name').textContent = user.email.split('@')[0];
     }
+
+  } catch(e) {
+    window.location.replace('/login.html');
   } finally {
     document.getElementById('loader').classList.add('gone');
   }
