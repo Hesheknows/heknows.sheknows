@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscar Advisors · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
@@ -26,20 +25,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;color:var(--night);line-height:1.1;margin-bottom:8px;}
 .page-title em{font-style:italic;color:var(--terra);}
 .page-sub{font-size:0.9rem;color:var(--muted);font-weight:300;}
-
-/* FILTROS */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;}
 .filter-btn{padding:8px 16px;border:1px solid rgba(61,53,48,0.15);border-radius:20px;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:var(--slate);background:white;font-family:'DM Sans',sans-serif;font-weight:500;}
 .filter-btn:hover{border-color:var(--terra);color:var(--terra);}
 .filter-btn.on{background:var(--terra);border-color:var(--terra);color:white;}
-
-/* GRID DE ADVISORS */
 .advisors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .advisor-card{background:white;border:1px solid rgba(196,122,90,0.1);border-radius:3px;padding:28px 22px;transition:all 0.25s;position:relative;}
 .advisor-card:hover{border-color:var(--terra);box-shadow:0 12px 36px rgba(26,20,16,0.08);transform:translateY(-2px);}
 .ac-avail{position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:#ccc;}
 .ac-avail.yes{background:#6BAA75;}
-.ac-av{width:56px;height:56px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--terra);margin-bottom:14px;border:1.5px solid rgba(196,122,90,0.15);}
+.ac-av{width:56px;height:56px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--terra);margin-bottom:14px;border:1.5px solid rgba(196,122,90,0.15);overflow:hidden;}
 .ac-av img{width:56px;height:56px;border-radius:50%;object-fit:cover;}
 .ac-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--night);margin-bottom:4px;}
 .ac-spec{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;}
@@ -49,23 +44,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .ac-price span{font-family:'DM Sans',sans-serif;font-size:0.65rem;color:var(--muted);font-weight:400;}
 .ac-btn{background:var(--night);color:var(--cream);padding:8px 16px;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;}
 .ac-btn:hover{background:var(--terra);}
-
-/* EMPTY STATE */
 .empty{text-align:center;padding:80px 24px;}
 .empty-icon{font-size:2.5rem;margin-bottom:16px;}
 .empty-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--night);margin-bottom:8px;}
 .empty-sub{font-size:0.88rem;color:var(--muted);font-weight:300;}
-
-/* SKELETON */
 .skel{background:linear-gradient(90deg,#ede7df 25%,#e4dcd4 50%,#ede7df 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:2px;}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .skel-card{background:white;border:1px solid rgba(196,122,90,0.1);border-radius:3px;padding:28px 22px;}
 .skel-av{width:56px;height:56px;border-radius:50%;margin-bottom:14px;}
 .skel-line{height:12px;margin-bottom:10px;}
-.skel-line.w60{width:60%;}
-.skel-line.w40{width:40%;}
-.skel-line.w80{width:80%;}
-
+.skel-line.w60{width:60%;}.skel-line.w40{width:40%;}.skel-line.w80{width:80%;}
 .loader{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:200;transition:opacity 0.35s;}
 .loader.gone{opacity:0;pointer-events:none;}
 .loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
@@ -76,9 +64,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </style>
 </head>
 <body>
-
 <div class="loader" id="loader"><div class="loader-logo">He Knows · <span>She Knows</span></div></div>
-
 <nav>
   <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
@@ -86,109 +72,115 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <a href="buscar-advisors.html" class="active">Advisors</a>
     <a href="perfil.html">Mi perfil</a>
     <span class="nav-email" id="nav-email"></span>
-    <button class="btn-logout" id="btn-logout">Salir</button>
+    <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
   </div>
 </nav>
-
 <div class="page">
-
   <div class="page-hd">
     <div class="page-tag">Directorio de Advisors</div>
     <h1 class="page-title">Encuentra tu <em>perspectiva.</em></h1>
     <p class="page-sub">Personas reales verificadas. Elige por especialidad y precio.</p>
   </div>
-
-  <!-- FILTROS -->
   <div class="filters">
     <button class="filter-btn on" onclick="filterBy(this,'')">Todos</button>
     <button class="filter-btn" onclick="filterBy(this,'Relaciones y pareja')">💔 Relaciones</button>
-    <button class="filter-btn" onclick="filterBy(this,'Ghosting e infidelidad')">👻 Ghosting</button>
-    <button class="filter-btn" onclick="filterBy(this,'Cómo piensa el sexo opuesto')">🧠 Mentalidad</button>
-    <button class="filter-btn" onclick="filterBy(this,'Confianza y autoestima')">💪 Confianza</button>
-    <button class="filter-btn" onclick="filterBy(this,'Texting y comunicación')">💬 Texting</button>
-    <button class="filter-btn" onclick="filterBy(this,'Citas y conquista')">❤️‍🔥 Citas</button>
+    <button class="filter-btn" onclick="filterBy(this,'Ghosting')">👻 Ghosting</button>
+    <button class="filter-btn" onclick="filterBy(this,'sexo opuesto')">🧠 Mentalidad</button>
+    <button class="filter-btn" onclick="filterBy(this,'Confianza')">💪 Confianza</button>
+    <button class="filter-btn" onclick="filterBy(this,'Texting')">💬 Texting</button>
+    <button class="filter-btn" onclick="filterBy(this,'Citas')">❤️‍🔥 Citas</button>
   </div>
-
-  <!-- GRID -->
   <div class="advisors-grid" id="advisors-grid">
-    <!-- Skeletons mientras carga -->
-    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div><div class="skel skel-line w60"></div></div>
-    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div><div class="skel skel-line w60"></div></div>
-    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div><div class="skel skel-line w60"></div></div>
+    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
+    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
+    <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
   </div>
-
 </div>
-
 <script src="supabase.js"></script>
 <script>
 let ALL_ADVISORS = [];
-let CURRENT_FILTER = '';
 
-netlifyIdentity.on('init', async user => {
-  if (!user) { window.location.href = '/'; return; }
-  document.getElementById('nav-email').textContent = user.email;
-  document.getElementById('btn-logout').onclick = () => netlifyIdentity.logout();
-  netlifyIdentity.on('logout', () => window.location.href = '/');
-  document.getElementById('loader').classList.add('gone');
-  await loadAdvisors();
-});
+(async () => {
+  try {
+    let session = null;
+    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+    if (!session?.access_token) { window.location.replace('/login.html'); return; }
+    document.getElementById('nav-email').textContent = session.user.email;
+    await loadAdvisors();
+  } finally {
+    document.getElementById('loader').classList.add('gone');
+  }
+})();
 
 async function loadAdvisors() {
-  ALL_ADVISORS = await HKSK.getAdvisors();
-  renderAdvisors(ALL_ADVISORS);
+  const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?role=eq.advisor&select=id,full_name,avatar_url,bio,advisor_profiles(specialty,price_per_session,available,bio,civil_status)`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    ALL_ADVISORS = await res.json();
+    renderAdvisors(ALL_ADVISORS);
+  } catch(e) {
+    renderAdvisors([]);
+  }
 }
 
-function filterBy(btn, specialty) {
+function filterBy(btn, keyword) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  CURRENT_FILTER = specialty;
-  const filtered = specialty ? ALL_ADVISORS.filter(a => a.advisor_profiles?.specialty === specialty) : ALL_ADVISORS;
+  const filtered = keyword
+    ? ALL_ADVISORS.filter(a => {
+        const spec = (a.advisor_profiles?.[0]?.specialty || a.advisor_profiles?.specialty || '').toLowerCase();
+        return spec.includes(keyword.toLowerCase());
+      })
+    : ALL_ADVISORS;
   renderAdvisors(filtered);
 }
 
 function renderAdvisors(list) {
   const grid = document.getElementById('advisors-grid');
-
   if (!list || list.length === 0) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">
       <div class="empty-icon">🔍</div>
       <div class="empty-title">Aún no hay advisors disponibles</div>
-      <p class="empty-sub">Sé el primero en registrarte como Advisor y empieza a ayudar.</p>
+      <p class="empty-sub">Sé el primero en registrarte como Advisor.</p>
     </div>`;
     return;
   }
-
   grid.innerHTML = list.map(a => {
-    const adv = a.advisor_profiles || {};
+    // Supabase puede regresar advisor_profiles como array o como objeto
+    const adv = Array.isArray(a.advisor_profiles) ? (a.advisor_profiles[0] || {}) : (a.advisor_profiles || {});
     const name = a.full_name || 'Advisor';
     const initial = name[0]?.toUpperCase() || 'A';
     const available = adv.available !== false;
     const price = adv.price_per_session ? `$${adv.price_per_session}` : 'Gratis';
+    const bio = adv.bio || a.bio || 'Advisor verificado en He Knows She Knows.';
     const avatarHtml = a.avatar_url
       ? `<img src="${a.avatar_url}" alt="${name}">`
       : initial;
-
     return `<div class="advisor-card">
-      <div class="ac-avail ${available ? 'yes' : ''}" title="${available ? 'Disponible' : 'No disponible'}"></div>
+      <div class="ac-avail ${available ? 'yes' : ''}"></div>
       <div class="ac-av">${avatarHtml}</div>
       <div class="ac-name">${name}</div>
       <div class="ac-spec">${adv.specialty || 'Advisor'}</div>
-      <div class="ac-bio">${a.bio || 'Advisor verificado en He Knows She Knows.'}</div>
+      <div class="ac-bio">${bio}</div>
       <div class="ac-footer">
         <div class="ac-price">${price} <span>MXN / consulta</span></div>
         ${available
           ? `<button class="ac-btn" onclick="contactAdvisor('${a.id}')">Consultar →</button>`
-          : `<span style="font-size:0.66rem;color:var(--muted);font-style:italic;">No disponible</span>`
-        }
+          : `<span style="font-size:0.66rem;color:var(--muted);font-style:italic;">No disponible</span>`}
       </div>
     </div>`;
   }).join('');
 }
 
 function contactAdvisor(id) {
-  // Por ahora abre el modal de usuarios para pedir consejo
-  // Aquí en el futuro conectarás con el sistema de mensajería
-  alert('¡Función de contacto próximamente! Por ahora usa el formulario en la página principal.');
+  alert('¡Función de contacto próximamente!');
 }
 </script>
 </body>
