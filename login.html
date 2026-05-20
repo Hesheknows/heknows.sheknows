@@ -152,7 +152,7 @@ async function doRegister() {
         btn.disabled = false; btn.textContent = 'Crear cuenta →';
       }
     } else {
-      errEl.textContent = data.msg || data.error_description || 'Error al crear cuenta.';
+      errEl.textContent = data.error || data.msg || data.error_description || JSON.stringify(data);
       btn.disabled = false; btn.textContent = 'Crear cuenta →';
     }
   } catch(e) {
