@@ -1,636 +1,901 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi Perfil · He Knows · She Knows</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mi Perfil — He Knows She Knows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="icons.js"></script>
 <style>
-:root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);min-height:100vh;}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);text-decoration:none;}
-.nav-logo span{color:var(--terra);font-style:italic;}
-.nav-links{display:flex;gap:20px;align-items:center;}
-.nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
-.nav-links a:hover{color:var(--terra);}
-.nav-email{font-size:0.72rem;color:var(--muted);}
-.btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.btn-logout:hover{background:var(--terra);color:white;}
-.page{padding:110px 0 80px;max-width:760px;margin:0 auto;padding-left:24px;padding-right:24px;}
-.profile-hero{display:flex;align-items:flex-start;gap:32px;margin-bottom:52px;padding-bottom:40px;border-bottom:1px solid rgba(196,122,90,0.14);}
-.av-wrap{position:relative;flex-shrink:0;}
-.av{width:110px;height:110px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.4rem;color:var(--terra);border:2px solid rgba(196,122,90,0.2);}
-.av img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:2px solid rgba(196,122,90,0.2);}
-.av-btn{position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--night);border:2px solid var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:white;transition:background 0.2s;}
-.av-btn:hover{background:var(--terra);}
-#avatar-input{display:none;}
-.ph-info{flex:1;padding-top:4px;}
-.ph-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;line-height:1.1;margin-bottom:6px;}
-.ph-email{font-size:0.78rem;color:var(--muted);margin-bottom:14px;}
-.ph-badges{display:flex;gap:8px;flex-wrap:wrap;}
-.ph-role{display:inline-block;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:600;background:rgba(196,122,90,0.1);color:var(--terra);}
-.ph-role.advisor{background:var(--night);color:var(--gold);}
-.section{margin-bottom:44px;}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;}
-.sec-label{font-size:0.6rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:6px;}
-.view-txt{font-size:0.93rem;line-height:1.75;color:var(--slate);font-weight:300;}
-.view-txt.empty{color:var(--muted);font-style:italic;font-size:0.84rem;}
-.edit-block{display:none;}
-.is-editing .edit-block{display:block;}
-.is-editing .view-block{display:none;}
-.field{margin-bottom:18px;}
-.field label{display:block;font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px;}
-.field input,.field textarea,.field select{width:100%;padding:11px 15px;border:1px solid rgba(61,53,48,0.15);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;transition:border-color 0.2s;}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--terra);}
-.field textarea{resize:vertical;min-height:96px;line-height:1.65;}
-.field-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.btn-edit{background:transparent;border:1px solid rgba(61,53,48,0.18);color:var(--slate);padding:8px 18px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;}
-.btn-edit:hover{border-color:var(--terra);color:var(--terra);}
-.btn-save{background:var(--night);color:var(--cream);padding:11px 26px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;}
-.btn-save:hover{background:var(--terra);}
-.btn-save:disabled{opacity:0.5;cursor:default;}
-.btn-cancel{background:transparent;border:none;color:var(--muted);padding:11px 16px;font-size:0.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.2s;}
-.btn-cancel:hover{color:var(--slate);}
-.btn-row{display:flex;align-items:center;gap:8px;margin-top:20px;}
-.divider{height:1px;background:rgba(196,122,90,0.12);margin:36px 0;}
-.chips-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-.chip{padding:5px 13px;border:1px solid rgba(196,122,90,0.22);border-radius:20px;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:var(--slate);background:white;}
-.chip.on{background:var(--terra);border-color:var(--terra);color:white;}
+:root {
+  --cream: #F7F3EE;
+  --terra: #C47A5A;
+  --night: #1A1410;
+  --muted: #9A8880;
+  --gold:  #C9A96E;
+  --blush: #E8C4B0;
+  --white: #FFFFFF;
+  --border: #EDE7DF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  background: var(--cream);
+  color: var(--night);
+  min-height: 100vh;
+}
 
-/* ADVISOR TOGGLE SECTION */
-.advisor-toggle-section{background:var(--night);border-radius:4px;padding:32px;margin-bottom:44px;position:relative;overflow:hidden;}
-.advisor-toggle-section::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(196,122,90,0.08);}
-.adv-toggle-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.adv-toggle-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--cream);}
-.adv-toggle-title em{font-style:italic;color:var(--gold);}
-.adv-toggle-sub{font-size:0.78rem;color:rgba(247,243,238,0.45);line-height:1.6;max-width:440px;margin-bottom:20px;}
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300; font-size: 20px;
+  color: var(--terra); text-decoration: none; letter-spacing: 0.02em;
+}
+.nav-back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--terra); }
 
-/* Toggle switch */
-.toggle-wrap{display:flex;align-items:center;gap:12px;}
-.toggle-label{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.5);font-weight:500;}
-.toggle-label.active{color:var(--gold);}
-.tog{position:relative;width:48px;height:26px;cursor:pointer;}
-.tog input{opacity:0;width:0;height:0;}
-.tog-sl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.3);border-radius:26px;transition:0.3s;}
-.tog-sl::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;}
-input:checked+.tog-sl{background:var(--terra);}
-input:checked+.tog-sl::before{transform:translateX(22px);}
+/* LAYOUT */
+main {
+  max-width: 900px; margin: 0 auto;
+  padding: 32px 20px 80px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 700px) {
+  main { grid-template-columns: 1fr; }
+}
 
-/* Advisor fields section */
-.advisor-fields{display:none;margin-top:28px;padding-top:28px;border-top:1px solid rgba(201,169,110,0.15);}
-.advisor-fields.show{display:block;}
-.advisor-fields .field label{color:rgba(247,243,238,0.5);}
-.advisor-fields .field input,
-.advisor-fields .field textarea,
-.advisor-fields .field select{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
-.advisor-fields .field input::placeholder,
-.advisor-fields .field textarea::placeholder{color:rgba(247,243,238,0.25);}
-.advisor-fields .field input:focus,
-.advisor-fields .field textarea:focus,
-.advisor-fields .field select:focus{border-color:var(--gold);}
-.advisor-fields .chip{border-color:rgba(201,169,110,0.2);color:rgba(247,243,238,0.6);background:transparent;}
-.advisor-fields .chip.on{background:var(--terra);border-color:var(--terra);color:white;}
-.advisor-fields .sec-label{color:var(--gold);}
-.advisor-fields .field select option{background:var(--night);color:var(--cream);}
-.btn-save-advisor{background:var(--terra);color:white;padding:11px 26px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;}
-.btn-save-advisor:hover{background:var(--gold);color:var(--night);}
-.btn-save-advisor:disabled{opacity:0.5;cursor:default;}
+/* ═══════════════════════════════════
+   COLUMNA IZQUIERDA — VISTA PREVIA PÚBLICA
+══════════════════════════════════ */
+.preview-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: sticky; top: 72px;
+}
+.preview-header {
+  background: var(--terra);
+  padding: 28px 24px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  position: relative;
+}
+.preview-label {
+  position: absolute; top: 10px; right: 12px;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6); text-transform: uppercase;
+}
+.preview-avatar-wrap {
+  width: 80px; height: 80px; position: relative;
+}
+.preview-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.4);
+  background: var(--blush);
+}
+.preview-avatar-placeholder {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.preview-avatar-placeholder svg { opacity: 0.6; }
+.preview-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300; font-size: 22px;
+  color: var(--white); text-align: center;
+}
+.preview-city {
+  font-size: 12px; color: rgba(255,255,255,0.65);
+  display: flex; align-items: center; gap: 4px;
+}
+.preview-body { padding: 20px 24px; }
+.preview-bio {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.7; font-style: italic;
+  min-height: 40px;
+}
+.preview-bio.empty { color: var(--border); }
+.preview-divider {
+  height: 1px; background: var(--border);
+  margin: 16px 0;
+}
+.preview-specialties {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 12px;
+}
+.specialty-pill {
+  font-size: 11px; font-weight: 400;
+  background: var(--cream); color: var(--terra);
+  border: 1px solid var(--blush);
+  padding: 3px 10px; border-radius: 20px;
+}
+.preview-meta {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.preview-meta-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--muted);
+}
+.preview-meta-row span:last-child { color: var(--night); font-weight: 400; }
+.preview-price {
+  margin-top: 16px;
+  background: var(--cream); border-radius: 12px;
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.preview-price-label { font-size: 12px; color: var(--muted); }
+.preview-price-amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; color: var(--terra);
+}
+.preview-price-unit { font-size: 11px; color: var(--muted); }
+.anon-badge {
+  margin-top: 12px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--muted);
+  background: #FFF8F5; border: 1px solid var(--blush);
+  border-radius: 8px; padding: 6px 10px;
+}
 
-/* SUBSCRIPTION SECTION */
-.sub-section{background:white;border:1px solid rgba(196,122,90,0.15);border-radius:4px;padding:28px 32px;margin-bottom:44px;}
-.sub-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:8px;}
-.sub-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);}
-.sub-badge{display:inline-block;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:600;}
-.sub-badge.free{background:rgba(154,136,128,0.12);color:var(--muted);}
-.sub-badge.premium{background:rgba(196,122,90,0.12);color:var(--terra);}
-.sub-badge.elite{background:var(--night);color:var(--gold);}
-.sub-badge.advisor_mensual{background:rgba(196,122,90,0.12);color:var(--terra);}
-.sub-badge.advisor_anual{background:var(--night);color:var(--gold);}
-.sub-info{font-size:0.8rem;color:var(--muted);margin-bottom:20px;line-height:1.6;}
-.sub-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-upgrade{background:var(--terra);color:white;padding:9px 20px;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;transition:background 0.2s;text-decoration:none;display:inline-block;}
-.btn-upgrade:hover{background:var(--night);}
-.btn-cancel-sub{background:transparent;border:1px solid rgba(61,53,48,0.2);color:var(--muted);padding:9px 20px;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s;}
-.btn-cancel-sub:hover{border-color:var(--terra);color:var(--terra);}
+/* ═══════════════════════════════════
+   COLUMNA DERECHA — SETTINGS
+══════════════════════════════════ */
+.settings-col { display: flex; flex-direction: column; gap: 16px; }
 
-/* PRIVACY SECTION */
-.privacy-section{background:white;border:1px solid rgba(196,122,90,0.15);border-radius:4px;padding:28px 32px;margin-bottom:44px;}
-.privacy-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.privacy-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);display:flex;align-items:center;gap:10px;}
-.privacy-sub{font-size:0.8rem;color:var(--muted);line-height:1.65;max-width:480px;}
-.privacy-toggle-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.privacy-tog-label{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;}
-.privacy-tog-label.on{color:var(--terra);}
-.tog-sm{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
-.tog-sm input{opacity:0;width:0;height:0;}
-.tog-sm-sl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(154,136,128,0.25);border-radius:22px;transition:0.3s;}
-.tog-sm-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
-input:checked+.tog-sm-sl{background:var(--terra);}
-input:checked+.tog-sm-sl::before{transform:translateX(18px);}
+/* Barra compacta superior */
+.settings-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.bar-plan { display: flex; align-items: center; gap: 10px; }
+.plan-badge {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+}
+.plan-free    { background: #F0EDEA; color: var(--muted); }
+.plan-premium { background: #FFF3E0; color: #B06000; }
+.plan-elite   { background: var(--night); color: var(--gold); }
+.bar-plan-name { font-size: 13px; color: var(--night); }
+.bar-plan-name span { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.bar-actions { display: flex; align-items: center; gap: 8px; }
+.btn-sm {
+  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
+  padding: 6px 14px; border-radius: 20px; cursor: pointer;
+  transition: all 0.2s; border: 1px solid transparent;
+}
+.btn-upgrade { background: var(--terra); color: var(--white); }
+.btn-upgrade:hover { background: #b5694a; }
+.btn-outline { background: transparent; color: var(--terra); border-color: var(--blush); }
+.btn-outline:hover { border-color: var(--terra); }
+.btn-danger  { background: transparent; color: #c0392b; border-color: #f5c6c6; }
+.btn-danger:hover  { background: #fff0f0; }
+.privacy-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.toggle {
+  width: 36px; height: 20px; background: var(--border); border-radius: 20px;
+  position: relative; cursor: pointer; border: none; outline: none;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle.on { background: var(--terra); }
+.toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--white); transition: transform 0.2s;
+}
+.toggle.on::after { transform: translateX(16px); }
 
-.toast{position:fixed;bottom:28px;right:28px;background:var(--night);color:var(--cream);padding:13px 22px;border-radius:2px;font-size:0.78rem;opacity:0;transform:translateY(6px);transition:all 0.28s;z-index:999;pointer-events:none;}
-.toast.show{opacity:1;transform:translateY(0);}
-.toast.err{background:#7A2A1A;}
-.loader{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:200;transition:opacity 0.35s;}
-.loader.gone{opacity:0;pointer-events:none;}
-.loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
-.loader-logo span{color:var(--terra);font-style:italic;}
-@keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
-@media(max-width:768px){nav{padding:15px 20px;}.profile-hero{flex-direction:column;gap:18px;}.field-2{grid-template-columns:1fr;}.page{padding-top:85px;}.advisor-toggle-section{padding:24px;}}
+/* Secciones de edición */
+.settings-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.section-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-weight: 400; color: var(--night);
+}
+.section-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+.form-input, .form-textarea, .form-select {
+  font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px;
+  color: var(--night);
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  outline: none; transition: border-color 0.2s; width: 100%;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--terra);
+}
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Avatar upload */
+.avatar-area {
+  display: flex; align-items: center; gap: 16px;
+}
+.avatar-preview {
+  width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+  object-fit: cover; background: var(--blush);
+  border: 2px solid var(--blush);
+}
+.avatar-preview-placeholder {
+  width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+  background: var(--cream); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+.avatar-info { display: flex; flex-direction: column; gap: 6px; }
+.btn-avatar {
+  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
+  padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  background: var(--cream); color: var(--terra);
+  border: 1px solid var(--blush); transition: border-color 0.2s;
+  display: inline-block;
+}
+.btn-avatar:hover { border-color: var(--terra); }
+#avatar-file { display: none; }
+.avatar-hint { font-size: 11px; color: var(--muted); }
+
+/* Especialidades multiselect */
+.specialties-grid {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.spec-chip {
+  font-size: 12px; font-weight: 400;
+  padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--cream); color: var(--muted);
+  transition: all 0.15s; user-select: none;
+}
+.spec-chip.selected {
+  background: var(--terra); color: var(--white); border-color: var(--terra);
+}
+
+/* Advisor colapsado */
+.advisor-collapsed {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.advisor-collapsed-header {
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+}
+.advisor-status {
+  display: flex; align-items: center; gap: 10px;
+}
+.advisor-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #27ae60;
+}
+.advisor-dot.inactive { background: var(--muted); }
+.advisor-collapsed-expand {
+  font-size: 11px; color: var(--terra); font-weight: 400;
+  background: none; border: none; cursor: pointer; padding: 0;
+}
+.advisor-collapsed-body {
+  padding: 0 20px 20px;
+  display: none;
+}
+.advisor-collapsed-body.open { display: block; }
+
+/* Botón guardar principal */
+.btn-save {
+  font-family: 'DM Sans', sans-serif; font-weight: 400;
+  font-size: 14px; padding: 12px 28px;
+  background: var(--terra); color: var(--white);
+  border: none; border-radius: 12px; cursor: pointer;
+  transition: background 0.2s; width: 100%;
+}
+.btn-save:hover { background: #b5694a; }
+.btn-save:disabled { background: var(--blush); cursor: not-allowed; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--night); color: var(--white);
+  font-size: 13px; padding: 10px 20px; border-radius: 30px;
+  opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: #c0392b; }
+
+/* Loading */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px; color: var(--muted); font-size: 14px;
+}
 </style>
 </head>
 <body>
-<div class="loader" id="loader"><div class="loader-logo">He Knows · <span>She Knows</span></div></div>
-<div class="toast" id="toast"></div>
+
 <nav>
-  <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
-  <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="buscar-advisors.html">Advisors</a>
-    <span class="nav-email" id="nav-email"></span>
-    <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
-  </div>
+  <a href="index.html" class="nav-logo">he knows she knows</a>
+  <a href="dashboard.html" class="nav-back">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Dashboard
+  </a>
 </nav>
-<div class="page">
 
-  <!-- HERO -->
-  <div class="profile-hero">
-    <div class="av-wrap">
-      <div class="av" id="av-circle">
-        <span id="av-initial">?</span>
-        <img id="av-img" style="display:none;" alt="Avatar">
-      </div>
-      <button class="av-btn" onclick="document.getElementById('avatar-input').click()">✎</button>
-      <input type="file" id="avatar-input" accept="image/*">
-    </div>
-    <div class="ph-info">
-      <div class="ph-name" id="ph-name">—</div>
-      <div class="ph-email" id="ph-email">—</div>
-      <div class="ph-badges">
-        <span class="ph-role" id="ph-role">Usuario</span>
-        <span class="ph-role advisor" id="ph-role-advisor" style="display:none;">✓ Advisor</span>
-      </div>
-    </div>
-  </div>
+<div id="loading" class="loading">Cargando perfil…</div>
 
-  <!-- INFO PERSONAL -->
-  <div class="section" id="sec-info">
-    <div class="sec-hd">
-      <div class="sec-title">Información personal</div>
-      <button class="btn-edit" onclick="toggleEdit('info')">Editar</button>
+<main id="main-content" style="display:none">
+
+  <!-- COLUMNA IZQUIERDA — VISTA PREVIA -->
+  <aside>
+    <div class="preview-card">
+      <div class="preview-header">
+        <span class="preview-label">Así te ven los demás</span>
+        <div class="preview-avatar-wrap">
+          <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
+          <div id="preview-avatar-ph" class="preview-avatar-placeholder">
+            <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+              <circle cx="22" cy="16" r="8" fill="rgba(255,255,255,0.4)"/>
+              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+        </div>
+        <div id="preview-name" class="preview-name">Tu nombre</div>
+        <div id="preview-city" class="preview-city" style="display:none">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1C5.2 1 3 3.2 3 6C3 10 8 15 8 15C8 15 13 10 13 6C13 3.2 10.8 1 8 1ZM8 8C6.9 8 6 7.1 6 6C6 4.9 6.9 4 8 4C9.1 4 10 4.9 10 6C10 7.1 9.1 8 8 8Z" fill="rgba(255,255,255,0.6)"/>
+          </svg>
+          <span id="preview-city-text"></span>
+        </div>
+      </div>
+      <div class="preview-body">
+        <p id="preview-bio" class="preview-bio empty">Aquí aparecerá tu bio…</p>
+        <div class="preview-divider"></div>
+        <div id="preview-specialties" class="preview-specialties" style="display:none"></div>
+        <div id="preview-advisor-meta" class="preview-meta" style="display:none">
+          <div class="preview-meta-row">
+            <span>Estado civil</span>
+            <span id="pm-civil">—</span>
+          </div>
+          <div class="preview-meta-row">
+            <span>Experiencia</span>
+            <span id="pm-exp">—</span>
+          </div>
+        </div>
+        <div id="preview-price" class="preview-price" style="display:none">
+          <div>
+            <div class="preview-price-label">Consulta</div>
+            <div class="preview-price-amount" id="pm-price">$0</div>
+            <div class="preview-price-unit">MXN / sesión</div>
+          </div>
+          <div id="preview-icon-desahogo"></div>
+        </div>
+        <div id="preview-anon" class="anon-badge" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="7" stroke="var(--muted)" stroke-width="1.2"/>
+            <path d="M5 8C5 6.3 6.3 5 8 5C9.7 5 11 6.3 11 8C11 9.7 9.7 11 8 11C6.3 11 5 9.7 5 8Z" stroke="var(--muted)" stroke-width="1.2"/>
+          </svg>
+          Modo anónimo activo
+        </div>
+      </div>
     </div>
-    <div class="view-block">
-      <div class="sec-label">Nombre</div><div class="view-txt" id="view-name">—</div>
-      <div style="height:18px;"></div>
-      <div class="sec-label">Ciudad</div><div class="view-txt" id="view-city">—</div>
-      <div style="height:18px;"></div>
-      <div class="sec-label">Me identifico como</div><div class="view-txt" id="view-gender">—</div>
+  </aside>
+
+  <!-- COLUMNA DERECHA — SETTINGS -->
+  <div class="settings-col">
+
+    <!-- Barra compacta de suscripción + privacidad -->
+    <div class="settings-bar">
+      <div class="bar-plan">
+        <span id="plan-badge" class="plan-badge plan-free">Free</span>
+        <div>
+          <div id="bar-plan-name" class="bar-plan-name">Explorador <span>· plan actual</span></div>
+        </div>
+      </div>
+      <div class="bar-actions" id="bar-actions"></div>
+      <div class="privacy-toggle">
+        <button id="anon-toggle" class="toggle" title="Modo anónimo" onclick="toggleAnon()"></button>
+        <span>Anónimo</span>
+      </div>
     </div>
-    <div class="edit-block">
-      <div class="field-2">
-        <div class="field"><label>Nombre</label><input type="text" id="inp-name" placeholder="Tu nombre"></div>
-        <div class="field"><label>Ciudad</label>
-          <select id="inp-city">
-            <option value="">Selecciona</option>
-            <option>CDMX</option><option>Guadalajara</option><option>Monterrey</option>
-            <option>Puebla</option><option>Tijuana</option><option>Querétaro</option><option>Otra</option>
+
+    <!-- Datos personales -->
+    <div class="settings-section">
+      <div class="section-head">
+        <span class="section-title">Datos personales</span>
+      </div>
+      <div class="section-body">
+
+        <!-- Avatar -->
+        <div class="avatar-area">
+          <img id="edit-avatar-img" class="avatar-preview" style="display:none"/>
+          <div id="edit-avatar-ph" class="avatar-preview-placeholder">
+            <svg width="28" height="28" viewBox="0 0 44 44" fill="none">
+              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
+              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
+            </svg>
+          </div>
+          <div class="avatar-info">
+            <label class="btn-avatar" for="avatar-file">Cambiar foto</label>
+            <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
+            <span class="avatar-hint">JPG o PNG, máx. 2MB</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" id="full-name" class="form-input" placeholder="Tu nombre"
+              oninput="syncPreview()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ciudad</label>
+            <input type="text" id="city" class="form-input" placeholder="Ciudad, País"
+              oninput="syncPreview()"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Género</label>
+          <select id="gender" class="form-select">
+            <option value="">Prefiero no decir</option>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="otro">Otro</option>
           </select>
         </div>
-      </div>
-      <div class="field"><label>Me identifico como</label>
-        <div class="chips-row">
-          <button class="chip" onclick="selChip(this,'gender','Hombre')">Hombre</button>
-          <button class="chip" onclick="selChip(this,'gender','Mujer')">Mujer</button>
-          <button class="chip" onclick="selChip(this,'gender','Prefiero no decir')">Prefiero no decir</button>
+
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          <textarea id="bio" class="form-textarea"
+            placeholder="Cuéntanos un poco sobre ti…"
+            oninput="syncPreview()"></textarea>
         </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-save" onclick="saveSection('info')">Guardar</button>
-        <button class="btn-cancel" onclick="toggleEdit('info')">Cancelar</button>
+
+        <button class="btn-save" onclick="saveProfile()">Guardar cambios</button>
       </div>
     </div>
-  </div>
 
-  <div class="divider"></div>
-
-  <!-- BIO -->
-  <div class="section" id="sec-bio">
-    <div class="sec-hd">
-      <div class="sec-title">Bio</div>
-      <button class="btn-edit" onclick="toggleEdit('bio')">Editar</button>
-    </div>
-    <div class="view-block">
-      <div class="view-txt empty" id="view-bio">Aún no has escrito una bio.</div>
-    </div>
-    <div class="edit-block">
-      <div class="field"><label>Cuéntanos algo sobre ti</label>
-        <textarea id="inp-bio" placeholder="¿Qué buscas en la plataforma?"></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn-save" onclick="saveSection('bio')">Guardar</button>
-        <button class="btn-cancel" onclick="toggleEdit('bio')">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- SUSCRIPCIÓN -->
-  <div class="sub-section" id="sub-section">
-    <div class="sub-hd">
-      <div class="sub-title">💳 Mi suscripción</div>
-      <span class="sub-badge free" id="sub-badge">Free</span>
-    </div>
-    <div class="sub-info" id="sub-info">Sin suscripción activa.</div>
-    <div class="sub-actions" id="sub-actions"></div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- PRIVACIDAD -->
-  <div class="privacy-section">
-    <div class="privacy-hd">
-      <div class="privacy-title">🔒 Privacidad y anonimato</div>
-      <div class="privacy-toggle-wrap">
-        <span class="privacy-tog-label" id="priv-off">Desactivado</span>
-        <span class="privacy-tog-label on" id="priv-on" style="display:none;">Activo</span>
-        <label class="tog-sm">
-          <input type="checkbox" id="privacy-toggle" onchange="onPrivacyToggle(this.checked)">
-          <span class="tog-sm-sl"></span>
-        </label>
-      </div>
-    </div>
-    <p class="privacy-sub">Cuando está activo, los advisors solo ven tu alias — nunca tu nombre real ni tu foto. Tu identidad queda completamente protegida.</p>
-  </div>
-
-  <!-- ADVISOR TOGGLE — estilo Airbnb -->
-  <div class="advisor-toggle-section">
-    <div class="adv-toggle-hd">
-      <div>
-        <div class="adv-toggle-title">Conviértete en <em>Advisor</em></div>
-      </div>
-      <div class="toggle-wrap">
-        <span class="toggle-label" id="tog-off-label">Inactivo</span>
-        <label class="tog">
-          <input type="checkbox" id="advisor-toggle" onchange="onAdvisorToggle(this.checked)">
-          <span class="tog-sl"></span>
-        </label>
-        <span class="toggle-label active" id="tog-on-label" style="display:none;">Activo</span>
-      </div>
-    </div>
-    <p class="adv-toggle-sub">Activa tu modo Advisor para dar consejos y ganar dinero. Tu perfil aparecerá en el directorio de advisors y los usuarios podrán contactarte.</p>
-
-    <!-- Campos advisor — se muestran al activar -->
-    <div class="advisor-fields" id="advisor-fields">
-      <div class="field">
-        <label>Especialidades</label>
-        <div class="chips-row">
-          <button class="chip adv-spec" onclick="togSpec(this)">💔 Relaciones y pareja</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">👻 Ghosting e infidelidad</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">🧠 Cómo piensa el sexo opuesto</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">💪 Confianza y autoestima</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">👗 Styling y presencia</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">💬 Texting y comunicación</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">❤️‍🔥 Citas y conquista</button>
-          <button class="chip adv-spec" onclick="togSpec(this)">🗣️ Desahogo real</button>
+    <!-- Perfil de Advisor (colapsado si ya es advisor) -->
+    <div class="advisor-collapsed" id="advisor-section">
+      <div class="advisor-collapsed-header" onclick="toggleAdvisorPanel()">
+        <div class="advisor-status">
+          <div class="advisor-dot inactive" id="advisor-dot"></div>
+          <div>
+            <div class="section-title" id="advisor-section-title">Ser advisor</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px" id="advisor-section-sub">
+              Ayuda a otros y gana dinero
+            </div>
+          </div>
         </div>
+        <button class="advisor-collapsed-expand" id="advisor-expand-btn">Configurar →</button>
       </div>
-      <div class="field">
-        <label>Estado civil</label>
-        <div class="chips-row">
-          <button class="chip" onclick="selChipAdv(this,'civil','Soltero/a')">Soltero/a</button>
-          <button class="chip" onclick="selChipAdv(this,'civil','En relación')">En relación</button>
-          <button class="chip" onclick="selChipAdv(this,'civil','Casado/a')">Casado/a</button>
-          <button class="chip" onclick="selChipAdv(this,'civil','Divorciado/a')">Divorciado/a</button>
-          <button class="chip" onclick="selChipAdv(this,'civil','Viudo/a')">Viudo/a</button>
+      <div class="advisor-collapsed-body" id="advisor-panel">
+
+        <div class="form-group">
+          <label class="form-label">Activo como advisor</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <button id="advisor-available-toggle" class="toggle" onclick="toggleAdvisorAvailable()"></button>
+            <span id="advisor-available-label" style="font-size:13px;color:var(--muted)">Disponible</span>
+          </div>
         </div>
-      </div>
-      <div class="field" id="field-years" style="display:none;">
-        <label>Años en la relación / matrimonio</label>
-        <input type="number" id="adv-years" placeholder="Ej. 5" min="0" max="60">
-      </div>
-      <div class="field">
-        <label>Precio por consulta (MXN)</label>
-        <input type="number" id="adv-price" placeholder="Ej. 150" min="50" step="10">
-      </div>
-      <div class="field">
-        <label>Bio como Advisor</label>
-        <textarea id="adv-bio" placeholder="¿Por qué eres bueno/a dando consejos? ¿Qué experiencia tienes?" style="min-height:110px;"></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn-save-advisor" id="btn-save-advisor" onclick="saveAdvisor()">Guardar perfil de Advisor</button>
+
+        <div class="form-group">
+          <label class="form-label">Bio de advisor</label>
+          <textarea id="advisor-bio" class="form-textarea"
+            placeholder="Cuéntales qué los hace especial…"
+            oninput="syncPreview()"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Especialidades</label>
+          <div class="specialties-grid" id="specialties-grid"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Estado civil</label>
+            <select id="civil-status" class="form-select" onchange="syncPreview()">
+              <option value="">Selecciona</option>
+              <option value="Soltero/a">Soltero/a</option>
+              <option value="En relación">En relación</option>
+              <option value="Casado/a">Casado/a</option>
+              <option value="Divorciado/a">Divorciado/a</option>
+              <option value="Viudo/a">Viudo/a</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Años en relación/matrimonio</label>
+            <input type="number" id="years-together" class="form-input"
+              min="0" max="60" placeholder="0" onchange="syncPreview()"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Precio por sesión (MXN)</label>
+          <input type="number" id="price" class="form-input"
+            min="0" step="50" placeholder="500" onchange="syncPreview()"/>
+        </div>
+
+        <button class="btn-save" onclick="saveAdvisor()">Guardar perfil de advisor</button>
       </div>
     </div>
-  </div>
 
-</div>
-<script src="supabase.js"></script>
+  </div><!-- /settings-col -->
+</main>
+
+<div id="toast" class="toast"></div>
+
 <script>
-let USER = null;
-let PROFILE = null;
-let ADVISOR_PROFILE = null;
-const chips = {};
+const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-(async () => {
-  try {
-    let session = null;
-    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
-    if (!session?.access_token) {
-      window.location.replace('/login.html');
-      return;
-    }
-    USER = session.user;
-    document.getElementById('nav-email').textContent = USER.email;
-    PROFILE = await HKSK.getProfile(USER.id);
-    if (!PROFILE) {
-      await HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
-      PROFILE = await HKSK.getProfile(USER.id);
-    }
-    // Cargar perfil de advisor si existe
-    ADVISOR_PROFILE = await HKSK.getAdvisorProfile(USER.id);
-    renderProfile();
-    renderSubscription();
-    renderAdvisor();
-  } finally {
-    document.getElementById('loader').classList.add('gone');
-  }
-})();
+const SPECIALTIES = [
+  'Relaciones', 'Ghosting', 'Infidelidad', 'Texting',
+  'Citas', 'Confianza', 'Desahogo', 'Cómo piensa el sexo opuesto',
+  'Styling', 'Sexualidad', 'Divorcio', 'Autoestima'
+];
 
-function renderProfile() {
-  const p = PROFILE || {};
-  const name = p.full_name || '';
-  const initial = name ? name[0].toUpperCase() : USER.email[0].toUpperCase();
-  document.getElementById('ph-name').textContent = name || USER.email;
-  document.getElementById('ph-email').textContent = USER.email;
-  document.getElementById('ph-role').textContent = 'Usuario';
-  document.getElementById('av-initial').textContent = initial;
-  if (p.role === 'advisor') {
-    document.getElementById('ph-role-advisor').style.display = 'inline-block';
-  }
-  if (p.avatar_url) {
-    document.getElementById('av-img').src = p.avatar_url;
-    document.getElementById('av-img').style.display = 'block';
-    document.getElementById('av-initial').style.display = 'none';
-  }
-  document.getElementById('view-name').textContent = name || '—';
-  document.getElementById('view-city').textContent = p.city || '—';
-  document.getElementById('view-gender').textContent = p.gender || '—';
-  const bioEl = document.getElementById('view-bio');
-  if (p.bio) { bioEl.textContent = p.bio; bioEl.classList.remove('empty'); }
-  else { bioEl.textContent = 'Aún no has escrito una bio.'; bioEl.classList.add('empty'); }
-  // Privacy toggle
-  const privToggle = document.getElementById('privacy-toggle');
-  privToggle.checked = !!p.is_anonymous;
-  document.getElementById('priv-off').style.display = p.is_anonymous ? 'none' : 'inline';
-  document.getElementById('priv-on').style.display = p.is_anonymous ? 'inline' : 'none';
+let session = null;
+let profile = null;
+let advisorProfile = null;
+let selectedSpecs = [];
+let isAdvisorAvailable = true;
+let isAnon = false;
 
-  document.getElementById('inp-name').value = name;
-  document.getElementById('inp-bio').value = p.bio || '';
-  if (p.city) { const s = document.getElementById('inp-city'); for(let o of s.options) if(o.value===p.city){o.selected=true;break;} }
+// ── INIT ────────────────────────────────────
+async function init() {
+  const raw = localStorage.getItem('hksk-session');
+  if (!raw) return window.location.href = 'login.html';
+  session = JSON.parse(raw);
+
+  await loadProfile();
+  buildSpecialtyGrid();
+
+  if (HKSK) {
+    document.getElementById('preview-icon-desahogo').innerHTML = HKSK.icons.desahogo
+      .replace('width="44"', 'width="32"').replace('height="44"', 'height="32"');
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
 }
 
-function renderAdvisor() {
-  const isAdvisor = PROFILE?.role === 'advisor';
-  const tog = document.getElementById('advisor-toggle');
-  tog.checked = isAdvisor;
-  document.getElementById('tog-off-label').style.display = isAdvisor ? 'none' : 'inline';
-  document.getElementById('tog-on-label').style.display = isAdvisor ? 'inline' : 'none';
-  if (isAdvisor) {
-    document.getElementById('advisor-fields').classList.add('show');
+// ── CARGAR PERFIL ────────────────────────────
+async function loadProfile() {
+  const { data: p } = await sb.from('profiles')
+    .select('*').eq('id', session.user.id).single();
+  profile = p || {};
+
+  document.getElementById('full-name').value = profile.full_name || '';
+  document.getElementById('bio').value = profile.bio || '';
+  document.getElementById('city').value = profile.city || '';
+  document.getElementById('gender').value = profile.gender || '';
+  isAnon = !!profile.is_anonymous;
+
+  if (profile.avatar_url) setAvatarUI(profile.avatar_url);
+  setPlanUI(profile.plan || 'free');
+  setAnonUI(isAnon);
+  syncPreview();
+
+  if (profile.role === 'advisor') {
+    await loadAdvisorProfile();
   }
-  // Rellenar campos si ya tiene perfil de advisor
-  if (ADVISOR_PROFILE) {
-    const ap = ADVISOR_PROFILE;
+}
 
-    // Especialidades — comparar texto limpio sin emojis
-    if (ap.specialty) {
-      const specs = ap.specialty.split(',').map(s => s.trim().toLowerCase());
-      document.querySelectorAll('.adv-spec').forEach(c => {
-        const chipText = c.textContent.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '').trim().toLowerCase();
-        if (specs.some(s => {
-          const cleanS = s.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '').trim();
-          return chipText.includes(cleanS) || cleanS.includes(chipText);
-        })) {
-          c.classList.add('on');
-        }
-      });
-    }
+async function loadAdvisorProfile() {
+  const { data: ap } = await sb.from('advisor_profiles')
+    .select('*').eq('id', session.user.id).single();
+  advisorProfile = ap || {};
 
-    // Precio
-    if (ap.price_per_session) document.getElementById('adv-price').value = ap.price_per_session;
+  document.getElementById('advisor-bio').value = advisorProfile.bio || '';
+  document.getElementById('civil-status').value = advisorProfile.civil_status || '';
+  document.getElementById('years-together').value = advisorProfile.years_together || '';
+  document.getElementById('price').value = advisorProfile.price_per_session || '';
+  isAdvisorAvailable = advisorProfile.available !== false;
 
-    // Bio de advisor
-    if (ap.bio) {
-      document.getElementById('adv-bio').value = ap.bio;
-    } else if (PROFILE && PROFILE.bio) {
-      document.getElementById('adv-bio').value = PROFILE.bio;
-    }
+  if (advisorProfile.specialty) {
+    selectedSpecs = advisorProfile.specialty.split(',').map(s => s.trim()).filter(Boolean);
+  }
 
-    // Estado civil
-    if (ap.civil_status) {
-      chips['civil'] = ap.civil_status;
-      document.querySelectorAll('#advisor-fields .chips-row .chip').forEach(c => {
-        if (!c.classList.contains('adv-spec') && c.textContent.trim() === ap.civil_status) {
-          c.classList.add('on');
-        }
-      });
-      if (ap.civil_status === 'Casado/a' || ap.civil_status === 'En relación') {
-        document.getElementById('field-years').style.display = 'block';
-        if (ap.years_together) document.getElementById('adv-years').value = ap.years_together;
-      }
-    }
-  }}
+  updateAdvisorSectionHeader(true);
+  setAdvisorAvailableUI(isAdvisorAvailable);
+  refreshSpecialtyGrid();
+  syncPreview();
+}
 
-function onAdvisorToggle(checked) {
-  document.getElementById('tog-off-label').style.display = checked ? 'none' : 'inline';
-  document.getElementById('tog-on-label').style.display = checked ? 'inline' : 'none';
-  const fields = document.getElementById('advisor-fields');
-  if (checked) {
-    fields.classList.add('show');
-    showToast('¡Completa tu perfil de Advisor para aparecer en el directorio!');
+// ── PLAN UI ──────────────────────────────────
+function setPlanUI(plan) {
+  const badge = document.getElementById('plan-badge');
+  const name = document.getElementById('bar-plan-name');
+  const actions = document.getElementById('bar-actions');
+
+  const plans = {
+    free:            { label: 'Free',    cls: 'plan-free',    display: 'Explorador' },
+    premium:         { label: 'Premium', cls: 'plan-premium', display: 'Premium' },
+    elite:           { label: 'Elite',   cls: 'plan-elite',   display: 'Elite' },
+    advisor_mensual: { label: 'Advisor', cls: 'plan-premium', display: 'Advisor Mensual' },
+    advisor_anual:   { label: 'Advisor', cls: 'plan-elite',   display: 'Advisor Anual' },
+  };
+  const p = plans[plan] || plans.free;
+  badge.textContent = p.label;
+  badge.className = `plan-badge ${p.cls}`;
+  name.innerHTML = `${p.display} <span>· plan actual</span>`;
+
+  if (plan === 'free') {
+    actions.innerHTML = `<a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" class="btn-sm btn-upgrade">Upgrade →</a>`;
+  } else if (plan === 'premium') {
+    actions.innerHTML = `
+      <a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" class="btn-sm btn-outline">Subir a Elite</a>
+      <button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar</button>`;
   } else {
-    fields.classList.remove('show');
-    // Desactivar modo advisor
-    HKSK.saveProfile(USER.id, USER.email, { role: 'user' });
-    PROFILE.role = 'user';
-    document.getElementById('ph-role-advisor').style.display = 'none';
-    showToast('Modo Advisor desactivado');
+    actions.innerHTML = `<button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar plan</button>`;
   }
 }
 
-function toggleEdit(s) { document.getElementById('sec-'+s).classList.toggle('is-editing'); }
+// ── SYNC PREVIEW ─────────────────────────────
+function syncPreview() {
+  const name = document.getElementById('full-name').value.trim();
+  const bio = document.getElementById('bio').value.trim() || document.getElementById('advisor-bio').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const price = document.getElementById('price').value;
+  const civil = document.getElementById('civil-status').value;
+  const years = document.getElementById('years-together').value;
 
-function selChip(el, key, val) {
-  el.closest('.chips-row').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
-  el.classList.add('on'); chips[key] = val;
+  document.getElementById('preview-name').textContent = name || 'Tu nombre';
+
+  const bioEl = document.getElementById('preview-bio');
+  if (bio) { bioEl.textContent = bio; bioEl.classList.remove('empty'); }
+  else { bioEl.textContent = 'Aquí aparecerá tu bio…'; bioEl.classList.add('empty'); }
+
+  const cityEl = document.getElementById('preview-city');
+  if (city) {
+    cityEl.style.display = 'flex';
+    document.getElementById('preview-city-text').textContent = city;
+  } else { cityEl.style.display = 'none'; }
+
+  const specContainer = document.getElementById('preview-specialties');
+  if (selectedSpecs.length) {
+    specContainer.style.display = 'flex';
+    specContainer.innerHTML = selectedSpecs.map(s => `<span class="specialty-pill">${s}</span>`).join('');
+  } else { specContainer.style.display = 'none'; }
+
+  const metaEl = document.getElementById('preview-advisor-meta');
+  const priceEl = document.getElementById('preview-price');
+  if (profile && profile.role === 'advisor') {
+    metaEl.style.display = 'flex';
+    priceEl.style.display = 'flex';
+    document.getElementById('pm-civil').textContent = civil || '—';
+    document.getElementById('pm-exp').textContent = years ? `${years} año${years == 1 ? '' : 's'}` : '—';
+    document.getElementById('pm-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : '$0';
+  } else {
+    metaEl.style.display = 'none';
+    priceEl.style.display = 'none';
+  }
+
+  document.getElementById('preview-anon').style.display = isAnon ? 'flex' : 'none';
 }
 
-async function saveSection(section) {
-  const btn = event.target;
+// ── AVATAR ───────────────────────────────────
+function setAvatarUI(url) {
+  ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
+    const img = document.getElementById(id);
+    img.src = url; img.style.display = '';
+  });
+  document.getElementById('edit-avatar-ph').style.display = 'none';
+  document.getElementById('preview-avatar-ph').style.display = 'none';
+}
+
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) return showToast('La imagen debe ser menor a 2MB', true);
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
+      const img = document.getElementById(id);
+      img.src = e.target.result; img.style.display = '';
+    });
+    document.getElementById('edit-avatar-ph').style.display = 'none';
+    document.getElementById('preview-avatar-ph').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+
+  showToast('Subiendo foto…');
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('userId', session.user.id);
+  formData.append('token', session.access_token);
+
+  try {
+    const res = await fetch('/.netlify/functions/avatar-upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.url) showToast('Foto actualizada');
+    else showToast(data.error || 'Error al subir', true);
+  } catch { showToast('Error de conexión', true); }
+}
+
+// ── ANONIMATO ────────────────────────────────
+function setAnonUI(val) {
+  const btn = document.getElementById('anon-toggle');
+  btn.classList.toggle('on', val);
+}
+
+async function toggleAnon() {
+  isAnon = !isAnon;
+  setAnonUI(isAnon);
+  syncPreview();
+  await fetch('/.netlify/functions/auth-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'update-anon', userId: session.user.id, token: session.access_token, is_anonymous: isAnon })
+  });
+}
+
+// ── ADVISOR PANEL ────────────────────────────
+function toggleAdvisorPanel() {
+  const panel = document.getElementById('advisor-panel');
+  panel.classList.toggle('open');
+  document.getElementById('advisor-expand-btn').textContent =
+    panel.classList.contains('open') ? 'Cerrar ↑' : 'Configurar →';
+}
+
+function updateAdvisorSectionHeader(isAdvisor) {
+  document.getElementById('advisor-dot').classList.toggle('inactive', !isAdvisor);
+  document.getElementById('advisor-section-title').textContent = isAdvisor ? 'Perfil de advisor' : 'Ser advisor';
+  document.getElementById('advisor-section-sub').textContent = isAdvisor
+    ? `${selectedSpecs.length} especialidad${selectedSpecs.length !== 1 ? 'es' : ''}`
+    : 'Ayuda a otros y gana dinero';
+  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? 'Editar →' : 'Configurar →';
+}
+
+function setAdvisorAvailableUI(val) {
+  const btn = document.getElementById('advisor-available-toggle');
+  btn.classList.toggle('on', val);
+  document.getElementById('advisor-available-label').textContent = val ? 'Disponible' : 'No disponible';
+}
+
+function toggleAdvisorAvailable() {
+  isAdvisorAvailable = !isAdvisorAvailable;
+  setAdvisorAvailableUI(isAdvisorAvailable);
+}
+
+// ── ESPECIALIDADES ───────────────────────────
+function buildSpecialtyGrid() {
+  const grid = document.getElementById('specialties-grid');
+  grid.innerHTML = SPECIALTIES.map(s => `
+    <div class="spec-chip ${selectedSpecs.includes(s) ? 'selected' : ''}"
+      onclick="toggleSpec('${s}', this)">${s}</div>
+  `).join('');
+}
+
+function refreshSpecialtyGrid() {
+  document.querySelectorAll('.spec-chip').forEach(chip => {
+    chip.classList.toggle('selected', selectedSpecs.includes(chip.textContent));
+  });
+}
+
+function toggleSpec(name, el) {
+  if (selectedSpecs.includes(name)) {
+    selectedSpecs = selectedSpecs.filter(s => s !== name);
+    el.classList.remove('selected');
+  } else {
+    selectedSpecs.push(name);
+    el.classList.add('selected');
+  }
+  syncPreview();
+  document.getElementById('advisor-section-sub').textContent =
+    `${selectedSpecs.length} especialidad${selectedSpecs.length !== 1 ? 'es' : ''}`;
+}
+
+// ── GUARDAR PERFIL ───────────────────────────
+async function saveProfile() {
+  const btn = document.querySelector('.settings-section .btn-save');
   btn.disabled = true; btn.textContent = 'Guardando…';
-  let fields = {};
-  if (section === 'info') fields = { full_name: document.getElementById('inp-name').value.trim(), city: document.getElementById('inp-city').value, gender: chips['gender'] || PROFILE?.gender || '' };
-  if (section === 'bio') fields = { bio: document.getElementById('inp-bio').value.trim() };
-  const ok = await HKSK.saveProfile(USER.id, USER.email, fields);
-  btn.disabled = false; btn.textContent = 'Guardar';
-  if (ok) { Object.assign(PROFILE, fields); renderProfile(); toggleEdit(section); showToast('✓ Cambios guardados'); }
-  else showToast('Error al guardar', true);
+
+  const body = {
+    action: 'update-profile',
+    userId: session.user.id,
+    token: session.access_token,
+    full_name: document.getElementById('full-name').value.trim(),
+    bio: document.getElementById('bio').value.trim(),
+    city: document.getElementById('city').value.trim(),
+    gender: document.getElementById('gender').value,
+    is_anonymous: isAnon
+  };
+
+  try {
+    const res = await fetch('/.netlify/functions/auth-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.error) showToast(data.error, true);
+    else showToast('Perfil actualizado');
+  } catch { showToast('Error de conexión', true); }
+
+  btn.disabled = false; btn.textContent = 'Guardar cambios';
 }
 
-function togSpec(el) { el.classList.toggle('on'); }
-
-function selChipAdv(el, key, val) {
-  el.closest('.chips-row').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
-  el.classList.add('on');
-  chips[key] = val;
-  // Mostrar campo de años si es casado/en relación
-  const showYears = val === 'Casado/a' || val === 'En relación';
-  document.getElementById('field-years').style.display = showYears ? 'block' : 'none';
-}
-
+// ── GUARDAR ADVISOR ──────────────────────────
 async function saveAdvisor() {
-  const btn = document.getElementById('btn-save-advisor');
+  const btn = document.querySelectorAll('.btn-save')[1];
   btn.disabled = true; btn.textContent = 'Guardando…';
 
-  // Especialidades multiselect
-  const specialties = Array.from(document.querySelectorAll('.adv-spec.on')).map(c => c.textContent.trim());
-  const price = document.getElementById('adv-price').value;
-  const bio = document.getElementById('adv-bio').value.trim();
-  const civil = chips['civil'] || ADVISOR_PROFILE?.civil_status || '';
-  const years = document.getElementById('adv-years').value || '';
-
-  if (specialties.length === 0 || !price || !bio) {
-    showToast('Elige al menos una especialidad, precio y bio', true);
-    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
-    return;
-  }
+  const body = {
+    userId: session.user.id,
+    token: session.access_token,
+    bio: document.getElementById('advisor-bio').value.trim(),
+    specialty: selectedSpecs.join(', '),
+    civil_status: document.getElementById('civil-status').value,
+    years_together: parseInt(document.getElementById('years-together').value) || 0,
+    price_per_session: parseFloat(document.getElementById('price').value) || 0,
+    available: isAdvisorAvailable
+  };
 
   try {
     const res = await fetch('/.netlify/functions/save-advisor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: USER.id,
-        specialty: specialties.join(', '),
-        price_per_session: parseInt(price),
-        bio,
-        civil_status: civil,
-        years_together: years ? parseInt(years) : null,
-        available: true
-      })
+      body: JSON.stringify(body)
     });
     const data = await res.json();
-    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
-    if (data.success) {
-      PROFILE.role = 'advisor';
-      document.getElementById('ph-role-advisor').style.display = 'inline-block';
-      showToast('✓ Perfil de Advisor guardado');
-    } else {
-      showToast('Error: ' + (data.error || 'No se pudo guardar'), true);
+    if (data.error) showToast(data.error, true);
+    else {
+      showToast('Perfil de advisor guardado');
+      profile.role = 'advisor';
+      updateAdvisorSectionHeader(true);
+      syncPreview();
     }
-  } catch(e) {
-    btn.disabled = false; btn.textContent = 'Guardar perfil de Advisor';
-    showToast('Error de conexión', true);
-  }
+  } catch { showToast('Error de conexión', true); }
+
+  btn.disabled = false; btn.textContent = 'Guardar perfil de advisor';
 }
 
-document.getElementById('avatar-input').addEventListener('change', async function() {
-  const file = this.files[0]; if (!file) return;
-  showToast('Subiendo foto…');
-  try {
-    const base64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-    const res = await fetch('/.netlify/functions/avatar-upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: USER.id, fileBase64: base64, fileName: file.name, fileType: file.type })
-    });
-    const data = await res.json();
-    if (data.success) {
-      PROFILE.avatar_url = data.url;
-      document.getElementById('av-img').src = data.url + '?t=' + Date.now();
-      document.getElementById('av-img').style.display = 'block';
-      document.getElementById('av-initial').style.display = 'none';
-      showToast('✓ Foto actualizada');
-    } else {
-      showToast('Error: ' + (data.error || 'No se pudo subir'), true);
-    }
-  } catch(e) {
-    showToast('Error al subir foto', true);
-  }
-});
-
-function onPrivacyToggle(checked) {
-  document.getElementById('priv-off').style.display = checked ? 'none' : 'inline';
-  document.getElementById('priv-on').style.display = checked ? 'inline' : 'none';
-  HKSK.saveProfile(USER.id, USER.email, { is_anonymous: checked });
-  PROFILE.is_anonymous = checked;
-  showToast(checked ? '🔒 Anonimato activado' : 'Anonimato desactivado');
+// ── CANCELAR PLAN ────────────────────────────
+function cancelPlan() {
+  if (!confirm('¿Seguro que quieres cancelar tu plan?')) return;
+  showToast('Escríbenos a soporte para cancelar tu suscripción');
 }
 
-function renderSubscription() {
-  const p = PROFILE || {};
-  const plan = p.plan || 'free';
-  const activatedAt = p.plan_activated_at ? new Date(p.plan_activated_at).toLocaleDateString('es-MX', {day:'numeric',month:'long',year:'numeric'}) : null;
-
-  const badge = document.getElementById('sub-badge');
-  const info = document.getElementById('sub-info');
-  const actions = document.getElementById('sub-actions');
-
-  badge.className = `sub-badge ${plan}`;
-
-  const planNames = {
-    'free': 'Explorador · Gratis',
-    'premium': 'Premium · $199 MXN/mes',
-    'elite': 'Elite · $299 MXN/mes',
-    'advisor_mensual': 'Advisor Mensual · $99 MXN/mes',
-    'advisor_anual': 'Advisor Anual · $999 MXN/año'
-  };
-
-  badge.textContent = planNames[plan] || 'Explorador · Gratis';
-
-  if (plan === 'free') {
-    info.textContent = 'Plan gratuito. Haz hasta 1 pregunta pública al mes. Mejora para obtener más.';
-    actions.innerHTML = `
-      <a href="/#precios" class="btn-upgrade">Ver planes →</a>
-    `;
-  } else {
-    info.textContent = activatedAt ? `Activo desde el ${activatedAt}` : 'Plan activo';
-
-    let upgradeBtn = '';
-    if (plan === 'premium') {
-      upgradeBtn = `<a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" target="_blank" class="btn-upgrade">Upgrade a Elite →</a>`;
-    } else if (plan === 'advisor_mensual') {
-      upgradeBtn = `<a href="https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02" target="_blank" class="btn-upgrade">Upgrade a Anual (ahorra 50%) →</a>`;
-    }
-
-    actions.innerHTML = `
-      ${upgradeBtn}
-      <button class="btn-cancel-sub" onclick="cancelSub()">Cancelar suscripción</button>
-    `;
-  }
-}
-
-function cancelSub() {
-  if (confirm('¿Estás segura de que quieres cancelar tu suscripción? Perderás acceso al finalizar el período.')) {
-    showToast('Para cancelar escríbenos a hola@he-sheknows.com y lo procesamos en 24h.');
-  }
-}
-
-function showToast(msg, isErr=false) {
+// ── TOAST ────────────────────────────────────
+function showToast(msg, error = false) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast'+(isErr?' err':'');
-  setTimeout(()=>t.classList.add('show'),10);
-  setTimeout(()=>t.classList.remove('show'),3500);
+  t.textContent = msg;
+  t.className = `toast${error ? ' error' : ''} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+init();
 </script>
 </body>
 </html>
