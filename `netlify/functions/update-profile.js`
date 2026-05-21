@@ -1,0 +1,40 @@
+// netlify/functions/update-profile.js
+const { createClient } = require('@supabase/supabase-js');
+
+const sb = createClient(
+  'https://ydqcxbwxfzyxdzidafch.supabase.co',
+  process.env.SUPABASE_SECRET_KEY
+);
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') return json(405, { error: 'Method Not Allowed' });
+
+  let body;
+  try { body = JSON.parse(event.body); }
+  catch { return json(400, { error: 'JSON inválido' }); }
+
+  const { token, full_name, bio, city, gender, is_anonymous } = body;
+
+  if (!token) return json(400, { error: 'Token requerido' });
+
+  const { data: { user }, error: authErr } = await sb.auth.getUser(token);
+  if (authErr || !user) return json(401, { error: 'No autorizado' });
+
+  const { error } = await sb.from('profiles').update({
+    full_name,
+    bio,
+    city,
+    gender,
+    is_anonymous: !!is_anonymous
+  }).eq('id', user.id);
+
+  if (error) return json(500, { error: error.message });
+
+  return json(200, { ok: true });
+};
+
+const json = (status, data) => ({
+  statusCode: status,
+  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+  body: JSON.stringify(data)
+});
