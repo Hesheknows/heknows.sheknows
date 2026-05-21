@@ -575,6 +575,15 @@ async function init() {
   const raw = localStorage.getItem('hksk-session');
   if (!raw) return window.location.href = 'login.html';
   session = JSON.parse(raw);
+  const { data: refreshed } = await sb.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token
+  });
+  if (refreshed?.session) {
+    session.access_token = refreshed.session.access_token;
+    session.refresh_token = refreshed.session.refresh_token;
+    localStorage.setItem('hksk-session', JSON.stringify(session));
+  }
 
   await loadProfile();
   buildSpecialtyGrid();
