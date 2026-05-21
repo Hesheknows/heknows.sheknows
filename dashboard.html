@@ -55,7 +55,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <nav>
   <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
+    <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="perfil.html">Mi perfil</a>
     <span class="nav-email" id="nav-email"></span>
@@ -76,7 +76,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="stats">
     <div class="stat"><div class="stat-n">0</div><div class="stat-l">Preguntas hechas</div></div>
     <div class="stat"><div class="stat-n">0</div><div class="stat-l">Respuestas recibidas</div></div>
-    <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Tu plan actual</div></div>
+    <div class="stat"><div class="stat-n" id="stat-plan">—</div><div class="stat-l">Tu plan actual</div></div>
   </div>
   <div class="section-label">Acciones rápidas</div>
   <div class="actions">
@@ -126,6 +126,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       if (!profile?.full_name || !profile?.bio) {
         document.getElementById('alert-perfil').style.display = 'flex';
       }
+      const planNames = {
+        'free': 'Free', 'premium': 'Premium', 'elite': 'Elite',
+        'advisor_mensual': 'Advisor', 'advisor_anual': 'Advisor+'
+      };
+      document.getElementById('stat-plan').textContent = planNames[profile?.plan] || 'Free';
     } catch(e) {
       document.getElementById('welcome-name').textContent = user.email.split('@')[0];
     }
