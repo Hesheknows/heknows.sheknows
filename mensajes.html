@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mensajes — He Knows She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root { --cream:#F7F3EE; --terra:#C47A5A; --night:#1A1410; --muted:#9A8880; --gold:#C9A96E; --blush:#E8C4B0; --border:#EDE7DF; --white:#FFFFFF; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'DM Sans',sans-serif; font-weight:300; background:var(--cream); color:var(--night); height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:52px; }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--terra); text-decoration:none; font-weight:300; }
+.nav-back { font-size:13px; color:var(--muted); text-decoration:none; display:flex; align-items:center; gap:4px; }
+.nav-back:hover { color:var(--terra); }
+
+.chat-shell { flex:1; display:grid; grid-template-columns:280px 1fr; overflow:hidden; }
+@media(max-width:600px) {
+  .chat-shell { grid-template-columns:1fr; }
+  .conv-list { display:none; }
+  .conv-list.mobile-show { display:flex; }
+  .chat-area { display:none; }
+  .chat-area.mobile-show { display:flex; }
+}
+
+/* ─── LISTA DE CONVERSACIONES ─── */
+.conv-list {
+  background:var(--white); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.conv-list-head {
+  padding:16px; border-bottom:1px solid var(--border);
+  font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300;
+  color:var(--night); flex-shrink:0;
+}
+.conv-items { flex:1; overflow-y:auto; }
+.conv-item {
+  padding:14px 16px; display:flex; align-items:center; gap:12px;
+  cursor:pointer; border-bottom:1px solid var(--border);
+  transition:background 0.15s;
+}
+.conv-item:hover { background:var(--cream); }
+.conv-item.active { background:#FFF8F5; border-left:3px solid var(--terra); padding-left:13px; }
+.conv-avatar {
+  width:40px; height:40px; border-radius:50%; flex-shrink:0;
+  object-fit:cover; background:var(--blush);
+}
+.conv-avatar-ph {
+  width:40px; height:40px; border-radius:50%; flex-shrink:0;
+  background:var(--blush); display:flex; align-items:center; justify-content:center;
+}
+.conv-info { flex:1; min-width:0; }
+.conv-name { font-size:13px; font-weight:400; color:var(--night); }
+.conv-preview { font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+.conv-badge {
+  background:var(--terra); color:var(--white);
+  font-size:10px; font-weight:500;
+  width:18px; height:18px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.conv-empty { padding:32px 16px; text-align:center; color:var(--muted); font-size:13px; }
+
+/* ─── ÁREA DE CHAT ─── */
+.chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.chat-empty-state {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:12px; color:var(--muted);
+}
+.chat-empty-state svg { opacity:0.3; }
+.chat-empty-state p { font-size:14px; }
+
+.chat-header {
+  flex-shrink:0; background:var(--white); border-bottom:1px solid var(--border);
+  padding:12px 20px; display:flex; align-items:center; gap:12px;
+}
+.chat-header-avatar {
+  width:36px; height:36px; border-radius:50%; object-fit:cover; background:var(--blush);
+}
+.chat-header-avatar-ph {
+  width:36px; height:36px; border-radius:50%; background:var(--blush);
+  display:flex; align-items:center; justify-content:center;
+}
+.chat-header-name { font-size:14px; font-weight:400; color:var(--night); }
+.chat-header-role { font-size:11px; color:var(--muted); }
+
+.messages-area { flex:1; overflow-y:auto; padding:20px 16px; display:flex; flex-direction:column; gap:10px; }
+
+.msg { display:flex; flex-direction:column; max-width:72%; }
+.msg.mine { align-self:flex-end; align-items:flex-end; }
+.msg.theirs { align-self:flex-start; align-items:flex-start; }
+.msg-bubble {
+  padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.6;
+  word-break:break-word;
+}
+.msg.mine .msg-bubble { background:var(--terra); color:var(--white); border-bottom-right-radius:4px; }
+.msg.theirs .msg-bubble { background:var(--white); color:var(--night); border:1px solid var(--border); border-bottom-left-radius:4px; }
+.msg-time { font-size:10px; color:var(--muted); margin-top:3px; padding:0 4px; }
+
+.chat-input-area {
+  flex-shrink:0; background:var(--white); border-top:1px solid var(--border);
+  padding:12px 16px; display:flex; gap:10px; align-items:flex-end;
+}
+.chat-input {
+  flex:1; font-family:'DM Sans',sans-serif; font-weight:300; font-size:14px;
+  color:var(--night); background:var(--cream); border:1px solid var(--border);
+  border-radius:20px; padding:10px 16px; outline:none; resize:none;
+  max-height:120px; min-height:40px; line-height:1.5;
+  transition:border-color 0.2s;
+}
+.chat-input:focus { border-color:var(--terra); }
+.btn-send {
+  width:40px; height:40px; border-radius:50%; background:var(--terra);
+  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:background 0.2s;
+}
+.btn-send:hover { background:#b5694a; }
+.btn-send:disabled { background:var(--blush); cursor:not-allowed; }
+
+.loading-msg { text-align:center; font-size:12px; color:var(--muted); padding:20px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">he knows she knows</a>
+  <a href="dashboard.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Dashboard
+  </a>
+</nav>
+
+<div class="chat-shell">
+
+  <!-- Lista de conversaciones -->
+  <div class="conv-list" id="conv-list">
+    <div class="conv-list-head">Mensajes</div>
+    <div class="conv-items" id="conv-items">
+      <div class="loading-msg">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- Área de chat -->
+  <div class="chat-area" id="chat-area">
+    <div class="chat-empty-state" id="chat-empty">
+      <svg width="48" height="48" viewBox="0 0 44 44" fill="none">
+        <rect x="4" y="8" width="28" height="20" rx="6" fill="#C47A5A" opacity="0.25"/>
+        <path d="M4 26L2 34L12 28" fill="#C47A5A" opacity="0.25"/>
+        <rect x="18" y="18" width="22" height="14" rx="4" fill="#C9A96E" opacity="0.25"/>
+        <path d="M40 30L42 36L34 32" fill="#C9A96E" opacity="0.25"/>
+      </svg>
+      <p>Selecciona una conversación</p>
+    </div>
+
+    <div id="chat-active" style="display:none; flex-direction:column; height:100%; overflow:hidden; display:none">
+      <div class="chat-header" id="chat-header"></div>
+      <div class="messages-area" id="messages-area"></div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Escribe un mensaje…"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="btn-send" id="btn-send" onclick="sendMessage()">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M18 10L4 4L7 10L4 16L18 10Z" fill="white" stroke="white" stroke-width="1" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+
+let session = null;
+let currentConvId = null;
+let pollInterval = null;
+
+async function init() {
+  const raw = localStorage.getItem('hksk-session');
+  if (!raw) return window.location.href = 'login.html';
+  session = JSON.parse(raw);
+
+  await loadConversations();
+
+  const params = new URLSearchParams(location.search);
+  const advisorId = params.get('advisorId');
+  if (advisorId) await openOrCreateConv(advisorId);
+}
+
+async function loadConversations() {
+  const res = await fetch(`/.netlify/functions/get-conversations?token=${session.access_token}`);
+  const data = await res.json();
+  renderConvList(data.conversations || []);
+}
+
+function renderConvList(convs) {
+  const el = document.getElementById('conv-items');
+  if (!convs.length) {
+    el.innerHTML = `<div class="conv-empty">Aún no tienes mensajes.<br>Consulta a un advisor desde el directorio.</div>`;
+    return;
+  }
+  el.innerHTML = convs.map(c => {
+    const other = c.other || {};
+    const avatarHtml = other.avatar_url
+      ? `<img class="conv-avatar" src="${other.avatar_url}" alt="${other.full_name || ''}">`
+      : `<div class="conv-avatar-ph"><svg width="20" height="20" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="16" r="8" fill="#C47A5A" opacity="0.4"/><path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="#C47A5A" opacity="0.4"/></svg></div>`;
+    const badgeHtml = c.unread > 0 ? `<div class="conv-badge">${c.unread}</div>` : '';
+    const preview = c.last_message
+      ? (c.last_message.length > 40 ? c.last_message.slice(0, 40) + '…' : c.last_message)
+      : 'Sin mensajes aún';
+    return `<div class="conv-item${c.id === currentConvId ? ' active' : ''}" onclick="openConv('${c.id}', ${JSON.stringify(other).replace(/"/g, '&quot;')})">
+      ${avatarHtml}
+      <div class="conv-info">
+        <div class="conv-name">${other.full_name || 'Usuario'}</div>
+        <div class="conv-preview">${preview}</div>
+      </div>
+      ${badgeHtml}
+    </div>`;
+  }).join('');
+}
+
+async function openConv(convId, other) {
+  currentConvId = convId;
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+  event?.currentTarget?.classList.add('active');
+
+  const empty = document.getElementById('chat-empty');
+  const active = document.getElementById('chat-active');
+  empty.style.display = 'none';
+  active.style.display = 'flex';
+
+  renderChatHeader(other);
+  await loadMessages();
+
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(loadMessages, 4000);
+}
+
+function renderChatHeader(other) {
+  const avatarHtml = other.avatar_url
+    ? `<img class="chat-header-avatar" src="${other.avatar_url}" alt="">`
+    : `<div class="chat-header-avatar-ph"><svg width="18" height="18" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="16" r="8" fill="#C47A5A" opacity="0.5"/><path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="#C47A5A" opacity="0.5"/></svg></div>`;
+  document.getElementById('chat-header').innerHTML = `
+    ${avatarHtml}
+    <div>
+      <div class="chat-header-name">${other.full_name || 'Usuario'}</div>
+    </div>`;
+}
+
+async function loadMessages() {
+  if (!currentConvId) return;
+  const res = await fetch(`/.netlify/functions/get-messages?token=${session.access_token}&conversationId=${currentConvId}&markRead=true`);
+  const data = await res.json();
+  renderMessages(data.messages || [], data.userId);
+  loadConversations();
+}
+
+function renderMessages(msgs, userId) {
+  const area = document.getElementById('messages-area');
+  const wasAtBottom = area.scrollHeight - area.scrollTop <= area.clientHeight + 60;
+
+  area.innerHTML = msgs.map(m => {
+    const mine = m.sender_id === userId;
+    const time = new Date(m.created_at).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+    return `<div class="msg ${mine ? 'mine' : 'theirs'}">
+      <div class="msg-bubble">${escapeHtml(m.body)}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+  }).join('');
+
+  if (wasAtBottom || msgs.length === 0) area.scrollTop = area.scrollHeight;
+}
+
+async function openOrCreateConv(advisorId) {
+  const res = await fetch('/.netlify/functions/send-message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: session.access_token, advisorId, body: '👋 Hola, me gustaría consultarte algo.' })
+  });
+  const data = await res.json();
+  if (data.conversationId) {
+    await loadConversations();
+    const advisorRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`, {
+      headers: { apikey: 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA', Authorization: `Bearer sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA` }
+    });
+    const [advisor] = await advisorRes.json();
+    if (advisor) openConv(data.conversationId, advisor);
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const body = input.value.trim();
+  if (!body || !currentConvId) return;
+
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  input.value = '';
+  autoResize(input);
+
+  await fetch('/.netlify/functions/send-message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: session.access_token, conversationId: currentConvId, body })
+  });
+
+  await loadMessages();
+  btn.disabled = false;
+  input.focus();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+init();
+</script>
+</body>
+</html>
