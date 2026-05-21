@@ -33,7 +33,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .actions{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px;}
 .action-card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:28px 24px;cursor:pointer;transition:all 0.25s;text-decoration:none;display:block;}
 .action-card:hover{border-color:var(--terra);transform:translateY(-2px);box-shadow:0 12px 32px rgba(26,20,16,0.08);}
-.ac-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
+.ac-icon{font-size:1.8rem;margin-bottom:14px;display:block;line-height:0;}
 .ac-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);margin-bottom:6px;}
 .ac-desc{font-size:0.78rem;line-height:1.6;color:var(--muted);font-weight:300;}
 .alert{background:linear-gradient(135deg,rgba(196,122,90,0.08),rgba(201,169,110,0.05));border:1px solid rgba(196,122,90,0.2);border-radius:3px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:36px;}
@@ -81,22 +81,42 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="section-label">Acciones rápidas</div>
   <div class="actions">
     <a href="buscar-advisors.html" class="action-card">
-      <span class="ac-icon">🔍</span>
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="19" cy="19" r="11" stroke="#C47A5A" stroke-width="2"/>
+  <circle cx="15" cy="17" r="4" fill="#C47A5A" opacity="0.3"/>
+  <circle cx="23" cy="17" r="4" fill="#C9A96E" opacity="0.3"/>
+  <path d="M27 27L34 34" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/>
+</svg></span>
       <div class="ac-title">Buscar un Advisor</div>
       <p class="ac-desc">Encuentra la perspectiva del sexo opuesto. Filtra por especialidad y precio.</p>
     </a>
     <a href="perfil.html" class="action-card">
-      <span class="ac-icon">👤</span>
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="22" cy="15" r="7" fill="#C47A5A" opacity="0.85"/>
+  <path d="M8 38C8 30 14 26 22 26C30 26 36 30 36 38" fill="#C47A5A" opacity="0.85"/>
+  <polygon points="34,6 36,11 41,11 37,14 38.5,19 34,16 29.5,19 31,14 27,11 32,11" fill="#C9A96E"/>
+</svg></span>
       <div class="ac-title">Mi perfil</div>
       <p class="ac-desc">Actualiza tu foto, bio y configuración de cuenta.</p>
     </a>
     <a href="index.html#precios" class="action-card">
-      <span class="ac-icon">⭐</span>
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <polygon points="22,4 26,15 38,15 28,22 32,34 22,27 12,34 16,22 6,15 18,15" fill="#C9A96E"/>
+  <polygon points="22,9 25,17 34,17 27,22 29,31 22,26 15,31 17,22 10,17 19,17" fill="#C47A5A" opacity="0.4"/>
+</svg></span>
       <div class="ac-title">Mejorar mi plan</div>
       <p class="ac-desc">Obtén más consultas privadas y respuesta prioritaria.</p>
     </a>
     <a href="index.html#advsec" class="action-card">
-      <span class="ac-icon">💬</span>
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="16" cy="14" r="6" fill="#C47A5A" opacity="0.9"/>
+  <path d="M4 34C4 27 9 24 16 24C23 24 28 27 28 34" fill="#C47A5A" opacity="0.9"/>
+  <rect x="26" y="18" width="16" height="12" rx="4" fill="#C9A96E" opacity="0.9"/>
+  <path d="M42 28L44 34L34 30" fill="#C9A96E" opacity="0.9"/>
+  <circle cx="31" cy="24" r="1.2" fill="white"/>
+  <circle cx="34" cy="24" r="1.2" fill="white"/>
+  <circle cx="37" cy="24" r="1.2" fill="white"/>
+</svg></span>
       <div class="ac-title">Ser Advisor</div>
       <p class="ac-desc">¿Quieres dar consejos y ganar dinero? Regístrate como Advisor.</p>
     </a>
