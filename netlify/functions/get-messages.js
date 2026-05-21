@@ -1,42 +1,35 @@
 // netlify/functions/get-messages.js
-// GET ?token=...&conversationId=...&markRead=true
-
-const { createClient } = require('@supabase/supabase-js');
-
-const sb = createClient(
-  'https://ydqcxbwxfzyxdzidafch.supabase.co',
-  process.env.SUPABASE_SECRET_KEY
-);
-
 exports.handler = async (event) => {
   const { token, conversationId, markRead } = event.queryStringParameters || {};
-
   if (!token || !conversationId) return json(400, { error: 'Faltan parámetros' });
 
-  const { data: { user }, error: authErr } = await sb.auth.getUser(token);
-  if (authErr || !user) return json(401, { error: 'No autorizado' });
+  const URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  const KEY = process.env.SUPABASE_SECRET_KEY;
+
+  const userRes = await fetch(`${URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': KEY }
+  });
+  if (!userRes.ok) return json(401, { error: 'No autorizado' });
+  const { id: userId } = await userRes.json();
 
   try {
-    const { data: messages, error } = await sb.from('messages')
-      .select('id, body, sender_id, created_at, read')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-
-    if (error) throw error;
+    const msgsRes = await fetch(`${URL}/rest/v1/messages?conversation_id=eq.${conversationId}&order=created_at.asc&select=id,body,sender_id,created_at,read`, {
+      headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY }
+    });
+    const messages = await msgsRes.json();
 
     if (markRead === 'true') {
-      await sb.rpc('mark_read', { p_conversation_id: conversationId, p_reader_id: user.id });
+      await fetch(`${URL}/rest/v1/rpc/mark_read`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_conversation_id: conversationId, p_reader_id: userId })
+      });
     }
 
-    return json(200, { messages, userId: user.id });
+    return json(200, { messages, userId });
   } catch (err) {
-    console.error('get-messages error:', err);
     return json(500, { error: err.message });
   }
 };
 
-const json = (status, data) => ({
-  statusCode: status,
-  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-  body: JSON.stringify(data)
-});
+const json = (s, d) => ({ statusCode: s, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(d) });

@@ -1,57 +1,44 @@
 // netlify/functions/get-conversations.js
-// GET ?token=...
-// Devuelve todas las conversaciones del usuario (como user o como advisor)
-// con datos del otro participante
-
-const { createClient } = require('@supabase/supabase-js');
-
-const sb = createClient(
-  'https://ydqcxbwxfzyxdzidafch.supabase.co',
-  process.env.SUPABASE_SECRET_KEY
-);
-
 exports.handler = async (event) => {
   const { token } = event.queryStringParameters || {};
   if (!token) return json(400, { error: 'Token requerido' });
 
-  const { data: { user }, error: authErr } = await sb.auth.getUser(token);
-  if (authErr || !user) return json(401, { error: 'No autorizado' });
+  const URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  const KEY = process.env.SUPABASE_SECRET_KEY;
+
+  const userRes = await fetch(`${URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': KEY }
+  });
+  if (!userRes.ok) return json(401, { error: 'No autorizado' });
+  const { id: userId } = await userRes.json();
 
   try {
-    const { data: convs, error } = await sb.from('conversations')
-      .select(`
-        id, last_message, updated_at, unread_user, unread_advisor,
-        user:profiles!conversations_user_id_fkey(id, full_name, avatar_url),
-        advisor:profiles!conversations_advisor_id_fkey(id, full_name, avatar_url)
-      `)
-      .or(`user_id.eq.${user.id},advisor_id.eq.${user.id}`)
-      .order('updated_at', { ascending: false });
+    const convsRes = await fetch(`${URL}/rest/v1/conversations?or=(user_id.eq.${userId},advisor_id.eq.${userId})&order=updated_at.desc&select=id,last_message,updated_at,unread_user,unread_advisor,user_id,advisor_id`, {
+      headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY }
+    });
+    const convs = await convsRes.json();
 
-    if (error) throw error;
-
-    const result = (convs || []).map(c => {
-      const isAdvisor = c.advisor?.id === user.id;
-      const other = isAdvisor ? c.user : c.advisor;
-      const unread = isAdvisor ? c.unread_advisor : c.unread_user;
+    const result = await Promise.all((convs || []).map(async c => {
+      const isAdvisor = c.advisor_id === userId;
+      const otherId = isAdvisor ? c.user_id : c.advisor_id;
+      const profRes = await fetch(`${URL}/rest/v1/profiles?id=eq.${otherId}&select=id,full_name,avatar_url`, {
+        headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY }
+      });
+      const [other] = await profRes.json();
       return {
         id: c.id,
-        other,
+        other: other || {},
         last_message: c.last_message,
         updated_at: c.updated_at,
-        unread,
+        unread: isAdvisor ? c.unread_advisor : c.unread_user,
         role: isAdvisor ? 'advisor' : 'user'
       };
-    });
+    }));
 
-    return json(200, { conversations: result, userId: user.id });
+    return json(200, { conversations: result, userId });
   } catch (err) {
-    console.error('get-conversations error:', err);
     return json(500, { error: err.message });
   }
 };
 
-const json = (status, data) => ({
-  statusCode: status,
-  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-  body: JSON.stringify(data)
-});
+const json = (s, d) => ({ statusCode: s, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(d) });

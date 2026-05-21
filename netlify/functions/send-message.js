@@ -1,65 +1,58 @@
 // netlify/functions/send-message.js
-// POST { token, conversationId?, advisorId?, body }
-// Si no existe conversationId, crea la conversación primero
-
-const { createClient } = require('@supabase/supabase-js');
-
-const sb = createClient(
-  'https://ydqcxbwxfzyxdzidafch.supabase.co',
-  process.env.SUPABASE_SECRET_KEY
-);
-
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+  if (event.httpMethod !== 'POST') return json(405, { error: 'Method Not Allowed' });
 
   let body;
   try { body = JSON.parse(event.body); }
   catch { return json(400, { error: 'JSON inválido' }); }
 
   const { token, conversationId, advisorId, body: msgBody } = body;
+  if (!token || !msgBody?.trim()) return json(400, { error: 'Faltan campos' });
 
-  if (!token || !msgBody?.trim()) return json(400, { error: 'Faltan campos requeridos' });
+  const URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+  const KEY = process.env.SUPABASE_SECRET_KEY;
 
-  // Verificar sesión
-  const { data: { user }, error: authErr } = await sb.auth.getUser(token);
-  if (authErr || !user) return json(401, { error: 'No autorizado' });
+  const userRes = await fetch(`${URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': KEY }
+  });
+  if (!userRes.ok) return json(401, { error: 'No autorizado' });
+  const { id: userId } = await userRes.json();
 
   try {
     let convId = conversationId;
 
-    // Si no hay conversación, crear una (o recuperar existente)
     if (!convId) {
-      if (!advisorId) return json(400, { error: 'Se requiere advisorId o conversationId' });
+      if (!advisorId) return json(400, { error: 'Se requiere advisorId' });
 
-      const { data: existing } = await sb.from('conversations')
-        .select('id').eq('user_id', user.id).eq('advisor_id', advisorId).single();
+      const existing = await fetch(`${URL}/rest/v1/conversations?user_id=eq.${userId}&advisor_id=eq.${advisorId}&select=id`, {
+        headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY }
+      });
+      const rows = await existing.json();
 
-      if (existing) {
-        convId = existing.id;
+      if (rows.length > 0) {
+        convId = rows[0].id;
       } else {
-        const { data: created, error: convErr } = await sb.from('conversations')
-          .insert({ user_id: user.id, advisor_id: advisorId }).select('id').single();
-        if (convErr) throw convErr;
-        convId = created.id;
+        const created = await fetch(`${URL}/rest/v1/conversations`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+          body: JSON.stringify({ user_id: userId, advisor_id: advisorId })
+        });
+        const [conv] = await created.json();
+        convId = conv.id;
       }
     }
 
-    // Insertar mensaje
-    const { data: msg, error: msgErr } = await sb.from('messages')
-      .insert({ conversation_id: convId, sender_id: user.id, body: msgBody.trim() })
-      .select().single();
-
-    if (msgErr) throw msgErr;
+    const msgRes = await fetch(`${URL}/rest/v1/messages`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      body: JSON.stringify({ conversation_id: convId, sender_id: userId, body: msgBody.trim() })
+    });
+    const [msg] = await msgRes.json();
 
     return json(200, { message: msg, conversationId: convId });
   } catch (err) {
-    console.error('send-message error:', err);
     return json(500, { error: err.message });
   }
 };
 
-const json = (status, data) => ({
-  statusCode: status,
-  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-  body: JSON.stringify(data)
-});
+const json = (s, d) => ({ statusCode: s, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(d) });
