@@ -1,5 +1,4 @@
 // netlify/functions/get-advisors.js
-
 exports.handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -7,10 +6,9 @@ exports.handler = async (event) => {
   };
 
   const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-  const SUPABASE_KEY = 'sb_secret_-rYCDZ5-BMzP13bDqvJtTg_FmtYp-7E';
+  const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 
   try {
-    // Traer advisor_profiles primero (con todos los datos)
     const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?select=id,specialty,price_per_session,available,bio`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
@@ -20,14 +18,12 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers, body: JSON.stringify([]) };
     }
 
-    // Traer perfiles de esos advisors
     const ids = advProfiles.map(a => a.id).join(',');
     const profilesRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=in.(${ids})&select=id,full_name,avatar_url,bio`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
     const profiles = await profilesRes.json();
 
-    // Combinar
     const combined = advProfiles.map(adv => {
       const profile = Array.isArray(profiles) ? profiles.find(p => p.id === adv.id) : {};
       return {
@@ -45,7 +41,6 @@ exports.handler = async (event) => {
     });
 
     return { statusCode: 200, headers, body: JSON.stringify(combined) };
-
   } catch (err) {
     return { statusCode: 200, headers, body: JSON.stringify({ error: err.message }) };
   }
