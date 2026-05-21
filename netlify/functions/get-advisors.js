@@ -11,7 +11,7 @@ exports.handler = async (event) => {
 
   try {
     // Traer advisor_profiles primero (con todos los datos)
-    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?available=eq.true&select=id,specialty,price_per_session,available`, {
+    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?available=eq.true&select=id,specialty,price_per_session,available,bio`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
     const advProfiles = await advRes.json();
@@ -34,11 +34,12 @@ exports.handler = async (event) => {
         id: adv.id,
         full_name: profile?.full_name || 'Advisor',
         avatar_url: profile?.avatar_url || null,
-        bio: profile?.bio || '',
+        bio: adv.bio || profile?.bio || '',
         adv: {
           specialty: adv.specialty,
           price_per_session: adv.price_per_session,
-          available: adv.available
+          available: adv.available,
+          bio: adv.bio || profile?.bio || ''
         }
       };
     });
