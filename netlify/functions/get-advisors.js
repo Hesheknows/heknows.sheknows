@@ -12,7 +12,9 @@ exports.handler = async (event) => {
     const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?select=id,specialty,price_per_session,available,bio`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
-    const advProfiles = await advRes.json();
+    const advRaw = await advRes.text();
+    console.log('advisor_profiles response:', advRaw);
+    const advProfiles = JSON.parse(advRaw);
 
     if (!advProfiles || !Array.isArray(advProfiles) || advProfiles.length === 0) {
       return { statusCode: 200, headers, body: JSON.stringify([]) };
@@ -42,6 +44,7 @@ exports.handler = async (event) => {
 
     return { statusCode: 200, headers, body: JSON.stringify(combined) };
   } catch (err) {
+    console.log('Error:', err.message);
     return { statusCode: 200, headers, body: JSON.stringify({ error: err.message }) };
   }
 };
