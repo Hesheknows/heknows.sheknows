@@ -31,19 +31,23 @@ body {
 /* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
+  background: rgba(247,243,238,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(196,122,90,0.12);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 56px;
+  padding: 18px 48px;
 }
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 300; font-size: 20px;
-  color: var(--terra); text-decoration: none; letter-spacing: 0.02em;
+  font-size: 1.05rem; font-weight: 300;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--night); text-decoration: none;
 }
+.nav-logo span { color: var(--terra); font-style: italic; }
 .nav-back {
   display: flex; align-items: center; gap: 6px;
-  font-size: 13px; color: var(--muted); text-decoration: none;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; font-weight: 500;
   transition: color 0.2s;
 }
 .nav-back:hover { color: var(--terra); }
@@ -247,12 +251,12 @@ main {
   display: flex; align-items: center; gap: 16px;
 }
 .avatar-preview {
-  width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
   object-fit: cover; background: var(--blush);
   border: 2px solid var(--blush);
 }
 .avatar-preview-placeholder {
-  width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
   background: var(--cream); border: 2px solid var(--border);
   display: flex; align-items: center; justify-content: center;
 }
@@ -342,7 +346,7 @@ main {
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">he knows she knows</a>
+  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
   <a href="dashboard.html" class="nav-back">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
