@@ -72,39 +72,41 @@ main {
   position: sticky; top: 72px;
 }
 .preview-header {
-  background: var(--terra);
-  padding: 28px 24px 20px;
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  background: var(--white);
+  padding: 32px 24px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   position: relative;
+  border-bottom: 1px solid var(--border);
 }
 .preview-label {
   position: absolute; top: 10px; right: 12px;
   font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.6); text-transform: uppercase;
+  color: var(--muted); text-transform: uppercase;
 }
 .preview-avatar-wrap {
-  width: 80px; height: 80px; position: relative;
+  width: 110px; height: 110px; position: relative;
 }
 .preview-avatar {
-  width: 80px; height: 80px; border-radius: 50%;
+  width: 110px; height: 110px; border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(255,255,255,0.4);
+  border: 3px solid var(--blush);
   background: var(--blush);
+  box-shadow: 0 4px 20px rgba(196,122,90,0.15);
 }
 .preview-avatar-placeholder {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: 3px solid rgba(255,255,255,0.3);
+  width: 110px; height: 110px; border-radius: 50%;
+  background: var(--cream);
+  border: 3px solid var(--blush);
   display: flex; align-items: center; justify-content: center;
 }
-.preview-avatar-placeholder svg { opacity: 0.6; }
+.preview-avatar-placeholder svg { opacity: 0.4; }
 .preview-name {
   font-family: 'Cormorant Garamond', serif;
-  font-weight: 300; font-size: 22px;
-  color: var(--white); text-align: center;
+  font-weight: 300; font-size: 24px;
+  color: var(--night); text-align: center;
 }
 .preview-city {
-  font-size: 12px; color: rgba(255,255,255,0.65);
+  font-size: 12px; color: var(--muted);
   display: flex; align-items: center; gap: 4px;
 }
 .preview-body { padding: 20px 24px; }
@@ -126,7 +128,8 @@ main {
   font-size: 11px; font-weight: 400;
   background: var(--cream); color: var(--terra);
   border: 1px solid var(--blush);
-  padding: 3px 10px; border-radius: 20px;
+  padding: 4px 10px; border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 5px;
 }
 .preview-meta {
   display: flex; flex-direction: column; gap: 6px;
@@ -344,7 +347,7 @@ main {
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    Dashboard
+    Home
   </a>
 </nav>
 
@@ -361,15 +364,15 @@ main {
           <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
           <div id="preview-avatar-ph" class="preview-avatar-placeholder">
             <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
-              <circle cx="22" cy="16" r="8" fill="rgba(255,255,255,0.4)"/>
-              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
+              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
             </svg>
           </div>
         </div>
         <div id="preview-name" class="preview-name">Tu nombre</div>
         <div id="preview-city" class="preview-city" style="display:none">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1C5.2 1 3 3.2 3 6C3 10 8 15 8 15C8 15 13 10 13 6C13 3.2 10.8 1 8 1ZM8 8C6.9 8 6 7.1 6 6C6 4.9 6.9 4 8 4C9.1 4 10 4.9 10 6C10 7.1 9.1 8 8 8Z" fill="rgba(255,255,255,0.6)"/>
+            <path d="M8 1C5.2 1 3 3.2 3 6C3 10 8 15 8 15C8 15 13 10 13 6C13 3.2 10.8 1 8 1ZM8 8C6.9 8 6 7.1 6 6C6 4.9 6.9 4 8 4C9.1 4 10 4.9 10 6C10 7.1 9.1 8 8 8Z" fill="var(--muted)"/>
           </svg>
           <span id="preview-city-text"></span>
         </div>
@@ -693,7 +696,24 @@ function syncPreview() {
   const specContainer = document.getElementById('preview-specialties');
   if (selectedSpecs.length) {
     specContainer.style.display = 'flex';
-    specContainer.innerHTML = selectedSpecs.map(s => `<span class="specialty-pill">${s}</span>`).join('');
+    const iconMap = {
+      'Relaciones': 'relaciones', 'Relaciones y pareja': 'relaciones',
+      'Ghosting': 'ghosting', 'Ghosting e infidelidad': 'ghosting',
+      'Infidelidad': 'ghosting',
+      'Cómo piensa el sexo opuesto': 'sexoOpuesto',
+      'Confianza': 'confianza', 'Confianza y autoestima': 'confianza',
+      'Styling': 'styling', 'Styling y presencia': 'styling',
+      'Texting': 'texting', 'Texting y comunicación': 'texting',
+      'Citas': 'citas', 'Citas y conquista': 'citas',
+      'Desahogo': 'desahogo'
+    };
+    specContainer.innerHTML = selectedSpecs.map(s => {
+      const iconKey = iconMap[s];
+      const iconHtml = (HKSK && iconKey && HKSK.icons[iconKey])
+        ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
+        : '';
+      return `<span class="specialty-pill">${iconHtml}${s}</span>`;
+    }).join('');
   } else { specContainer.style.display = 'none'; }
 
   const metaEl = document.getElementById('preview-advisor-meta');
