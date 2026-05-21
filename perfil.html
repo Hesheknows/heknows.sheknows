@@ -405,28 +405,45 @@ function renderAdvisor() {
   // Rellenar campos si ya tiene perfil de advisor
   if (ADVISOR_PROFILE) {
     const ap = ADVISOR_PROFILE;
+
+    // Especialidades — comparar texto limpio sin emojis
     if (ap.specialty) {
-      const specs = ap.specialty.split(', ');
+      const specs = ap.specialty.split(',').map(s => s.trim().toLowerCase());
       document.querySelectorAll('.adv-spec').forEach(c => {
-        if (specs.some(s => c.textContent.trim().includes(s) || s.includes(c.textContent.trim()))) {
+        const chipText = c.textContent.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '').trim().toLowerCase();
+        if (specs.some(s => {
+          const cleanS = s.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '').trim();
+          return chipText.includes(cleanS) || cleanS.includes(chipText);
+        })) {
           c.classList.add('on');
         }
       });
     }
+
+    // Precio
     if (ap.price_per_session) document.getElementById('adv-price').value = ap.price_per_session;
-    if (ap.bio) document.getElementById('adv-bio').value = ap.bio;
+
+    // Bio de advisor
+    if (ap.bio) {
+      document.getElementById('adv-bio').value = ap.bio;
+    } else if (PROFILE && PROFILE.bio) {
+      document.getElementById('adv-bio').value = PROFILE.bio;
+    }
+
+    // Estado civil
     if (ap.civil_status) {
       chips['civil'] = ap.civil_status;
-      document.querySelectorAll('#advisor-fields .chips-row:nth-child(2) .chip').forEach(c => {
-        if (c.textContent.trim() === ap.civil_status) c.classList.add('on');
+      document.querySelectorAll('#advisor-fields .chips-row .chip').forEach(c => {
+        if (!c.classList.contains('adv-spec') && c.textContent.trim() === ap.civil_status) {
+          c.classList.add('on');
+        }
       });
       if (ap.civil_status === 'Casado/a' || ap.civil_status === 'En relación') {
         document.getElementById('field-years').style.display = 'block';
         if (ap.years_together) document.getElementById('adv-years').value = ap.years_together;
       }
     }
-  }
-}
+  }}
 
 function onAdvisorToggle(checked) {
   document.getElementById('tog-off-label').style.display = checked ? 'none' : 'inline';
