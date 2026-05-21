@@ -9,26 +9,40 @@ exports.handler = async (event) => {
   if (!token) return json(400, { error: 'Token requerido' });
 
   const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-  const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+  const SERVICE_KEY = process.env.SUPABASE_SECRET_KEY;
 
   const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { 'Authorization': `Bearer ${token}`, 'apikey': SUPABASE_KEY }
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'apikey': SERVICE_KEY
+    }
   });
+
+  if (!userRes.ok) {
+    const err = await userRes.text();
+    console.log('Auth error:', err);
+    return json(401, { error: 'No autorizado: ' + err });
+  }
+
   const userData = await userRes.json();
-  if (!userData.id) return json(401, { error: 'No autorizado' });
+  if (!userData.id) return json(401, { error: 'Usuario no encontrado' });
 
   const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userData.id}`, {
     method: 'PATCH',
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SERVICE_KEY}`,
+      'apikey': SERVICE_KEY,
       'Content-Type': 'application/json',
       'Prefer': 'return=minimal'
     },
     body: JSON.stringify({ full_name, bio, city, gender, is_anonymous: !!is_anonymous })
   });
 
-  if (!updateRes.ok) return json(500, { error: 'Error al actualizar' });
+  if (!updateRes.ok) {
+    const err = await updateRes.text();
+    return json(500, { error: 'Error al actualizar: ' + err });
+  }
+
   return json(200, { ok: true });
 };
 
