@@ -11,7 +11,7 @@ exports.handler = async (event) => {
 
   try {
     // Traer advisor_profiles primero (con todos los datos)
-    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?available=eq.true&select=id,specialty,price_per_session,available,bio`, {
+    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?select=id,specialty,price_per_session,available,bio`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
     const advProfiles = await advRes.json();
