@@ -20,45 +20,41 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers, body: JSON.stringify({ error: 'Falta userId' }) };
     }
 
-    // Upsert en advisor_profiles
-    const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${userId}`, {
-      method: 'PATCH',
+    const data = {
+      id: userId,
+      specialty,
+      price_per_session: parseInt(price_per_session) || 0,
+      civil_status: civil_status || null,
+      years_together: years_together ? parseInt(years_together) : null,
+      available: true,
+      updated_at: new Date().toISOString()
+    };
+
+    // Usar upsert — inserta si no existe, actualiza si existe
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles`, {
+      method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
       },
-      body: JSON.stringify({ specialty, price_per_session, bio, civil_status, years_together: years_together || null, available: true, updated_at: new Date().toISOString() })
+      body: JSON.stringify(data)
     });
 
-    // Si no existe el registro, hacer INSERT
-    if (advRes.status === 404 || advRes.status === 200) {
-      const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${userId}&select=id`, {
-        headers: { 'Authorization': `Bearer ${SUPABASE_KEY}`, 'apikey': SUPABASE_KEY }
-      });
-      const existing = await checkRes.json();
-      
-      if (!existing || existing.length === 0) {
-        await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'apikey': SUPABASE_KEY,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify({ id: userId, specialty, price_per_session, bio, civil_status, years_together: years_together || null, available: true })
-        });
-      }
+    const resText = await res.text();
+    console.log('Upsert advisor_profiles:', res.status, resText);
+
+    if (!res.ok && res.status !== 200 && res.status !== 201) {
+      return { statusCode: 200, headers, body: JSON.stringify({ error: 'Error guardando advisor: ' + resText }) };
     }
 
     // Actualizar rol en profiles
     await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
       method: 'PATCH',
       headers: {
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ role: 'advisor' })
@@ -67,6 +63,7 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers, body: JSON.stringify({ success: true }) };
 
   } catch (err) {
+    console.error('save-advisor error:', err);
     return { statusCode: 200, headers, body: JSON.stringify({ error: err.message }) };
   }
 };
