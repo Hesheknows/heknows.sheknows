@@ -1,5 +1,4 @@
 // netlify/functions/stripe-webhook.js
-// Recibe eventos de Stripe y actualiza Supabase
 
 exports.handler = async (event) => {
   const headers = {
@@ -21,38 +20,50 @@ exports.handler = async (event) => {
     if (body.type === 'checkout.session.completed') {
       const session = body.data.object;
       const email = session.customer_details?.email || session.customer_email;
-      const amount = session.amount_total; // en centavos
-      const planName = amount >= 29900 ? 'elite' : amount >= 19900 ? 'premium' : 'free';
+      const amount = session.amount_total; // en centavos MXN
 
-      console.log('Payment completed:', email, amount, planName);
+      // Detectar plan según monto
+      // $99 = 9900, $199 = 19900, $299 = 29900, $999 = 99900
+      let plan = 'free';
+      if (amount >= 99900) plan = 'advisor_anual';
+      else if (amount >= 29900) plan = 'elite';
+      else if (amount >= 19900) plan = 'premium';
+      else if (amount >= 9900) plan = 'advisor_mensual';
 
-      if (email) {
+      console.log('Payment completed:', email, amount, plan);
+
+      if (email && plan !== 'free') {
         // Buscar usuario por email
-        const userRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?email=eq.${encodeURIComponent(email)}&select=id,email`, {
+        const userRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?email=eq.${encodeURIComponent(email)}&select=id,email,role`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         const users = await userRes.json();
 
         if (users && users.length > 0) {
-          const userId = users[0].id;
+          const user = users[0];
+          const updates = {
+            plan,
+            plan_activated_at: new Date().toISOString()
+          };
 
-          // Actualizar plan del usuario
-          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+          // Si es plan de advisor, actualizar rol también
+          if (plan.includes('advisor')) {
+            updates.role = 'advisor';
+          }
+
+          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
             method: 'PATCH',
             headers: {
               'apikey': SUPABASE_KEY,
               'Authorization': `Bearer ${SUPABASE_KEY}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              plan: planName,
-              plan_activated_at: new Date().toISOString()
-            })
+            body: JSON.stringify(updates)
           });
 
-          console.log(`Plan ${planName} activado para ${email}`);
+          console.log(`Plan ${plan} activado para ${email}`);
         } else {
-          console.log('Usuario no encontrado:', email);
+          console.log('Usuario no encontrado en Supabase:', email);
         }
       }
     }
