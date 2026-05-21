@@ -718,7 +718,7 @@ function syncPreview() {
     };
     specContainer.innerHTML = selectedSpecs.map(s => {
       // Quitar emojis del inicio para buscar en el mapa
-      const clean = s.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}❤️👻💕💪🧴💬❤🔥\s]+/gu, '').trim();
+      const clean = s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
       const iconKey = iconMap[clean] || iconMap[s];
       const iconHtml = (HKSK && iconKey && HKSK.icons[iconKey])
         ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
