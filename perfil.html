@@ -753,10 +753,10 @@ async function toggleAnon() {
   isAnon = !isAnon;
   setAnonUI(isAnon);
   syncPreview();
-  await fetch('/.netlify/functions/auth-login', {
+  await fetch('/.netlify/functions/update-profile', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'update-anon', userId: session.user.id, token: session.access_token, is_anonymous: isAnon })
+    body: JSON.stringify({ token: session.access_token, is_anonymous: isAnon })
   });
 }
 
@@ -833,7 +833,7 @@ async function saveProfile() {
   };
 
   try {
-    const res = await fetch('/.netlify/functions/auth-login', {
+    const res = await fetch('/.netlify/functions/update-profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
