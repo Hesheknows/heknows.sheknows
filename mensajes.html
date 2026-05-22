@@ -11,7 +11,8 @@
 body { font-family:'DM Sans',sans-serif; font-weight:300; background:var(--cream); color:var(--night); height:100vh; display:flex; flex-direction:column; overflow:hidden; }
 
 nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:52px; }
-.nav-logo { font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--terra); text-decoration:none; font-weight:300; }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:300; letter-spacing:0.28em; text-transform:uppercase; color:var(--night); text-decoration:none; }
+.nav-logo span { color:var(--terra); font-style:italic; }
 .nav-back { font-size:13px; color:var(--muted); text-decoration:none; display:flex; align-items:center; gap:4px; }
 .nav-back:hover { color:var(--terra); }
 .nav-links { display:flex; gap:20px; align-items:center; }
@@ -136,7 +137,7 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">he knows she knows</a>
+  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
   <div class="nav-links">
     <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
