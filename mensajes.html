@@ -127,11 +127,12 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 .msg-wrap { display:flex; flex-direction:column; max-width:72%; position:relative; }
 .msg-wrap.mine { align-self:flex-end; align-items:flex-end; }
 .msg-wrap.theirs { align-self:flex-start; align-items:flex-start; }
-.msg-menu-btn { position:absolute; top:6px; right:-28px; width:22px; height:22px; border-radius:50%; background:transparent; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; color:var(--muted); font-size:16px; line-height:1; padding:0; }
-.msg-wrap.mine .msg-menu-btn { right:auto; left:-28px; }
+.msg-menu-btn { width:26px; height:26px; border-radius:50%; background:var(--cream); border:1px solid var(--border); cursor:pointer; display:none; align-items:center; justify-content:center; color:var(--muted); font-size:14px; line-height:1; padding:0; margin-bottom:4px; flex-shrink:0; }
 .msg-wrap:hover .msg-menu-btn { display:flex; }
-.msg-menu { position:absolute; top:28px; right:-8px; background:var(--white); border:1px solid var(--border); border-radius:4px; box-shadow:0 4px 16px rgba(26,20,16,0.12); z-index:10; min-width:140px; overflow:hidden; display:none; }
-.msg-wrap.mine .msg-menu { right:auto; left:-8px; }
+.msg-menu-row { display:flex; align-items:center; gap:6px; }
+.msg-wrap.mine .msg-menu-row { flex-direction:row-reverse; }
+.msg-menu { position:absolute; top:30px; right:0; background:var(--white); border:1px solid var(--border); border-radius:4px; box-shadow:0 4px 16px rgba(26,20,16,0.12); z-index:20; min-width:150px; overflow:hidden; display:none; }
+.msg-wrap.mine .msg-menu { right:auto; left:0; }
 .msg-menu.open { display:block; }
 .msg-menu-item { padding:10px 14px; font-size:12px; color:var(--night); cursor:pointer; transition:background 0.15s; display:flex; align-items:center; gap:8px; }
 .msg-menu-item:hover { background:var(--cream); }
@@ -311,13 +312,15 @@ function renderMessages(msgs, userId) {
     const bubbleContent = deleted
       ? `<div class="msg-deleted">Mensaje eliminado</div>`
       : `<div class="msg-bubble">${escapeHtml(m.body)}</div>`;
-    const menuHtml = mine && !deleted ? `
-      <button class="msg-menu-btn" onclick="toggleMsgMenu('${m.id}', event)">···</button>
-      <div class="msg-menu" id="menu-${m.id}">
-        <div class="msg-menu-item danger" onclick="deleteMessage('${m.id}')">🗑 Eliminar mensaje</div>
+    const menuRow = mine && !deleted ? `
+      <div class="msg-menu-row">
+        <button class="msg-menu-btn" onclick="toggleMsgMenu('${m.id}', event)">···</button>
+        <div class="msg-menu" id="menu-${m.id}">
+          <div class="msg-menu-item danger" onclick="deleteMessage('${m.id}')">🗑 Eliminar mensaje</div>
+        </div>
       </div>` : '';
     return `<div class="msg-wrap ${mine ? 'mine' : 'theirs'}" id="wrap-${m.id}">
-      ${menuHtml}
+      ${menuRow}
       ${bubbleContent}
       <div class="msg-time">${time}</div>
     </div>`;
