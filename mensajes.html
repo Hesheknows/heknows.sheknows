@@ -276,6 +276,14 @@ function renderMessages(msgs, userId) {
 }
 
 async function openOrCreateConv(advisorId) {
+  // Obtener datos del advisor
+  const advisorRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`, {
+    headers: { apikey: 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA', Authorization: `Bearer sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA` }
+  });
+  const advisorData = await advisorRes.json();
+  const advisor = advisorData[0] || { id: advisorId, full_name: 'Advisor', avatar_url: null };
+
+  // Buscar conversación existente o crear nueva
   const res = await fetch('/.netlify/functions/send-message', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -284,11 +292,22 @@ async function openOrCreateConv(advisorId) {
   const data = await res.json();
   if (data.conversationId) {
     await loadConversations();
-    const advisorRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`, {
-      headers: { apikey: 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA', Authorization: `Bearer sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA` }
+    // Abrir el chat directamente
+    currentConvId = data.conversationId;
+    document.getElementById('chat-empty').style.display = 'none';
+    const active = document.getElementById('chat-active');
+    active.style.display = 'flex';
+    active.style.flexDirection = 'column';
+    active.style.height = '100%';
+    active.style.overflow = 'hidden';
+    renderChatHeader(advisor);
+    await loadMessages();
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(loadMessages, 4000);
+    // Marcar activo en la lista
+    document.querySelectorAll('.conv-item').forEach(el => {
+      if (el.onclick?.toString().includes(data.conversationId)) el.classList.add('active');
     });
-    const [advisor] = await advisorRes.json();
-    if (advisor) openConv(data.conversationId, advisor);
   }
 }
 
