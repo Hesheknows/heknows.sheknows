@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Real — He Knows She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--muted:#9A8880;--gold:#C9A96E;--blush:#E8C4B0;--border:#EDE7DF;--white:#FFFFFF;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);color:var(--night);min-height:100vh;}
+
+nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:52px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);text-decoration:none;}
+.nav-logo span{color:var(--terra);font-style:italic;}
+.nav-links{display:flex;gap:24px;align-items:center;}
+.nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:var(--terra);}
+.nav-links a.active{color:var(--terra);border-bottom:1.5px solid var(--terra);padding-bottom:2px;}
+.nav-user{font-size:0.7rem;color:var(--muted);}
+
+.page{max-width:1100px;margin:0 auto;padding:40px 24px 60px;}
+
+.page-header{margin-bottom:28px;}
+.page-label{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:8px;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.2rem);font-weight:300;color:var(--night);line-height:1.05;margin-bottom:8px;}
+.page-title em{font-style:italic;color:var(--terra);}
+.gold-line{width:36px;height:1px;background:var(--gold);margin:16px 0;}
+.page-sub{font-size:0.9rem;color:var(--muted);line-height:1.7;font-weight:300;}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.filter-pill{padding:6px 14px;border-radius:20px;font-size:0.72rem;font-weight:500;border:1.5px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.filter-pill:hover{border-color:var(--blush);}
+.filter-pill.active{background:var(--terra);border-color:var(--terra);color:var(--white);}
+
+.layout{display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;}
+
+/* ASK BOX */
+.ask-box{background:var(--white);border:1.5px solid var(--blush);border-radius:4px;padding:20px;margin-bottom:16px;}
+.ask-label{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:12px;}
+.ask-textarea{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:300;color:var(--night);resize:none;height:80px;outline:none;transition:border-color 0.2s;margin-bottom:12px;display:block;}
+.ask-textarea:focus{border-color:var(--terra);}
+.ask-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.ask-toggles{display:flex;gap:6px;flex-wrap:wrap;}
+.ask-tog{padding:5px 12px;border-radius:20px;font-size:0.7rem;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.ask-tog.anon-on{background:var(--blush);border-color:var(--blush);color:#712B13;}
+.ask-tog.pub-on{background:var(--night);border-color:var(--night);color:var(--cream);}
+.ask-category{padding:5px 10px;border:1px solid var(--border);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:var(--night);background:var(--white);outline:none;cursor:pointer;}
+.ask-btn{padding:10px 20px;background:var(--terra);color:var(--white);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background 0.2s;}
+.ask-btn:hover{background:#b5694a;}
+.ask-btn:disabled{background:var(--blush);cursor:not-allowed;}
+.ask-note{font-size:0.68rem;color:var(--muted);margin-top:8px;}
+
+/* POST CARDS */
+.post-card{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:12px;transition:border-color 0.2s;}
+.post-card:hover{border-color:var(--blush);}
+.post-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.post-av{width:32px;height:32px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--terra);font-weight:500;flex-shrink:0;overflow:hidden;}
+.post-av img{width:100%;height:100%;object-fit:cover;}
+.post-av.anon{background:var(--border);color:var(--muted);}
+.post-user{font-size:0.8rem;font-weight:500;color:var(--night);}
+.post-time{font-size:0.7rem;color:var(--muted);}
+.post-tag{margin-left:auto;font-size:0.65rem;padding:3px 9px;border-radius:10px;background:var(--cream);color:var(--muted);border:1px solid var(--border);font-weight:500;}
+.post-body{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--night);line-height:1.6;margin-bottom:12px;}
+.post-body::before{content:'"';color:var(--terra);}
+.post-body::after{content:'"';color:var(--terra);}
+
+/* REPLY PREVIEW */
+.reply-preview{background:var(--cream);border-left:2px solid var(--terra);padding:10px 12px;margin-bottom:10px;border-radius:0 2px 2px 0;}
+.reply-meta-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.reply-badge{font-size:0.62rem;padding:2px 7px;border-radius:8px;background:var(--terra);color:var(--white);font-weight:600;}
+.reply-badge.f{background:var(--gold);color:#412402;}
+.reply-name{font-size:0.75rem;font-weight:500;color:var(--night);}
+.reply-text{font-size:0.8rem;color:var(--muted);line-height:1.55;}
+
+/* REPLY FORM */
+.reply-form{background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:10px;margin-bottom:10px;display:none;}
+.reply-form.open{display:block;}
+.reply-input{width:100%;background:var(--white);border:1px solid var(--border);border-radius:2px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--night);resize:none;height:60px;outline:none;margin-bottom:8px;display:block;transition:border-color 0.2s;}
+.reply-input:focus{border-color:var(--terra);}
+.reply-form-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.reply-anon-tog{padding:4px 10px;border-radius:20px;font-size:0.68rem;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.reply-anon-tog.on{background:var(--blush);border-color:var(--blush);color:#712B13;}
+.reply-send-btn{padding:7px 16px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
+.reply-send-btn:hover{background:var(--terra);}
+
+.post-actions{display:flex;align-items:center;gap:14px;padding-top:10px;border-top:1px solid var(--border);}
+.post-action{font-size:0.72rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color 0.2s;padding:0;}
+.post-action:hover{color:var(--terra);}
+.post-action.reply-btn{color:var(--terra);font-weight:500;}
+.post-replies-count{margin-left:auto;font-size:0.7rem;color:var(--muted);}
+
+.load-more{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:2px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:all 0.2s;}
+.load-more:hover{border-color:var(--terra);color:var(--terra);}
+
+.empty-feed{text-align:center;padding:48px 24px;color:var(--muted);}
+.empty-feed p{font-size:0.88rem;margin-top:8px;}
+
+/* SIDEBAR */
+.sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:14px;}
+.sidebar-title{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.8rem;}
+.stat-row:last-child{border-bottom:none;}
+.stat-label{color:var(--muted);}
+.stat-val{font-weight:500;color:var(--night);}
+.trend-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.trend-item:last-child{border-bottom:none;}
+.trend-num{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--blush);width:16px;flex-shrink:0;line-height:1.2;}
+.trend-text{font-size:0.8rem;color:var(--night);line-height:1.4;}
+.trend-count{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.sidebar-dark{background:var(--night);border-radius:4px;padding:18px;margin-bottom:14px;}
+.sidebar-dark-title{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(247,243,238,0.4);font-weight:600;margin-bottom:8px;}
+.sidebar-dark-text{font-size:0.82rem;color:rgba(247,243,238,0.55);line-height:1.6;margin-bottom:14px;}
+.sidebar-dark-btn{width:100%;padding:10px;background:var(--terra);color:var(--white);border:none;border-radius:2px;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
+.sidebar-dark-btn:hover{background:#b5694a;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--night);color:var(--white);font-size:0.8rem;padding:10px 22px;border-radius:4px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;}
+
+.loading{text-align:center;padding:32px;color:var(--muted);font-size:0.85rem;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .page{padding:24px 16px 40px;}
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">He Knows · <span>She Knows</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html">Home</a>
+    <a href="buscar-advisors.html">Advisors</a>
+    <a href="the-real.html" class="active">The Real</a>
+    <a href="mensajes.html">Mensajes</a>
+    <a href="perfil.html">Mi Perfil</a>
+    <span class="nav-user" id="nav-user"></span>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-label">The Real · Preguntas reales, respuestas honestas</div>
+    <h1 class="page-title">Lo que piensan,<br>lo que <em>nunca dicen.</em></h1>
+    <div class="gold-line"></div>
+    <p class="page-sub">Pregunta lo que sea. El sexo opuesto responde con honestidad. Anónimo si quieres.</p>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-pill active" data-cat="all" onclick="setFilter('all', this)">Todos</button>
+    <button class="filter-pill" data-cat="relaciones" onclick="setFilter('relaciones', this)">💔 Relaciones</button>
+    <button class="filter-pill" data-cat="ghosting" onclick="setFilter('ghosting', this)">👻 Ghosting</button>
+    <button class="filter-pill" data-cat="como-piensa" onclick="setFilter('como-piensa', this)">🧠 Cómo piensa</button>
+    <button class="filter-pill" data-cat="texting" onclick="setFilter('texting', this)">💬 Texting</button>
+    <button class="filter-pill" data-cat="conquista" onclick="setFilter('conquista', this)">❤️‍🔥 Conquista</button>
+    <button class="filter-pill" data-cat="confianza" onclick="setFilter('confianza', this)">💪 Confianza</button>
+  </div>
+
+  <div class="layout">
+    <div>
+      <!-- ASK BOX -->
+      <div class="ask-box" id="ask-box">
+        <div class="ask-label">Preguntas reales. Respuestas honestas.</div>
+        <textarea class="ask-textarea" id="ask-input" placeholder="¿Qué necesitas que el sexo opuesto te explique?..."></textarea>
+        <div class="ask-bottom">
+          <div class="ask-toggles">
+            <button class="ask-tog anon-on" id="tog-anon" onclick="toggleAnon()">Anónimo</button>
+            <button class="ask-tog" id="tog-name" onclick="toggleAnon()">Con mi nombre</button>
+            <select class="ask-category" id="ask-cat">
+              <option value="general">Categoría</option>
+              <option value="relaciones">💔 Relaciones</option>
+              <option value="ghosting">👻 Ghosting</option>
+              <option value="como-piensa">🧠 Cómo piensa</option>
+              <option value="texting">💬 Texting</option>
+              <option value="conquista">❤️‍🔥 Conquista</option>
+              <option value="confianza">💪 Confianza</option>
+            </select>
+          </div>
+          <button class="ask-btn" id="ask-btn" onclick="publishPost()">Publicar →</button>
+        </div>
+        <div class="ask-note" id="ask-note"></div>
+      </div>
+
+      <!-- FEED -->
+      <div id="feed">
+        <div class="loading">Cargando preguntas...</div>
+      </div>
+
+      <button class="load-more" id="load-more-btn" onclick="loadMore()" style="display:none;">Ver más →</button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">The Real hoy</div>
+        <div class="stat-row"><span class="stat-label">Preguntas</span><span class="stat-val" id="stat-posts">—</span></div>
+        <div class="stat-row"><span class="stat-label">Respuestas</span><span class="stat-val" id="stat-replies">—</span></div>
+        <div class="stat-row"><span class="stat-label">Anónimas</span><span class="stat-val" id="stat-anon">—</span></div>
+      </div>
+
+      <div class="sidebar-card" id="trending-card">
+        <div class="sidebar-title">Temas más comentados</div>
+        <div id="trending-list"></div>
+      </div>
+
+      <div class="sidebar-dark">
+        <div class="sidebar-dark-title">¿Quieres respuesta privada?</div>
+        <div class="sidebar-dark-text">Consulta directamente a un Advisor. Solo tú y él/ella lo ven.</div>
+        <button class="sidebar-dark-btn" onclick="window.location.href='buscar-advisors.html'">Ver Advisors →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
+let session = null;
+let isAnonymous = true;
+let currentFilter = 'all';
+let offset = 0;
+const LIMIT = 10;
+let allPosts = [];
+
+async function init() {
+  const raw = localStorage.getItem('hksk-session');
+  if (raw) {
+    session = JSON.parse(raw);
+    document.getElementById('nav-user').textContent = session.user?.email?.split('@')[0] || '';
+  } else {
+    document.getElementById('ask-box').innerHTML = `
+      <div style="text-align:center;padding:16px;">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px;">Inicia sesión para publicar tu pregunta.</p>
+        <a href="login.html" style="padding:9px 20px;background:var(--terra);color:white;border-radius:2px;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;font-weight:500;">Iniciar sesión →</a>
+      </div>`;
+  }
+  await loadPosts();
+}
+
+async function loadPosts(reset = false) {
+  if (reset) { offset = 0; allPosts = []; }
+  const url = `/.netlify/functions/get-posts?limit=${LIMIT}&offset=${offset}${currentFilter !== 'all' ? '&category=' + currentFilter : ''}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const posts = data.posts || [];
+  allPosts = reset ? posts : [...allPosts, ...posts];
+  renderFeed(allPosts);
+  document.getElementById('load-more-btn').style.display = posts.length === LIMIT ? 'block' : 'none';
+  updateStats(allPosts);
+  updateTrending(allPosts);
+}
+
+async function loadMore() {
+  offset += LIMIT;
+  await loadPosts(false);
+}
+
+function setFilter(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  loadPosts(true);
+}
+
+function renderFeed(posts) {
+  const feed = document.getElementById('feed');
+  if (!posts.length) {
+    feed.innerHTML = `<div class="empty-feed"><p>Aún no hay preguntas en esta categoría.<br>¡Sé el primero en preguntar!</p></div>`;
+    return;
+  }
+  feed.innerHTML = posts.map(p => renderPost(p)).join('');
+}
+
+function renderPost(p) {
+  const timeAgo = getTimeAgo(p.created_at);
+  const authorName = p.is_anonymous ? 'Anónimo/a' : (p.author?.full_name || 'Usuario');
+  const avatarHtml = p.is_anonymous
+    ? `<div class="post-av anon">?</div>`
+    : p.author?.avatar_url
+      ? `<div class="post-av"><img src="${p.author.avatar_url}" alt=""></div>`
+      : `<div class="post-av">${authorName.charAt(0).toUpperCase()}</div>`;
+
+  const catLabel = getCatLabel(p.category);
+  const replyHtml = p.first_reply ? renderReplyPreview(p.first_reply) : '';
+  const likesKey = `like_${p.id}`;
+  const liked = localStorage.getItem(likesKey);
+  const likeCount = (p.likes || 0) + (liked ? 1 : 0);
+
+  return `<div class="post-card" id="post-${p.id}">
+    <div class="post-meta">
+      ${avatarHtml}
+      <div>
+        <div class="post-user">${escHtml(authorName)}</div>
+        <div class="post-time">${timeAgo}</div>
+      </div>
+      ${catLabel ? `<div class="post-tag">${catLabel}</div>` : ''}
+    </div>
+    <div class="post-body">${escHtml(p.body)}</div>
+    ${replyHtml}
+    <div class="reply-form" id="rf-${p.id}">
+      <textarea class="reply-input" id="ri-${p.id}" placeholder="Tu respuesta..."></textarea>
+      <div class="reply-form-bottom">
+        <button class="reply-anon-tog" id="rat-${p.id}" onclick="toggleReplyAnon('${p.id}')">Anónimo</button>
+        <button class="reply-send-btn" onclick="sendReply('${p.id}')">Responder →</button>
+      </div>
+    </div>
+    <div class="post-actions">
+      <button class="post-action" onclick="likePost('${p.id}', this)">
+        ${liked ? '❤️' : '🤍'} ${likeCount}
+      </button>
+      <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">+ Responder</button>
+      <span class="post-replies-count">${p.reply_count || 0} respuesta${p.reply_count !== 1 ? 's' : ''}</span>
+    </div>
+  </div>`;
+}
+
+function renderReplyPreview(reply) {
+  const isAdvisor = reply.author?.is_advisor;
+  const name = reply.is_anonymous ? 'Anónimo/a' : (reply.author?.full_name || 'Usuario');
+  const badgeClass = isAdvisor ? 'reply-badge' : 'reply-badge f';
+  const badgeText = isAdvisor ? 'Advisor' : 'Usuario';
+  return `<div class="reply-preview">
+    <div class="reply-meta-row">
+      <span class="${badgeClass}">${badgeText}</span>
+      <span class="reply-name">${escHtml(name)}</span>
+    </div>
+    <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}</div>
+  </div>`;
+}
+
+function toggleReplyForm(postId) {
+  if (!session) { window.location.href = 'login.html'; return; }
+  const rf = document.getElementById(`rf-${postId}`);
+  rf.classList.toggle('open');
+  if (rf.classList.contains('open')) document.getElementById(`ri-${postId}`).focus();
+}
+
+const replyAnonState = {};
+function toggleReplyAnon(postId) {
+  replyAnonState[postId] = !replyAnonState[postId];
+  const btn = document.getElementById(`rat-${postId}`);
+  btn.classList.toggle('on', replyAnonState[postId]);
+  btn.textContent = replyAnonState[postId] ? 'Anónimo' : 'Con mi nombre';
+}
+
+async function sendReply(postId) {
+  if (!session) return;
+  const input = document.getElementById(`ri-${postId}`);
+  const text = input.value.trim();
+  if (!text) return;
+  const is_anonymous = replyAnonState[postId] || false;
+
+  const res = await fetch('/.netlify/functions/create-reply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: session.access_token, post_id: postId, text, is_anonymous })
+  });
+
+  if (res.ok) {
+    input.value = '';
+    document.getElementById(`rf-${postId}`).classList.remove('open');
+    showToast('Respuesta publicada');
+    await loadPosts(true);
+  } else {
+    showToast('Error al responder. Intenta de nuevo.');
+  }
+}
+
+function toggleAnon() {
+  isAnonymous = !isAnonymous;
+  document.getElementById('tog-anon').classList.toggle('anon-on', isAnonymous);
+  document.getElementById('tog-name').classList.toggle('anon-on', !isAnonymous);
+}
+
+async function publishPost() {
+  if (!session) { window.location.href = 'login.html'; return; }
+  const text = document.getElementById('ask-input').value.trim();
+  if (!text) { showToast('Escribe tu pregunta primero.'); return; }
+  if (text.length < 10) { showToast('Tu pregunta es muy corta.'); return; }
+
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true; btn.textContent = 'Publicando...';
+
+  const category = document.getElementById('ask-cat').value;
+
+  const res = await fetch('/.netlify/functions/create-post', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: session.access_token, text, is_anonymous: isAnonymous, category })
+  });
+
+  if (res.ok) {
+    document.getElementById('ask-input').value = '';
+    showToast('¡Tu pregunta fue publicada!');
+    await loadPosts(true);
+  } else {
+    const data = await res.json();
+    showToast('Error: ' + (data.error || 'Intenta de nuevo.'));
+  }
+
+  btn.disabled = false; btn.textContent = 'Publicar →';
+}
+
+async function likePost(postId, btn) {
+  const key = `like_${postId}`;
+  if (localStorage.getItem(key)) return;
+  localStorage.setItem(key, '1');
+  btn.innerHTML = '❤️ ' + (parseInt(btn.textContent.trim().split(' ')[1] || 0) + 1);
+}
+
+function updateStats(posts) {
+  document.getElementById('stat-posts').textContent = posts.length;
+  const totalReplies = posts.reduce((a, p) => a + (p.reply_count || 0), 0);
+  document.getElementById('stat-replies').textContent = totalReplies;
+  const anonCount = posts.filter(p => p.is_anonymous).length;
+  const pct = posts.length ? Math.round(anonCount / posts.length * 100) : 0;
+  document.getElementById('stat-anon').textContent = pct + '%';
+}
+
+function updateTrending(posts) {
+  const sorted = [...posts].sort((a, b) => (b.reply_count || 0) - (a.reply_count || 0)).slice(0, 3);
+  const list = document.getElementById('trending-list');
+  if (!sorted.length) { list.innerHTML = '<p style="font-size:0.78rem;color:var(--muted);">Aún sin tendencias.</p>'; return; }
+  list.innerHTML = sorted.map((p, i) => `
+    <div class="trend-item" onclick="scrollToPost('${p.id}')">
+      <div class="trend-num">${i + 1}</div>
+      <div>
+        <div class="trend-text">${escHtml(p.body.slice(0, 60))}${p.body.length > 60 ? '…' : ''}</div>
+        <div class="trend-count">${p.reply_count || 0} respuestas</div>
+      </div>
+    </div>`).join('');
+}
+
+function scrollToPost(id) {
+  const el = document.getElementById(`post-${id}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function getCatLabel(cat) {
+  const map = { relaciones: '💔 Relaciones', ghosting: '👻 Ghosting', 'como-piensa': '🧠 Cómo piensa', texting: '💬 Texting', conquista: '❤️‍🔥 Conquista', confianza: '💪 Confianza' };
+  return map[cat] || '';
+}
+
+function getTimeAgo(dateStr) {
+  const diff = (Date.now() - new Date(dateStr)) / 1000;
+  if (diff < 60) return 'hace un momento';
+  if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
+  if (diff < 86400) return `hace ${Math.floor(diff / 3600)} hr`;
+  return `hace ${Math.floor(diff / 86400)} días`;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>
