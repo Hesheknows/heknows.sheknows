@@ -124,6 +124,20 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 
 .loading-msg { text-align:center; font-size:12px; color:var(--muted); padding:20px; }
 
+.msg-wrap { display:flex; flex-direction:column; max-width:72%; position:relative; }
+.msg-wrap.mine { align-self:flex-end; align-items:flex-end; }
+.msg-wrap.theirs { align-self:flex-start; align-items:flex-start; }
+.msg-menu-btn { position:absolute; top:6px; right:-28px; width:22px; height:22px; border-radius:50%; background:transparent; border:none; cursor:pointer; display:none; align-items:center; justify-content:center; color:var(--muted); font-size:16px; line-height:1; padding:0; }
+.msg-wrap.mine .msg-menu-btn { right:auto; left:-28px; }
+.msg-wrap:hover .msg-menu-btn { display:flex; }
+.msg-menu { position:absolute; top:28px; right:-8px; background:var(--white); border:1px solid var(--border); border-radius:4px; box-shadow:0 4px 16px rgba(26,20,16,0.12); z-index:10; min-width:140px; overflow:hidden; display:none; }
+.msg-wrap.mine .msg-menu { right:auto; left:-8px; }
+.msg-menu.open { display:block; }
+.msg-menu-item { padding:10px 14px; font-size:12px; color:var(--night); cursor:pointer; transition:background 0.15s; display:flex; align-items:center; gap:8px; }
+.msg-menu-item:hover { background:var(--cream); }
+.msg-menu-item.danger { color:#c0392b; }
+.msg-deleted { font-size:12px; color:var(--muted); font-style:italic; padding:8px 12px; }
+
 /* Toast de error */
 .toast {
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
@@ -293,13 +307,55 @@ function renderMessages(msgs, userId) {
   area.innerHTML = msgs.map(m => {
     const mine = m.sender_id === userId;
     const time = new Date(m.created_at).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-    return `<div class="msg ${mine ? 'mine' : 'theirs'}">
-      <div class="msg-bubble">${escapeHtml(m.body)}</div>
+    const deleted = m.body === '__deleted__';
+    const bubbleContent = deleted
+      ? `<div class="msg-deleted">Mensaje eliminado</div>`
+      : `<div class="msg-bubble">${escapeHtml(m.body)}</div>`;
+    const menuHtml = mine && !deleted ? `
+      <button class="msg-menu-btn" onclick="toggleMsgMenu('${m.id}', event)">···</button>
+      <div class="msg-menu" id="menu-${m.id}">
+        <div class="msg-menu-item danger" onclick="deleteMessage('${m.id}')">🗑 Eliminar mensaje</div>
+      </div>` : '';
+    return `<div class="msg-wrap ${mine ? 'mine' : 'theirs'}" id="wrap-${m.id}">
+      ${menuHtml}
+      ${bubbleContent}
       <div class="msg-time">${time}</div>
     </div>`;
   }).join('');
 
   if (wasAtBottom || msgs.length === 0) area.scrollTop = area.scrollHeight;
+
+  // Close menus on outside click
+  document.onclick = (e) => {
+    if (!e.target.closest('.msg-menu-btn')) {
+      document.querySelectorAll('.msg-menu.open').forEach(m => m.classList.remove('open'));
+    }
+  };
+}
+
+function toggleMsgMenu(msgId, e) {
+  e.stopPropagation();
+  const menu = document.getElementById('menu-' + msgId);
+  const wasOpen = menu.classList.contains('open');
+  document.querySelectorAll('.msg-menu.open').forEach(m => m.classList.remove('open'));
+  if (!wasOpen) menu.classList.add('open');
+}
+
+async function deleteMessage(msgId) {
+  document.querySelectorAll('.msg-menu.open').forEach(m => m.classList.remove('open'));
+  if (!confirm('¿Eliminar este mensaje para todos?')) return;
+
+  const res = await fetch('/.netlify/functions/delete-message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: session.access_token, messageId: msgId })
+  });
+
+  if (res.ok) {
+    await loadMessages();
+  } else {
+    showToast('No se pudo eliminar el mensaje.');
+  }
 }
 
 // ─── openOrCreateConv: busca conv existente o crea una nueva SIN mandar mensaje ───
