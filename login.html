@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iniciar sesión · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -14,7 +15,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .logo span{color:var(--terra);font-style:italic;}
 .card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:40px 36px;}
 .tabs{display:flex;border-bottom:1px solid rgba(196,122,90,0.15);margin-bottom:32px;}
-.tab{flex:1;padding:10px;text-align:center;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;}
+.tab{flex:1;padding:10px;text-align:center;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
 .tab.on{color:var(--terra);border-bottom-color:var(--terra);}
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px;}
@@ -24,7 +25,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .btn:hover{background:var(--terra);}
 .btn:disabled{opacity:0.5;cursor:default;}
 .err{font-size:0.78rem;color:#8B2A1A;text-align:center;margin-top:12px;min-height:20px;}
-.ok{font-size:0.78rem;color:#2A6B3A;text-align:center;margin-top:12px;}
 .back{display:block;text-align:center;margin-top:24px;font-size:0.72rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
 .back:hover{color:var(--terra);}
 </style>
@@ -34,57 +34,53 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
   <div class="logo">He Knows · <span>She Knows</span></div>
   <div class="card">
     <div class="tabs">
-      <button class="tab on" onclick="showTab('login')">Iniciar sesión</button>
-      <button class="tab" onclick="showTab('register')">Registrarse</button>
+      <div class="tab on" onclick="showTab('login')">Iniciar sesión</div>
+      <div class="tab" onclick="showTab('register')">Registrarse</div>
     </div>
 
+    <!-- LOGIN -->
     <div id="tab-login">
       <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
       <div class="err" id="login-err"></div>
     </div>
 
+    <!-- REGISTRO -->
     <div id="tab-register" style="display:none;">
       <div class="field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@correo.com"></div>
       <div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
-      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña"></div>
+      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña" onkeydown="if(event.key==='Enter')doRegister()"></div>
       <button class="btn" id="btn-reg" onclick="doRegister()">Crear cuenta →</button>
       <div class="err" id="reg-err"></div>
-      <div class="ok" id="reg-ok" style="display:none;">¡Cuenta creada! Iniciando sesión...</div>
     </div>
 
     <a href="/" class="back">← Volver al inicio</a>
   </div>
 </div>
 
+<script src="supabase.js"></script>
 <script>
+if (window.location.hash.includes("access_token")) {
+  window.location.href = "/dashboard.html";
+}
+
+(async () => {
+  const session = await HKSK.getSession();
+  if (session) {
+    localStorage.setItem('hksk-session', JSON.stringify({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      user: { id: session.user.id, email: session.user.email }
+    }));
+    window.location.href = '/dashboard.html';
+  }
+})();
+
 function showTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('on', (i === 0) === (tab === 'login'));
-  });
-}
-
-// Guardar sesión en localStorage
-function saveSession(data) {
-  localStorage.setItem('hksk-session', JSON.stringify({
-    access_token: data.access_token,
-    refresh_token: data.refresh_token,
-    user: data.user
-  }));
-}
-
-function getSession() {
-  try {
-    return JSON.parse(localStorage.getItem('hksk-session'));
-  } catch(e) { return null; }
-}
-
-// Si ya hay sesión, ir al dashboard
-if (getSession()?.access_token) {
-  window.location.replace('/dashboard.html');
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
 }
 
 async function doLogin() {
@@ -95,23 +91,19 @@ async function doLogin() {
   errEl.textContent = '';
   if (!email || !pass) { errEl.textContent = 'Por favor llena todos los campos.'; return; }
   btn.disabled = true; btn.textContent = 'Entrando…';
-  try {
-    const res = await fetch('/.netlify/functions/auth-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass })
-    });
-    const data = await res.json();
-    if (data.access_token) {
-      saveSession(data);
-      window.location.replace('/dashboard.html');
-    } else {
-      errEl.textContent = 'Correo o contraseña incorrectos.';
-      btn.disabled = false; btn.textContent = 'Entrar →';
-    }
-  } catch(e) {
-    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+  const { data, error } = await HKSK.signIn(email, pass);
+  if (error) {
+    errEl.textContent = 'Correo o contraseña incorrectos.';
     btn.disabled = false; btn.textContent = 'Entrar →';
+  } else {
+    if (data?.session) {
+      localStorage.setItem('hksk-session', JSON.stringify({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+        user: { id: data.session.user.id, email: data.session.user.email }
+      }));
+    }
+    window.location.href = '/dashboard.html';
   }
 }
 
@@ -120,44 +112,25 @@ async function doRegister() {
   const pass = document.getElementById('reg-pass').value;
   const pass2 = document.getElementById('reg-pass2').value;
   const errEl = document.getElementById('reg-err');
-  const okEl = document.getElementById('reg-ok');
   const btn = document.getElementById('btn-reg');
-  errEl.textContent = ''; okEl.style.display = 'none';
+  errEl.textContent = '';
   if (!email || !pass) { errEl.textContent = 'Por favor llena todos los campos.'; return; }
   if (pass !== pass2) { errEl.textContent = 'Las contraseñas no coinciden.'; return; }
   if (pass.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   btn.disabled = true; btn.textContent = 'Creando cuenta…';
-  try {
-    const res = await fetch('/.netlify/functions/auth-register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass })
-    });
-    const data = await res.json();
-    if (data.access_token || (data.user && !data.error)) {
-      okEl.style.display = 'block';
-      // Auto login
-      const loginRes = await fetch('/.netlify/functions/auth-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: pass })
-      });
-      const loginData = await loginRes.json();
-      if (loginData.access_token) {
-        saveSession(loginData);
-        window.location.replace('/dashboard.html');
-      } else {
-        okEl.textContent = '¡Cuenta creada! Ya puedes iniciar sesión.';
-        showTab('login');
-        btn.disabled = false; btn.textContent = 'Crear cuenta →';
-      }
-    } else {
-      errEl.textContent = data.error || data.msg || data.error_description || JSON.stringify(data);
-      btn.disabled = false; btn.textContent = 'Crear cuenta →';
-    }
-  } catch(e) {
-    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+  const { data, error } = await HKSK.signUp(email, pass);
+  if (error) {
+    errEl.textContent = error.message.includes('already') ? 'Este correo ya está registrado.' : 'Error al crear cuenta. Intenta de nuevo.';
     btn.disabled = false; btn.textContent = 'Crear cuenta →';
+  } else {
+    if (data?.session) {
+      localStorage.setItem('hksk-session', JSON.stringify({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+        user: { id: data.session.user.id, email: data.session.user.email }
+      }));
+    }
+    window.location.href = '/dashboard.html';
   }
 }
 </script>
