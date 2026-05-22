@@ -320,14 +320,17 @@ function renderPost(p) {
 }
 
 function renderReplyPreview(reply) {
-  const isAdvisor = reply.author?.is_advisor;
+  const isAdvisor = reply.author?.is_advisor || reply.author?.role === 'advisor';
   const name = reply.is_anonymous ? 'Anónimo/a' : (reply.author?.full_name || 'Usuario');
+  const avatarHtml = !reply.is_anonymous && reply.author?.avatar_url
+    ? `<img src="${reply.author.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle;" alt="">`
+    : '';
   const badgeClass = isAdvisor ? 'reply-badge' : 'reply-badge f';
   const badgeText = isAdvisor ? 'Advisor' : 'Usuario';
   return `<div class="reply-preview">
     <div class="reply-meta-row">
       <span class="${badgeClass}">${badgeText}</span>
-      <span class="reply-name">${escHtml(name)}</span>
+      ${avatarHtml}<span class="reply-name">${escHtml(name)}</span>
     </div>
     <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}</div>
   </div>`;
