@@ -44,6 +44,9 @@ nav {
   color: var(--night); text-decoration: none;
 }
 .nav-logo span { color: var(--terra); font-style: italic; }
+.nav-links { display:flex; gap:20px; align-items:center; }
+.nav-links a { font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); text-decoration:none; font-weight:500; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--terra); }
 .nav-back {
   display: flex; align-items: center; gap: 6px;
   font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
@@ -347,12 +350,13 @@ main {
 
 <nav>
   <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
-  <a href="dashboard.html" class="nav-back">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Home
-  </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Home</a>
+    <a href="buscar-advisors.html">Advisors</a>
+    <a href="the-real.html">The Real</a>
+    <a href="mensajes.html">Mensajes</a>
+    <a href="perfil.html" class="active">Mi perfil</a>
+  </div>
 </nav>
 
 <div id="loading" class="loading">Cargando perfil…</div>
