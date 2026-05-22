@@ -561,7 +561,13 @@ async function showSuc(id){
       const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,gender})});
       const data=await res.json();
       if(data.error){alert('Error: '+data.error);return;}
-      if(data.session)localStorage.setItem('hksk-session',JSON.stringify(data.session));
+      if(data.access_token){
+        const sessionData={access_token:data.access_token,refresh_token:data.refresh_token,user:data.user};
+        localStorage.setItem('hksk-session',JSON.stringify(sessionData));
+        window.location.href='onboarding.html';
+        return;
+      }
+      // Requiere confirmación de email
       document.getElementById('mu-form').style.display='none';
       document.getElementById('mu-suc').style.display='block';
     }catch(e){alert('Error de conexión.');}
