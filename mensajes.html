@@ -297,11 +297,10 @@ function renderMessages(msgs, userId) {
   if (wasAtBottom || msgs.length === 0) area.scrollTop = area.scrollHeight;
 }
 
-// ─── CORREGIDO: openOrCreateConv ya NO envía mensaje automático ───
-// Solo busca o crea la conversación para abrirla lista para escribir
+// ─── openOrCreateConv: busca conv existente o crea una nueva SIN mandar mensaje ───
 async function openOrCreateConv(advisorId) {
-  // 1. Obtener datos del advisor desde Supabase directamente
   try {
+    // 1. Obtener datos del advisor
     const advisorRes = await fetch(
       `${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } }
@@ -309,36 +308,49 @@ async function openOrCreateConv(advisorId) {
     const advisorData = await advisorRes.json();
     const advisor = advisorData[0] || { id: advisorId, full_name: 'Advisor', avatar_url: null };
 
-    // 2. Buscar conversación existente en la lista ya cargada
-    const convItems = document.querySelectorAll('.conv-item');
-    let existingConvId = null;
-    convItems.forEach(item => {
-      const cid = item.getAttribute('data-conv-id');
-      // Buscar en el onclick si contiene el advisorId — fallback
-    });
-
-    // 3. Si no encontramos en la lista, pedir al backend que busque/cree
-    //    pero SIN enviar mensaje — solo para obtener el conversationId
-    const res = await fetch('/.netlify/functions/send-message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: session.access_token,
-        advisorId,
-        body: ' ' // espacio mínimo — lo filtramos en el backend si quieres, por ahora sirve para crear la conv
-      })
-    });
-    const data = await res.json();
-
-    if (!res.ok || !data.conversationId) {
-      console.error('No se pudo abrir/crear conversación:', data);
-      showToast('No se pudo conectar con el advisor. Intenta de nuevo.');
+    // 2. Buscar si ya existe en la lista cargada
+    const existingItem = document.querySelector(`.conv-item[data-advisor-id="${advisorId}"]`);
+    if (existingItem) {
+      existingItem.click();
+      history.replaceState({}, '', 'mensajes.html');
       return;
     }
 
-    // 4. Recargar conversaciones y abrir el chat
+    // 3. Buscar conversación existente via get-conversations (ya cargadas)
+    //    Si no está en la lista, crear la conversación via endpoint dedicado
+    const res = await fetch('/.netlify/functions/get-or-create-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: session.access_token, advisorId })
+    });
+
+    let convId;
+    if (res.ok) {
+      const data = await res.json();
+      convId = data.conversationId;
+    } else {
+      // Fallback: buscar en las conversaciones ya cargadas por advisorId
+      convId = null;
+    }
+
+    if (!convId) {
+      // No hay conversación — mostrar chat vacío listo para escribir
+      // sin conv ID hasta que manden el primer mensaje
+      document.getElementById('chat-empty').style.display = 'none';
+      const active = document.getElementById('chat-active');
+      active.style.display = 'flex';
+      active.style.flexDirection = 'column';
+      renderChatHeader(advisor);
+      document.getElementById('messages-area').innerHTML = '';
+      // Guardar advisorId para usarlo al enviar el primer mensaje
+      active.dataset.pendingAdvisorId = advisorId;
+      history.replaceState({}, '', 'mensajes.html');
+      return;
+    }
+
+    // 4. Abrir el chat con la conversación encontrada/creada
     await loadConversations();
-    currentConvId = data.conversationId;
+    currentConvId = convId;
     document.getElementById('chat-empty').style.display = 'none';
     const active = document.getElementById('chat-active');
     active.style.display = 'flex';
@@ -346,15 +358,12 @@ async function openOrCreateConv(advisorId) {
     renderChatHeader(advisor);
     await loadMessages();
 
-    // Marcar activo en la lista
     document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
-    const activeItem = document.querySelector(`.conv-item[data-conv-id="${data.conversationId}"]`);
+    const activeItem = document.querySelector(`.conv-item[data-conv-id="${convId}"]`);
     if (activeItem) activeItem.classList.add('active');
 
     if (pollInterval) clearInterval(pollInterval);
     pollInterval = setInterval(loadMessages, 4000);
-
-    // Limpiar la URL para no re-crear al refrescar
     history.replaceState({}, '', 'mensajes.html');
 
   } catch (err) {
@@ -366,7 +375,11 @@ async function openOrCreateConv(advisorId) {
 async function sendMessage() {
   const input = document.getElementById('chat-input');
   const body = input.value.trim();
-  if (!body || !currentConvId) return;
+  const active = document.getElementById('chat-active');
+  const pendingAdvisorId = active.dataset.pendingAdvisorId;
+
+  if (!body) return;
+  if (!currentConvId && !pendingAdvisorId) return;
 
   const btn = document.getElementById('btn-send');
   btn.disabled = true;
@@ -374,21 +387,32 @@ async function sendMessage() {
   autoResize(input);
 
   try {
+    const payload = currentConvId
+      ? { token: session.access_token, conversationId: currentConvId, body }
+      : { token: session.access_token, advisorId: pendingAdvisorId, body };
+
     const res = await fetch('/.netlify/functions/send-message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: session.access_token, conversationId: currentConvId, body })
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {
       const data = await res.json();
       console.error('Error enviando mensaje:', data);
       showToast('Error al enviar: ' + (data.error || res.status));
-      // Restaurar el texto en el input para no perderlo
       input.value = body;
       autoResize(input);
     } else {
+      const data = await res.json();
+      if (!currentConvId && data.conversationId) {
+        currentConvId = data.conversationId;
+        delete active.dataset.pendingAdvisorId;
+        if (pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(loadMessages, 4000);
+      }
       await loadMessages();
+      await loadConversations();
     }
   } catch (err) {
     console.error('sendMessage error:', err);
