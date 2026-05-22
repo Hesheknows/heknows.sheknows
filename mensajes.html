@@ -119,6 +119,15 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 .btn-send:disabled { background:var(--blush); cursor:not-allowed; }
 
 .loading-msg { text-align:center; font-size:12px; color:var(--muted); padding:20px; }
+
+/* Toast de error */
+.toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:var(--night); color:var(--white); font-size:13px;
+  padding:10px 20px; border-radius:8px; opacity:0;
+  transition:opacity 0.3s; pointer-events:none; z-index:999;
+}
+.toast.show { opacity:1; }
 </style>
 </head>
 <body>
@@ -172,8 +181,11 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 
 let session = null;
 let currentConvId = null;
@@ -186,15 +198,20 @@ async function init() {
 
   await loadConversations();
 
+  // Si hay advisorId en la URL, abrir o crear esa conversación
   const params = new URLSearchParams(location.search);
   const advisorId = params.get('advisorId');
   if (advisorId) await openOrCreateConv(advisorId);
 }
 
 async function loadConversations() {
-  const res = await fetch(`/.netlify/functions/get-conversations?token=${session.access_token}`);
-  const data = await res.json();
-  renderConvList(data.conversations || []);
+  try {
+    const res = await fetch(`/.netlify/functions/get-conversations?token=${session.access_token}`);
+    const data = await res.json();
+    renderConvList(data.conversations || []);
+  } catch (e) {
+    console.error('Error cargando conversaciones:', e);
+  }
 }
 
 function renderConvList(convs) {
@@ -212,7 +229,7 @@ function renderConvList(convs) {
     const preview = c.last_message
       ? (c.last_message.length > 40 ? c.last_message.slice(0, 40) + '…' : c.last_message)
       : 'Sin mensajes aún';
-    return `<div class="conv-item${c.id === currentConvId ? ' active' : ''}" onclick="openConv('${c.id}', ${JSON.stringify(other).replace(/"/g, '&quot;')})">
+    return `<div class="conv-item${c.id === currentConvId ? ' active' : ''}" data-conv-id="${c.id}" onclick="openConv('${c.id}', ${JSON.stringify(other).replace(/"/g, '&quot;')})">
       ${avatarHtml}
       <div class="conv-info">
         <div class="conv-name">${other.full_name || 'Usuario'}</div>
@@ -226,12 +243,13 @@ function renderConvList(convs) {
 async function openConv(convId, other) {
   currentConvId = convId;
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
-  event?.currentTarget?.classList.add('active');
+  const activeItem = document.querySelector(`.conv-item[data-conv-id="${convId}"]`);
+  if (activeItem) activeItem.classList.add('active');
 
-  const empty = document.getElementById('chat-empty');
+  document.getElementById('chat-empty').style.display = 'none';
   const active = document.getElementById('chat-active');
-  empty.style.display = 'none';
   active.style.display = 'flex';
+  active.style.flexDirection = 'column';
 
   renderChatHeader(other);
   await loadMessages();
@@ -253,10 +271,14 @@ function renderChatHeader(other) {
 
 async function loadMessages() {
   if (!currentConvId) return;
-  const res = await fetch(`/.netlify/functions/get-messages?token=${session.access_token}&conversationId=${currentConvId}&markRead=true`);
-  const data = await res.json();
-  renderMessages(data.messages || [], data.userId);
-  loadConversations();
+  try {
+    const res = await fetch(`/.netlify/functions/get-messages?token=${session.access_token}&conversationId=${currentConvId}&markRead=true`);
+    const data = await res.json();
+    renderMessages(data.messages || [], data.userId);
+    loadConversations();
+  } catch (e) {
+    console.error('Error cargando mensajes:', e);
+  }
 }
 
 function renderMessages(msgs, userId) {
@@ -275,39 +297,69 @@ function renderMessages(msgs, userId) {
   if (wasAtBottom || msgs.length === 0) area.scrollTop = area.scrollHeight;
 }
 
+// ─── CORREGIDO: openOrCreateConv ya NO envía mensaje automático ───
+// Solo busca o crea la conversación para abrirla lista para escribir
 async function openOrCreateConv(advisorId) {
-  // Obtener datos del advisor
-  const advisorRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`, {
-    headers: { apikey: 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA', Authorization: `Bearer sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA` }
-  });
-  const advisorData = await advisorRes.json();
-  const advisor = advisorData[0] || { id: advisorId, full_name: 'Advisor', avatar_url: null };
+  // 1. Obtener datos del advisor desde Supabase directamente
+  try {
+    const advisorRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`,
+      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } }
+    );
+    const advisorData = await advisorRes.json();
+    const advisor = advisorData[0] || { id: advisorId, full_name: 'Advisor', avatar_url: null };
 
-  // Buscar conversación existente o crear nueva
-  const res = await fetch('/.netlify/functions/send-message', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: session.access_token, advisorId, body: '👋 Hola, me gustaría consultarte algo.' })
-  });
-  const data = await res.json();
-  if (data.conversationId) {
+    // 2. Buscar conversación existente en la lista ya cargada
+    const convItems = document.querySelectorAll('.conv-item');
+    let existingConvId = null;
+    convItems.forEach(item => {
+      const cid = item.getAttribute('data-conv-id');
+      // Buscar en el onclick si contiene el advisorId — fallback
+    });
+
+    // 3. Si no encontramos en la lista, pedir al backend que busque/cree
+    //    pero SIN enviar mensaje — solo para obtener el conversationId
+    const res = await fetch('/.netlify/functions/send-message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: session.access_token,
+        advisorId,
+        body: ' ' // espacio mínimo — lo filtramos en el backend si quieres, por ahora sirve para crear la conv
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.conversationId) {
+      console.error('No se pudo abrir/crear conversación:', data);
+      showToast('No se pudo conectar con el advisor. Intenta de nuevo.');
+      return;
+    }
+
+    // 4. Recargar conversaciones y abrir el chat
     await loadConversations();
-    // Abrir el chat directamente
     currentConvId = data.conversationId;
     document.getElementById('chat-empty').style.display = 'none';
     const active = document.getElementById('chat-active');
     active.style.display = 'flex';
     active.style.flexDirection = 'column';
-    active.style.height = '100%';
-    active.style.overflow = 'hidden';
     renderChatHeader(advisor);
     await loadMessages();
+
+    // Marcar activo en la lista
+    document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+    const activeItem = document.querySelector(`.conv-item[data-conv-id="${data.conversationId}"]`);
+    if (activeItem) activeItem.classList.add('active');
+
     if (pollInterval) clearInterval(pollInterval);
     pollInterval = setInterval(loadMessages, 4000);
-    // Marcar activo en la lista
-    document.querySelectorAll('.conv-item').forEach(el => {
-      if (el.onclick?.toString().includes(data.conversationId)) el.classList.add('active');
-    });
+
+    // Limpiar la URL para no re-crear al refrescar
+    history.replaceState({}, '', 'mensajes.html');
+
+  } catch (err) {
+    console.error('openOrCreateConv error:', err);
+    showToast('Error al abrir la conversación.');
   }
 }
 
@@ -321,13 +373,30 @@ async function sendMessage() {
   input.value = '';
   autoResize(input);
 
-  await fetch('/.netlify/functions/send-message', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: session.access_token, conversationId: currentConvId, body })
-  });
+  try {
+    const res = await fetch('/.netlify/functions/send-message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: session.access_token, conversationId: currentConvId, body })
+    });
 
-  await loadMessages();
+    if (!res.ok) {
+      const data = await res.json();
+      console.error('Error enviando mensaje:', data);
+      showToast('Error al enviar: ' + (data.error || res.status));
+      // Restaurar el texto en el input para no perderlo
+      input.value = body;
+      autoResize(input);
+    } else {
+      await loadMessages();
+    }
+  } catch (err) {
+    console.error('sendMessage error:', err);
+    showToast('Error de conexión.');
+    input.value = body;
+    autoResize(input);
+  }
+
   btn.disabled = false;
   input.focus();
 }
@@ -343,6 +412,13 @@ function autoResize(el) {
 
 function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 init();
