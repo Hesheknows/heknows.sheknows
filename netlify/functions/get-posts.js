@@ -44,9 +44,9 @@ exports.handler = async (event) => {
       const firstReplyData = await firstReplyRes.json();
       let firstReply = firstReplyData[0] || null;
 
-      if (firstReply && !firstReply.is_anonymous && firstReply.user_id) {
+      if (firstReply && firstReply.user_id) {
         const rProfRes = await fetch(
-          `${SUPA_URL}/rest/v1/profiles?id=eq.${firstReply.user_id}&select=full_name,avatar_url,is_advisor`,
+          `${SUPA_URL}/rest/v1/profiles?id=eq.${firstReply.user_id}&select=full_name,avatar_url,is_advisor,role`,
           { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
         );
         const rProf = await rProfRes.json();
