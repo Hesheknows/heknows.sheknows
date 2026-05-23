@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iniciar sesión · He Knows · She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -33,7 +33,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 <div class="wrap">
   <div class="logo">He Knows · <span>She Knows</span></div>
   <div class="card">
-    <div class="tabs">
+    <div class="tabs" id="main-tabs">
       <div class="tab on" onclick="showTab('login')">Iniciar sesión</div>
       <div class="tab" onclick="showTab('register')">Registrarse</div>
     </div>
@@ -44,6 +44,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
       <div class="err" id="login-err"></div>
+      <div style="text-align:center;margin-top:14px;">
+        <a href="#" onclick="showTab('reset');return false;" style="font-size:0.72rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--muted)'">¿Olvidaste tu contraseña?</a>
+      </div>
     </div>
 
     <!-- REGISTRO -->
@@ -55,11 +58,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <div class="err" id="reg-err"></div>
     </div>
 
+    <!-- RESET PASSWORD -->
+    <div id="tab-reset" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--night);margin-bottom:6px;">Recuperar contraseña</div>
+        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Te enviaremos un enlace para crear una nueva contraseña.</div>
+      </div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="reset-email" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')doReset()"></div>
+      <button class="btn" id="btn-reset" onclick="doReset()">Enviar enlace →</button>
+      <div class="err" id="reset-err"></div>
+      <div style="text-align:center;margin-top:14px;">
+        <a href="#" onclick="showTab('login');return false;" style="font-size:0.72rem;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--muted)'">← Volver al login</a>
+      </div>
+    </div>
+
     <a href="/" class="back">← Volver al inicio</a>
   </div>
 </div>
 
-<script src="supabase.js"></script>
+<script src="supabase.js"><\/script>
 <script>
 if (window.location.hash.includes("access_token")) {
   window.location.href = "/onboarding.html";
@@ -80,7 +97,9 @@ if (window.location.hash.includes("access_token")) {
 function showTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
+  document.getElementById('tab-reset').style.display = tab === 'reset' ? 'block' : 'none';
+  document.getElementById('main-tabs').style.display = tab === 'reset' ? 'none' : 'flex';
+  if(tab !== 'reset') document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
 }
 
 async function doLogin() {
@@ -139,6 +158,6 @@ async function doRegister() {
     }
   }
 }
-</script>
+<\/script>
 </body>
 </html>
