@@ -394,6 +394,17 @@ async function publishPost() {
   if (!text) { showToast(localStorage.getItem('hksk-lang')==='en'?'Write your question first.':'Escribe tu pregunta primero.'); return; }
   if (text.length < 10) { showToast(localStorage.getItem('hksk-lang')==='en'?'Question too short.':'Tu pregunta es muy corta.'); return; }
 
+  // Check daily limit for free users
+  if (!isPremium() && checkDailyLimit()) {
+    showUpgrade(
+      'Ya publicaste hoy',
+      'Daily limit reached',
+      'El plan gratuito permite 1 pregunta pública por día. Mejora tu plan para publicar sin límites y consultar advisors privadamente.',
+      'The free plan allows 1 public question per day. Upgrade to post unlimited and consult advisors privately.'
+    );
+    return;
+  }
+
   const btn = document.getElementById('ask-btn');
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Publishing...':'Publicando...';
 
@@ -408,6 +419,7 @@ async function publishPost() {
   if (res.ok) {
     document.getElementById('ask-input').value = '';
     showToast(localStorage.getItem('hksk-lang')==='en'?'Question published!':'¡Tu pregunta fue publicada!');
+    if (!isPremium()) markPostedToday();
     await loadPosts(true);
   } else {
     const data = await res.json();
