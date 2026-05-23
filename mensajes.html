@@ -133,20 +133,22 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">he knows she knows</a>
-  <a href="dashboard.html" class="nav-back">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Home
-  </a>
+  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html">Home</a>
+    <a href="buscar-advisors.html">Advisors</a>
+    <a href="the-real.html">The Real</a>
+    <a href="mensajes.html" class="active"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+    <a href="perfil.html"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+  </div>
 </nav>
 
 <div class="chat-shell">
 
   <!-- Lista de conversaciones -->
   <div class="conv-list" id="conv-list">
-    <div class="conv-list-head">Mensajes</div>
+    <div class="conv-list-head"><span class="es">Mensajes</span><span class="en">Messages</span></div>
     <div class="conv-items" id="conv-items">
       <div class="loading-msg">Cargando…</div>
     </div>
@@ -486,5 +488,24 @@ init();
     <button class="upgrade-cancel" onclick="document.getElementById('upgrade-modal').style.display='none'"><span class="es">Ahora no</span><span class="en">Not now</span></button>
   </div>
 </div>
+
+<script>
+function setLang(lang){
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  localStorage.setItem('hksk-lang',lang);
+  const inp = document.getElementById('chat-input');
+  if(inp) inp.placeholder = lang==='en' ? 'Write a message…' : 'Escribe un mensaje…';
+}
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  const inp = document.getElementById('chat-input');
+  if(inp) inp.placeholder = lang==='en' ? 'Write a message…' : 'Escribe un mensaje…';
+})();
+</script>
 </body>
 </html>
