@@ -147,6 +147,11 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
   transition:opacity 0.3s; pointer-events:none; z-index:999;
 }
 .toast.show { opacity:1; }
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
 </style>
 </head>
 <body>
@@ -157,8 +162,9 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
     <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="the-real.html">The Real</a>
-    <a href="mensajes.html" class="active">Mensajes</a>
-    <a href="perfil.html">Mi perfil</a>
+    <a href="mensajes.html" class="active"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+    <a href="perfil.html"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
   </div>
 </nav>
 
@@ -166,9 +172,9 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
 
   <!-- Lista de conversaciones -->
   <div class="conv-list" id="conv-list">
-    <div class="conv-list-head">Mensajes</div>
+    <div class="conv-list-head"><span class="es">Mensajes</span><span class="en">Messages</span></div>
     <div class="conv-items" id="conv-items">
-      <div class="loading-msg">Cargando…</div>
+      <div class="loading-msg"><span class="es">Cargando…</span><span class="en">Loading…</span></div>
     </div>
   </div>
 
@@ -181,14 +187,14 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
         <rect x="18" y="18" width="22" height="14" rx="4" fill="#C9A96E" opacity="0.25"/>
         <path d="M40 30L42 36L34 32" fill="#C9A96E" opacity="0.25"/>
       </svg>
-      <p>Selecciona una conversación</p>
+      <p><span class="es">Selecciona una conversación</span><span class="en">Select a conversation</span></p>
     </div>
 
     <div id="chat-active" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
       <div class="chat-header" id="chat-header"></div>
       <div class="messages-area" id="messages-area"></div>
       <div class="chat-input-area">
-        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Escribe un mensaje…"
+        <textarea class="chat-input" id="chat-input" rows="1" id="chat-input-placeholder" placeholder="Escribe un mensaje…"
           onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="btn-send" id="btn-send" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
@@ -237,7 +243,7 @@ async function loadConversations() {
 function renderConvList(convs) {
   const el = document.getElementById('conv-items');
   if (!convs.length) {
-    el.innerHTML = `<div class="conv-empty">Aún no tienes mensajes.<br>Consulta a un advisor desde el directorio.</div>`;
+    el.innerHTML = `<div class="conv-empty"><span class="es">Aún no tienes mensajes.<br>Consulta a un advisor desde el directorio.</span><span class="en">No messages yet.<br>Consult an advisor from the directory.</span></div>`;
     return;
   }
   el.innerHTML = convs.map(c => {
@@ -310,7 +316,7 @@ function renderMessages(msgs, userId) {
     const time = new Date(m.created_at).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
     const deleted = m.body === '__deleted__';
     const bubbleContent = deleted
-      ? `<div class="msg-deleted">Mensaje eliminado</div>`
+      ? `<div class="msg-deleted">${localStorage.getItem("hksk-lang")==="en" ? "Message deleted" : "Mensaje eliminado"}</div>`
       : `<div class="msg-bubble">${escapeHtml(m.body)}</div>`;
     const menuRow = mine && !deleted ? `
       <div class="msg-menu-row">
@@ -346,7 +352,7 @@ function toggleMsgMenu(msgId, e) {
 
 async function deleteMessage(msgId) {
   document.querySelectorAll('.msg-menu.open').forEach(m => m.classList.remove('open'));
-  if (!confirm('¿Eliminar este mensaje para todos?')) return;
+  if (!confirm(localStorage.getItem('hksk-lang')==='en' ? 'Delete this message for everyone?' : '¿Eliminar este mensaje para todos?')) return;
 
   const res = await fetch('/.netlify/functions/delete-message', {
     method: 'POST',
@@ -510,6 +516,25 @@ function showToast(msg) {
 }
 
 init();
+</script>
+
+<script>
+function setLang(lang){
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  localStorage.setItem('hksk-lang',lang);
+  const inp = document.getElementById('chat-input');
+  if(inp) inp.placeholder = lang==='en' ? 'Write a message…' : 'Escribe un mensaje…';
+}
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  const inp = document.getElementById('chat-input');
+  if(inp) inp.placeholder = lang==='en' ? 'Write a message…' : 'Escribe un mensaje…';
+})();
 </script>
 </body>
 </html>
