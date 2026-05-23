@@ -118,6 +118,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 .toast.show{opacity:1;}
 
 .loading{text-align:center;padding:32px;color:var(--muted);font-size:0.85rem;}
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
 
 @media(max-width:768px){
   nav{padding:0 20px;}
@@ -136,22 +141,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
     <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="the-real.html" class="active">The Real</a>
-    <a href="mensajes.html">Mensajes</a>
-    <a href="perfil.html">Mi Perfil</a>
+    <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+    <a href="perfil.html"><span class="es">Mi Perfil</span><span class="en">My Profile</span></a>
+    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <span class="nav-user" id="nav-user"></span>
   </div>
 </nav>
 
 <div class="page">
   <div class="page-header">
-    <div class="page-label">The Real · Preguntas reales, respuestas honestas</div>
-    <h1 class="page-title">Lo que piensan,<br>lo que <em>nunca dicen.</em></h1>
+    <div class="page-label"><span class="es">The Real · Preguntas reales, respuestas honestas</span><span class="en">The Real · Real questions, honest answers</span></div>
+    <h1 class="page-title"><span class="es">Lo que piensan,<br>lo que <em>nunca dicen.</em></span><span class="en">What they think,<br>what they <em>never say.</em></span></h1>
     <div class="gold-line"></div>
-    <p class="page-sub">Pregunta lo que sea. El sexo opuesto responde con honestidad. Anónimo si quieres.</p>
+    <p class="page-sub"><span class="es">Pregunta lo que sea. El sexo opuesto responde con honestidad. Anónimo si quieres.</span><span class="en">Ask anything. The opposite sex answers honestly. Anonymous if you want.</span></p>
   </div>
 
   <div class="filters" id="filters">
-    <button class="filter-pill active" data-cat="all" onclick="setFilter('all', this)">Todos</button>
+    <button class="filter-pill active" data-cat="all" onclick="setFilter('all', this)"><span class="es">Todos</span><span class="en">All</span></button>
     <button class="filter-pill" data-cat="relaciones" onclick="setFilter('relaciones', this)">💔 Relaciones</button>
     <button class="filter-pill" data-cat="ghosting" onclick="setFilter('ghosting', this)">👻 Ghosting</button>
     <button class="filter-pill" data-cat="como-piensa" onclick="setFilter('como-piensa', this)">🧠 Cómo piensa</button>
@@ -164,7 +170,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
     <div>
       <!-- ASK BOX -->
       <div class="ask-box" id="ask-box">
-        <div class="ask-label">Preguntas reales. Respuestas honestas.</div>
+        <div class="ask-label"><span class="es">Preguntas reales. Respuestas honestas.</span><span class="en">Real questions. Honest answers.</span></div>
         <textarea class="ask-textarea" id="ask-input" placeholder="¿Qué necesitas que el sexo opuesto te explique?..."></textarea>
         <div class="ask-bottom">
           <div class="ask-toggles">
@@ -190,27 +196,27 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
         <div class="loading">Cargando preguntas...</div>
       </div>
 
-      <button class="load-more" id="load-more-btn" onclick="loadMore()" style="display:none;">Ver más →</button>
+      <button class="load-more" id="load-more-btn" onclick="loadMore()" style="display:none;"><span class="es">Ver más →</span><span class="en">Load more →</span></button>
     </div>
 
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-card">
-        <div class="sidebar-title">The Real hoy</div>
-        <div class="stat-row"><span class="stat-label">Preguntas</span><span class="stat-val" id="stat-posts">—</span></div>
-        <div class="stat-row"><span class="stat-label">Respuestas</span><span class="stat-val" id="stat-replies">—</span></div>
-        <div class="stat-row"><span class="stat-label">Anónimas</span><span class="stat-val" id="stat-anon">—</span></div>
+        <div class="sidebar-title"><span class="es">The Real hoy</span><span class="en">The Real today</span></div>
+        <div class="stat-row"><span class="stat-label"><span class="es">Preguntas</span><span class="en">Questions</span></span><span class="stat-val" id="stat-posts">—</span></div>
+        <div class="stat-row"><span class="stat-label"><span class="es">Respuestas</span><span class="en">Answers</span></span><span class="stat-val" id="stat-replies">—</span></div>
+        <div class="stat-row"><span class="stat-label"><span class="es">Anónimas</span><span class="en">Anonymous</span></span><span class="stat-val" id="stat-anon">—</span></div>
       </div>
 
       <div class="sidebar-card" id="trending-card">
-        <div class="sidebar-title">Temas más comentados</div>
+        <div class="sidebar-title"><span class="es">Temas más comentados</span><span class="en">Trending topics</span></div>
         <div id="trending-list"></div>
       </div>
 
       <div class="sidebar-dark">
-        <div class="sidebar-dark-title">¿Quieres respuesta privada?</div>
-        <div class="sidebar-dark-text">Consulta directamente a un Advisor. Solo tú y él/ella lo ven.</div>
-        <button class="sidebar-dark-btn" onclick="window.location.href='buscar-advisors.html'">Ver Advisors →</button>
+        <div class="sidebar-dark-title"><span class="es">¿Quieres respuesta privada?</span><span class="en">Want a private answer?</span></div>
+        <div class="sidebar-dark-text"><span class="es">Consulta directamente a un Advisor. Solo tú y él/ella lo ven.</span><span class="en">Talk directly to an Advisor. Only you and them will see it.</span></div>
+        <button class="sidebar-dark-btn" onclick="window.location.href='buscar-advisors.html'"><span class="es">Ver Advisors →</span><span class="en">See Advisors →</span></button>
       </div>
     </div>
   </div>
@@ -469,6 +475,23 @@ function showToast(msg) {
 }
 
 init();
+</script>
+
+<script>
+function setLang(lang){
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  localStorage.setItem('hksk-lang',lang);
+  const ta=document.getElementById('ask-input');
+  if(ta) ta.placeholder=lang==='en'?'What do you need the opposite sex to explain?...':'¿Qué necesitas que el sexo opuesto te explique?...';
+}
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+})();
 </script>
 </body>
 </html>
