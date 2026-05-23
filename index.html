@@ -13,7 +13,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);}
 .nav-logo span{color:var(--terra);font-style:italic;}
-.nav-links{display:flex;gap:18px;align-items:center;}
+.nav-links{display:flex;gap:28px;align-items:center;}
 .nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
 .nav-links a:hover{color:var(--terra);}
 .nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
@@ -231,17 +231,8 @@ input:checked+.dsl::before{transform:translateX(16px);}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
-.hamburger span{width:22px;height:2px;background:var(--night);border-radius:2px;transition:all 0.3s;display:block;}
-.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(247,243,238,0.98);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.15);padding:20px 24px;flex-direction:column;gap:4px;z-index:99;}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(196,122,90,0.08);}
-.mobile-menu a:last-child{border-bottom:none;}
-.mobile-menu a:hover{color:var(--terra);}
-.mobile-menu .mm-cta{background:var(--night);color:var(--cream)!important;padding:12px 20px;border-radius:2px;text-align:center;margin-top:8px;}
-.mobile-menu .mm-cta:hover{background:var(--terra)!important;}
 @media(max-width:768px){
-nav{padding:16px 20px;} .nav-links{display:none;} .hamburger{display:flex;}
+nav{padding:16px 20px;} .nav-links{display:none;}
 .hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
 .s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
 .pgrid{grid-template-columns:1fr;} .pc.feat{transform:none;}
@@ -258,30 +249,18 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <body>
 <nav>
   <div class="nav-logo">He Knows · <span>She Knows</span></div>
-  <button class="hamburger" onclick="toggleMenu()" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+    <a href="/login.html" id="login-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--night);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Entrar</a>
+    <a href="/dashboard.html" id="profile-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--terra);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Mi perfil</a>
   <div class="nav-links">
     <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
     <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
     <a href="#precios"><span class="es">Precios</span><span class="en">Pricing</span></a>
     <a href="#advsec"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
-    <a href="about.html"><span class="es">Historia</span><span class="en">Our Story</span></a>
     <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <a href="/login.html" id="login-btn" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
     <a href="/dashboard.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   </div>
 </nav>
-
-<div class="mobile-menu" id="mobile-menu">
-  <a href="#cf" onclick="closeMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
-  <a href="#areas" onclick="closeMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
-  <a href="#precios" onclick="closeMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
-  <a href="#advsec" onclick="closeMenu()"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
-  <a href="about.html" onclick="closeMenu()"><span class="es">Historia</span><span class="en">Our Story</span></a>
-  <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
-  <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
-</div>
 
 <section class="hero">
   <div class="hero-left">
@@ -366,34 +345,22 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 </section>
 
 <section class="s" id="precios">
-  <div class="sh"><p class="sl"><span class="es">Cómo funciona · Para quien busca consejos</span><span class="en">How it works · For advice seekers</span></p><h2 class="st"><span class="es">Simple, directo,<br><em>sin suscripción.</em></span><span class="en">Simple, direct,<br><em>no subscription.</em></span></h2><p class="ss"><span class="es">Regístrate gratis. Cuando quieras hablar con un advisor, pagas solo esa consulta. Sin suscripción mensual.</span><span class="en">Sign up free. When you want to talk to an advisor, you pay just for that consultation. No monthly subscription.</span></p></div>
-  <div class="pgrid" style="grid-template-columns:1fr 1fr;max-width:720px;margin:0 auto;">
+  <div class="sh"><p class="sl"><span class="es">Planes · Para quien busca consejos · Todo en MXN</span><span class="en">Plans · For those seeking advice · All in MXN</span></p><h2 class="st"><span class="es">Invierte en entender<br>al <em>sexo opuesto.</em></span><span class="en">Invest in understanding<br>the <em>opposite sex.</em></span></h2><p class="ss"><span class="es">Empieza gratis. Cada consulta privada se paga según el precio del advisor.</span><span class="en">Start free. Each private consultation is priced by the advisor.</span></p></div>
+  <div class="pgrid">
     <div class="pc">
-      <div class="ppl"><span class="es">Gratis</span><span class="en">Free</span></div>
-      <div class="pam"><span class="pcr">$</span>0</div>
-      <div class="ppe"><span class="es">para siempre · MXN</span><span class="en">forever · MXN</span></div>
-      <div class="pdv"></div>
-      <div class="pfs">
-        <div class="pf"><span class="pck">✓</span><span class="es">Acceso completo a The Real</span><span class="en">Full access to The Real</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">1 pregunta pública por día</span><span class="en">1 public question per day</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">Perfil anónimo</span><span class="en">Anonymous profile</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">Ve el directorio de advisors</span><span class="en">Browse advisor directory</span></div>
-      </div>
-      <button class="bpr" onclick="openM('mu')"><span class="es">Comenzar gratis →</span><span class="en">Start free →</span></button>
+      <div class="ppl">Explorador</div><div class="pam"><span class="pcr">$</span>0</div><div class="ppe"><span class="es">Para siempre gratis · MXN</span><span class="en">Free forever · MXN</span></div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span><span class="es">Acceso completo a The Real</span><span class="en">Full access to The Real</span></div><div class="pf"><span class="pck">✓</span><span class="es">1 pregunta pública por día</span><span class="en">1 public question per day</span></div><div class="pf"><span class="pck">✓</span><span class="es">Perfil anónimo</span><span class="en">Anonymous profile</span></div><div class="pf"><span class="pck">✓</span><span class="es">Sin acceso a consultas privadas</span><span class="en">No private consultations</span></div></div>
+      <button class="bpr" onclick="openM('mu')"><span class="es">Comenzar gratis</span><span class="en">Start free</span></button>
     </div>
     <div class="pc feat">
-      <div class="pbadge"><span class="es">Consulta privada</span><span class="en">Private consult</span></div>
-      <div class="ppl"><span class="es">Por consulta</span><span class="en">Per consult</span></div>
-      <div class="pam" style="font-size:2rem;"><span class="es">Precio del advisor</span><span class="en">Advisor's price</span></div>
-      <div class="ppe"><span class="es">MXN · cada advisor pone su precio</span><span class="en">MXN · each advisor sets their price</span></div>
-      <div class="pdv"></div>
-      <div class="pfs">
-        <div class="pf"><span class="pck">✓</span><span class="es">Chat privado 24hrs con el advisor</span><span class="en">24hr private chat with advisor</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">Elige por especialidad y precio</span><span class="en">Choose by specialty and price</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">Respuesta honesta y sin juicios</span><span class="en">Honest, judgment-free advice</span></div>
-        <div class="pf"><span class="pck">✓</span><span class="es">100% anónimo</span><span class="en">100% anonymous</span></div>
-      </div>
-      <a href="/login.html" class="bpr" style="text-align:center;text-decoration:none;display:block;"><span class="es">Ver advisors →</span><span class="en">See advisors →</span></a>
+      <div class="pbadge"><span class="es">Más popular</span><span class="en">Most popular</span></div><div class="ppl">Premium</div><div class="pam"><span class="pcr">$</span>199</div><div class="ppe"><span class="es">por mes · MXN</span><span class="en">per month · MXN</span></div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span><span class="es">Consultas privadas con advisors</span><span class="en">Private consultations with advisors</span></div><div class="pf"><span class="pck">✓</span><span class="es">Elige tu advisor por especialidad</span><span class="en">Choose your advisor by specialty</span></div><div class="pf"><span class="pck">✓</span><span class="es">Respuesta en menos de 12h</span><span class="en">Response in under 12h</span></div><div class="pf"><span class="pck">✓</span><span class="es">Acceso completo a The Real</span><span class="en">Full access to The Real</span></div><div class="pf"><span class="pck">✓</span><span class="es">Preguntas ilimitadas en The Real</span><span class="en">Unlimited questions on The Real</span></div></div>
+      <a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" target="_blank" class="bpr" style="text-align:center;text-decoration:none;display:block;"><span class="es">Obtener Premium</span><span class="en">Get Premium</span></a>
+    </div>
+    <div class="pc">
+      <div class="ppl">Elite</div><div class="pam"><span class="pcr">$</span>299</div><div class="ppe"><span class="es">por mes · MXN</span><span class="en">per month · MXN</span></div><div class="pdv"></div>
+      <div class="pfs"><div class="pf"><span class="pck">✓</span><span class="es">Consultas ilimitadas con advisors</span><span class="en">Unlimited advisor consultations</span></div><div class="pf"><span class="pck">✓</span><span class="es">Acceso a advisors Top 10</span><span class="en">Access to Top 10 advisors</span></div><div class="pf"><span class="pck">✓</span><span class="es">Respuesta garantizada en 6h</span><span class="en">Guaranteed response in 6h</span></div><div class="pf"><span class="pck">✓</span><span class="es">Advisors verificados Premium</span><span class="en">Premium verified advisors</span></div><div class="pf"><span class="pck">✓</span><span class="es">Preguntas ilimitadas en The Real</span><span class="en">Unlimited questions on The Real</span></div></div>
+      <a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" target="_blank" class="bpr" style="text-align:center;text-decoration:none;display:block;"><span class="es">Obtener Elite</span><span class="en">Get Elite</span></a>
     </div>
   </div>
 </section>
@@ -401,7 +368,7 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section class="s s-slate" id="advsec">
   <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w"><span class="es">Si entiendes al sexo opuesto y sabes dar consejos honestos, ya tienes todo lo que se necesita.</span><span class="en">If you understand the opposite sex and know how to give honest advice, you already have everything it takes.</span></p></div>
   <div class="rqg">
-    <div class="rq"><div class="rqi">🪪</div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">ID oficial sin foto. Queda verificada pero tu nombre nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
+    <div class="rq"><div class="rqi">🪪</div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">Verificamos tu identidad con ID oficial. Tu nombre real nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
     <div class="rq"><div class="rqi">⭐</div><div class="rqt"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></div><p class="rqd"><span class="es">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</span><span class="en">Each advice gets a rating. Better rating = more visibility and more earnings.</span></p></div>
     <div class="rq"><div class="rqi">📱</div><div class="rqt"><span class="es">Desde tu celular</span><span class="en">From Your Phone</span></div><p class="rqd"><span class="es">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</span><span class="en">No fixed schedule. No boss. You decide when and how much you work.</span></p></div>
   </div>
@@ -410,14 +377,27 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <div class="ac">
       <div class="apl"><span class="es">Mensual</span><span class="en">Monthly</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro mensual · MXN</span><span class="en">Monthly billing · MXN</span></div>
       <div class="aam">$99</div><div class="amx"><span class="es">MXN por mes</span><span class="en">MXN per month</span></div><div class="adv"></div>
-      <div class="afs"><div class="af"><span class="ack">✓</span><span class="es">Acceso a todas las funciones</span><span class="en">Access to all features</span></div><div class="af"><span class="ack">✓</span><span class="es">Soporte prioritario</span><span class="en">Priority support</span></div><div class="af"><span class="ack">✓</span><span class="es">70% de ganancias por consulta</span><span class="en">70% earnings per consultation</span></div><div class="af"><span class="ack">✓</span><span class="es">Herramientas de marketing</span><span class="en">Marketing tools</span></div><div class="af"><span class="ack">✓</span><span class="es">Renovación automática</span><span class="en">Auto-renewal</span></div></div>
+      <div class="afs">
+        <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--terra);">70%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--terra);">70%</strong> earnings per consultation</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Tú pones tu precio por consulta</span><span class="en">You set your own consultation price</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Chat de 24hrs con cada cliente</span><span class="en">24hr chat with each client</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Perfil en el directorio público</span><span class="en">Profile in public directory</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
+      </div>
       <button class="bad" onclick="openM('ma')"><span class="es">Registrarme como Advisor</span><span class="en">Register as Advisor</span></button>
     </div>
     <div class="ac feat">
-      <div class="asv"><span class="es">AHORRA 50%</span><span class="en">SAVE 50%</span></div>
+      <div class="asv"><span class="es">GANA 20% MÁS</span><span class="en">EARN 20% MORE</span></div>
       <div class="apl"><span class="es">Anual</span><span class="en">Annual</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro anual · MXN</span><span class="en">Annual billing · MXN</span></div>
       <div class="aam">$999</div><div class="amx"><span class="es">MXN por año · (~$83/mes)</span><span class="en">MXN per year · (~$83/mo)</span></div><div class="adv"></div>
-      <div class="afs"><div class="af"><span class="ack">✓</span><span class="es">Acceso ilimitado a funciones premium</span><span class="en">Unlimited access to premium features</span></div><div class="af"><span class="ack">✓</span><span class="es">90% de ganancias por consulta</span><span class="en">90% earnings per consultation</span></div><div class="af"><span class="ack">✓</span><span class="es">Mensajería ilimitada con clientes</span><span class="en">Unlimited messaging with clients</span></div><div class="af"><span class="ack">✓</span><span class="es">Visibilidad prioritaria en búsquedas</span><span class="en">Priority visibility in searches</span></div><div class="af"><span class="ack">✓</span><span class="es">Verificación Premium ✓</span><span class="en">Premium Verification ✓</span></div><div class="af"><span class="ack">✓</span><span class="es">Múltiples fotos de perfil</span><span class="en">Multiple profile photos</span></div><div class="af"><span class="ack">✓</span><span class="es">Herramientas de marketing incluidas</span><span class="en">Marketing tools included</span></div></div>
+      <div class="afs">
+        <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--gold);">90%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--gold);">90%</strong> earnings per consultation</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">20% más que el plan mensual</span><span class="en">20% more than monthly plan</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Prioridad #1 en búsquedas</span><span class="en">Priority #1 in search results</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Badge "Verificado Premium" en perfil</span><span class="en">"Premium Verified" badge on profile</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Múltiples fotos de perfil</span><span class="en">Multiple profile photos</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
+      </div>
       <button class="bad" onclick="openM('ma')"><span class="es">Quiero el plan anual →</span><span class="en">Get annual plan →</span></button>
     </div>
   </div>
@@ -427,9 +407,9 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section class="s s-mid">
   <div class="sh"><p class="sl"><span class="es">Lo que dicen</span><span class="en">What They Say</span></p><h2 class="st"><span class="es">Perspectivas que<br><em>cambian todo.</em></span><span class="en">Perspectives that<br><em>change everything.</em></span></h2></div>
   <div class="tgrid">
-    <div class="tsti"><span class="qm">"</span><p class="ttx">Llevaba semanas dándole vueltas a lo mismo. Un advisor me dijo en dos párrafos lo que ninguna amiga me había explicado en meses.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México</div><div class="tas">★★★★★</div></div></div></div>
-    <div class="tsti"><span class="qm">"</span><p class="ttx">Lo que más me gustó fue la honestidad. No me dijeron lo que quería oír, me dijeron lo que necesitaba escuchar. Y funcionó.</p><div class="tau"><div class="tav tavm">R</div><div><div class="tan">@rod_gtz</div><div class="tam">Monterrey</div><div class="tas">★★★★★</div></div></div></div>
-    <div class="tsti"><span class="qm">"</span><p class="ttx">Me da mucha pena hablar de estas cosas con mis amigas porque todas conocen a mi ex. Aquí puedo ser completamente honesta.</p><div class="tau"><div class="tav tavf">V</div><div><div class="tan">@vale_gdl</div><div class="tam">Guadalajara</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Llevaba semanas dándole vueltas a lo mismo. Un advisor me dijo en dos párrafos lo que ninguna amiga me había explicado en meses.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México · Plan Premium</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Lo que más me gustó fue la honestidad. No me dijeron lo que quería oír, me dijeron lo que necesitaba escuchar. Y funcionó.</p><div class="tau"><div class="tav tavm">R</div><div><div class="tan">@rod_gtz</div><div class="tam">Monterrey · Plan Elite</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Me da mucha pena hablar de estas cosas con mis amigas porque todas conocen a mi ex. Aquí puedo ser completamente honesta.</p><div class="tau"><div class="tav tavf">V</div><div><div class="tan">@vale_gdl</div><div class="tam">Guadalajara · Plan Premium</div><div class="tas">★★★★★</div></div></div></div>
   </div>
 </section>
 
@@ -471,7 +451,7 @@ async function subscribeNewsletter() {
 
 <footer>
   <div class="fl">He Knows · <span>She Knows</span></div>
-  <div class="flk"><a href="about.html"><span class="es">Historia</span><span class="en">Our Story</span></a><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
+  <div class="flk"><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
   <div class="fc2"><span class="es">© 2026 He Knows She Knows · México · Todo en MXN</span><span class="en">© 2026 He Knows She Knows · Mexico · All in MXN</span></div>
 </footer>
 
@@ -542,8 +522,8 @@ async function subscribeNewsletter() {
       <h2 class="mtt">Elige tu<br><em>membresía.</em></h2>
       <p class="msb">Cancela cuando quieras. Todo en pesos mexicanos.</p>
       <div class="fg"><div class="plno">
-        <div class="plop" onclick="selP(this)"><div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div><div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Acceso completo</div></div></div>
-        <div class="plop sel" onclick="selP(this)"><div class="plsv">AHORRA 50%</div><div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div><div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Funciones premium</div></div></div>
+        <div class="plop" onclick="selP(this)"><div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div><div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Sin compromiso anual</div></div></div>
+        <div class="plop sel" onclick="selP(this)"><div class="plsv">GANA 20% MÁS</div><div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div><div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Prioridad en búsquedas</div></div></div>
       </div></div>
       <div class="fdv"></div>
       <button class="bfl" onclick="showSuc('ma')">Completar registro →</button>
@@ -638,22 +618,11 @@ async function showSuc(id){
     if(session?.access_token){
       document.getElementById('login-btn').style.display='none';
       document.getElementById('profile-btn').style.display='inline-block';
-      document.getElementById('mm-login').style.display='none';
-      document.getElementById('mm-profile').style.display='block';
-    }
-  }catch(e){}
+      document.getElementById('login-btn-mobile').style.display='none';
+      document.getElementById('profile-btn-mobile').style.display='inline-block';
+    }else{document.getElementById('login-btn-mobile').style.display='inline-block';}
+  }catch(e){document.getElementById('login-btn-mobile').style.display='inline-block';}
 })();
-
-function toggleMenu(){
-  const menu=document.getElementById('mobile-menu');
-  const ham=document.getElementById('hamburger');
-  menu.classList.toggle('open');
-  ham.classList.toggle('open');
-}
-function closeMenu(){
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-}
 </script>
 <script>
 function setLang(lang){
