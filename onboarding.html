@@ -8,103 +8,195 @@
 <style>
 :root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--muted:#9A8880;--gold:#C9A96E;--blush:#E8C4B0;--border:#EDE7DF;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);color:var(--night);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);color:var(--night);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(232,196,176,0.35),transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(196,122,90,0.08),transparent 55%);pointer-events:none;}
-.logo{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.3em;text-transform:uppercase;color:var(--night);margin-bottom:48px;animation:fadeUp 0.6s ease both;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.3em;text-transform:uppercase;color:var(--night);margin-bottom:48px;}
 .logo span{color:var(--terra);font-style:italic;}
-.card{background:white;border-radius:4px;padding:52px 48px;max-width:600px;width:100%;box-shadow:0 24px 64px rgba(26,20,16,0.08);position:relative;animation:fadeUp 0.7s ease 0.1s both;}
+.card{background:white;border-radius:4px;padding:52px 48px;max-width:640px;width:100%;box-shadow:0 24px 64px rgba(26,20,16,0.08);position:relative;}
+.step-dots{display:flex;gap:8px;margin-bottom:28px;}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s;}
+.step-dot.on{background:var(--terra);}
 .step-label{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:12px;}
-.title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:300;line-height:1.1;color:var(--night);margin-bottom:8px;}
+.title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:300;line-height:1.1;color:var(--night);margin-bottom:8px;}
 .title em{font-style:italic;color:var(--terra);}
-.subtitle{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:40px;font-weight:300;}
-.divider{width:36px;height:1px;background:var(--gold);margin:20px 0 36px;}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
-.choice{border:2px solid var(--border);border-radius:4px;padding:32px 28px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;background:var(--cream);}
+.subtitle{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:32px;font-weight:300;}
+.divider{width:36px;height:1px;background:var(--gold);margin:16px 0 28px;}
+
+/* STEP 1 - Role choices */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.choice{border:2px solid var(--border);border-radius:4px;padding:28px 24px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;background:var(--cream);}
 .choice::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
 .choice:hover{border-color:var(--blush);background:white;}
 .choice:hover::after{transform:scaleX(1);}
 .choice.selected{border-color:var(--terra);background:white;}
 .choice.selected::after{transform:scaleX(1);}
-.choice-icon{font-size:2rem;margin-bottom:16px;display:block;}
-.choice-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--night);margin-bottom:8px;line-height:1.2;}
-.choice-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;font-weight:300;}
-.check{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
+.choice-icon{font-size:2rem;margin-bottom:14px;display:block;}
+.choice-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);margin-bottom:6px;line-height:1.2;}
+.choice-desc{font-size:0.76rem;color:var(--muted);line-height:1.6;font-weight:300;}
+.check{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
 .choice.selected .check{opacity:1;transform:scale(1);}
-.check svg{width:12px;height:12px;}
-.btn-continue{width:100%;padding:16px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
+.check svg{width:10px;height:10px;}
+
+/* STEP 2 - Plan cards */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.plan-card{border:2px solid var(--border);border-radius:4px;padding:24px 18px;cursor:pointer;transition:all 0.25s;position:relative;background:var(--cream);text-align:center;}
+.plan-card:hover{border-color:var(--blush);background:white;}
+.plan-card.selected{border-color:var(--terra);background:white;}
+.plan-card.featured{background:var(--night);border-color:var(--night);}
+.plan-card.featured:hover{border-color:var(--terra);}
+.plan-card.featured.selected{border-color:var(--gold);}
+.plan-badge-top{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--terra);color:white;font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:3px 12px;border-radius:10px;font-weight:700;white-space:nowrap;}
+.plan-name{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;}
+.plan-card.featured .plan-name{color:rgba(247,243,238,0.5);}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--night);line-height:1;}
+.plan-card.featured .plan-price{color:var(--cream);}
+.plan-period{font-size:0.7rem;color:var(--muted);margin-top:4px;margin-bottom:14px;}
+.plan-card.featured .plan-period{color:rgba(247,243,238,0.4);}
+.plan-divider{width:20px;height:1px;background:var(--gold);margin:0 auto 14px;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left;}
+.plan-feature{font-size:0.72rem;color:var(--muted);display:flex;gap:7px;align-items:flex-start;line-height:1.45;}
+.plan-card.featured .plan-feature{color:rgba(247,243,238,0.6);}
+.plan-check{color:var(--terra);font-size:0.75rem;flex-shrink:0;margin-top:1px;}
+.plan-card.featured .plan-check{color:var(--gold);}
+.plan-card-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
+.plan-card.selected .plan-card-check{opacity:1;transform:scale(1);}
+.plan-card.featured .plan-card-check{background:var(--gold);}
+
+.btn-continue{width:100%;padding:15px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
 .btn-continue.ready{opacity:1;pointer-events:all;}
 .btn-continue.ready:hover{background:var(--terra);}
-.btn-continue.loading{background:var(--muted);cursor:not-allowed;}
-.note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:16px;line-height:1.6;}
+.btn-continue.loading{background:var(--muted);cursor:not-allowed;opacity:1;}
+.note{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:14px;line-height:1.6;}
+
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-@media(max-width:480px){.card{padding:36px 24px;}.choices{grid-template-columns:1fr;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.card{animation:fadeUp 0.5s ease both;}
+@media(max-width:500px){.card{padding:32px 20px;}.choices{grid-template-columns:1fr;}.plans{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
 <div class="logo">He Knows · <span>She Knows</span></div>
 
-<div class="card">
-  <p class="step-label"><span class="es">Bienvenido/a · Último paso</span><span class="en">Welcome · Last step</span></p>
-  <h1 class="title">
-    <span class="es">¿Qué buscas en<br><em>He Knows She Knows?</em></span>
-    <span class="en">What are you looking for in<br><em>He Knows She Knows?</em></span>
-  </h1>
-  <p class="subtitle">
-    <span class="es">Esto nos ayuda a personalizar tu experiencia. Puedes cambiar esto después.</span>
-    <span class="en">This helps us personalize your experience. You can change this later.</span>
-  </p>
-  <div class="divider"></div>
+<div class="card" id="card">
 
-  <div class="choices">
-    <div class="choice" id="choice-user" onclick="select('user')">
-      <div class="check">
-        <svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <!-- ── PASO 1: ROL ── -->
+  <div id="step1">
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot"></div></div>
+    <p class="step-label"><span class="es">Paso 1 de 2 · Tu rol</span><span class="en">Step 1 of 2 · Your role</span></p>
+    <h1 class="title">
+      <span class="es">¿Qué buscas en<br><em>He Knows She Knows?</em></span>
+      <span class="en">What are you looking for in<br><em>He Knows She Knows?</em></span>
+    </h1>
+    <p class="subtitle">
+      <span class="es">Esto nos ayuda a personalizar tu experiencia.</span>
+      <span class="en">This helps us personalize your experience.</span>
+    </p>
+    <div class="divider"></div>
+    <div class="choices">
+      <div class="choice" id="choice-user" onclick="selectRole('user')">
+        <div class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="choice-icon">💬</span>
+        <div class="choice-title"><span class="es">Busco consejos del sexo opuesto</span><span class="en">I want advice from the opposite sex</span></div>
+        <p class="choice-desc"><span class="es">Quiero entender cómo piensa la otra persona y recibir perspectivas reales.</span><span class="en">I want to understand how the other person thinks and get real perspectives.</span></p>
       </div>
-      <span class="choice-icon">💬</span>
-      <div class="choice-title">
-        <span class="es">Busco consejos del sexo opuesto</span>
-        <span class="en">I want advice from the opposite sex</span>
+      <div class="choice" id="choice-advisor" onclick="selectRole('advisor')">
+        <div class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="choice-icon">⭐</span>
+        <div class="choice-title"><span class="es">Quiero ser Advisor</span><span class="en">I want to be an Advisor</span></div>
+        <p class="choice-desc"><span class="es">Me interesa dar consejos y ganar dinero compartiendo mi perspectiva.</span><span class="en">I want to give advice and earn money sharing my perspective.</span></p>
       </div>
-      <p class="choice-desc">
-        <span class="es">Quiero entender cómo piensa la otra persona y recibir perspectivas reales.</span>
-        <span class="en">I want to understand how the other person thinks and get real perspectives.</span>
-      </p>
     </div>
-
-    <div class="choice" id="choice-advisor" onclick="select('advisor')">
-      <div class="check">
-        <svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <span class="choice-icon">⭐</span>
-      <div class="choice-title">
-        <span class="es">Quiero ser Advisor</span>
-        <span class="en">I want to be an Advisor</span>
-      </div>
-      <p class="choice-desc">
-        <span class="es">Me interesa dar consejos y ganar dinero compartiendo mi perspectiva.</span>
-        <span class="en">I want to give advice and earn money sharing my perspective.</span>
-      </p>
-    </div>
+    <button class="btn-continue" id="btn-step1" onclick="goStep2()">
+      <span class="es">Continuar →</span><span class="en">Continue →</span>
+    </button>
+    <p class="note"><span class="es">Puedes ser las dos cosas — esto solo define tu vista principal.</span><span class="en">You can be both — this just sets your main view.</span></p>
   </div>
 
-  <button class="btn-continue" id="btn-continue" onclick="continuar()">
-    <span class="es">Continuar →</span>
-    <span class="en">Continue →</span>
-  </button>
-  <p class="note">
-    <span class="es">Puedes ser las dos cosas — esto solo define tu vista principal.</span>
-    <span class="en">You can be both — this just sets your main view.</span>
-  </p>
+  <!-- ── PASO 2: PLAN ── -->
+  <div id="step2" style="display:none;">
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot on"></div></div>
+    <p class="step-label"><span class="es">Paso 2 de 2 · Tu plan</span><span class="en">Step 2 of 2 · Your plan</span></p>
+    <h1 class="title">
+      <span class="es">Elige cómo quieres<br><em>empezar.</em></span>
+      <span class="en">Choose how you want<br><em>to start.</em></span>
+    </h1>
+    <p class="subtitle">
+      <span class="es">Empieza gratis. Actualiza cuando quieras.</span>
+      <span class="en">Start free. Upgrade anytime.</span>
+    </p>
+    <div class="divider"></div>
+
+    <div class="plans">
+      <!-- FREE -->
+      <div class="plan-card selected" id="plan-free" onclick="selectPlan('free')">
+        <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period"><span class="es">para siempre</span><span class="en">forever</span></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">1 pregunta pública/día</span><span class="en">1 public question/day</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Ver el feed completo</span><span class="en">View full feed</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Perfil anónimo</span><span class="en">Anonymous profile</span></li>
+        </ul>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card featured" id="plan-premium" onclick="selectPlan('premium')">
+        <div class="plan-badge-top"><span class="es">Más popular</span><span class="en">Most popular</span></div>
+        <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">$199</div>
+        <div class="plan-period"><span class="es">MXN / mes</span><span class="en">MXN / month</span></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">5 consultas privadas/mes</span><span class="en">5 private consults/month</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Elige advisor por rating</span><span class="en">Choose advisor by rating</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Respuesta en 12h</span><span class="en">Response in 12h</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Preguntas ilimitadas</span><span class="en">Unlimited questions</span></li>
+        </ul>
+      </div>
+
+      <!-- ELITE -->
+      <div class="plan-card" id="plan-elite" onclick="selectPlan('elite')">
+        <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="plan-name">Elite</div>
+        <div class="plan-price">$299</div>
+        <div class="plan-period"><span class="es">MXN / mes</span><span class="en">MXN / month</span></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Consultas ilimitadas</span><span class="en">Unlimited consults</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Advisor Top 10 exclusivo</span><span class="en">Exclusive Top 10 advisor</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Respuesta garantizada 6h</span><span class="en">Guaranteed response 6h</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">30 créditos mensuales</span><span class="en">30 monthly credits</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn-continue ready" id="btn-step2" onclick="continuar()">
+      <span class="es">Empezar →</span><span class="en">Get started →</span>
+    </button>
+    <p class="note" id="plan-note">
+      <span class="es">Plan gratuito seleccionado. Puedes mejorar después.</span>
+      <span class="en">Free plan selected. You can upgrade later.</span>
+    </p>
+  </div>
+
 </div>
 
 <script>
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
 const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTE5NzMyMywiZXhwIjoyMDk0NzczMzIzfQ.rDHpeek7NjbCluBk8hO-AknG9JFQaZcoFNj2YPt-ROU';
 
+const STRIPE = {
+  premium: 'https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00',
+  elite:   'https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01'
+};
+
 let selectedRole = null;
+let selectedPlanId = 'free';
 let session = null;
 
 function init() {
@@ -113,29 +205,59 @@ function init() {
   session = JSON.parse(raw);
 }
 
-function select(role) {
+function selectRole(role) {
   selectedRole = role;
   document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
   document.getElementById('choice-' + role).classList.add('selected');
-  document.getElementById('btn-continue').classList.add('ready');
+  document.getElementById('btn-step1').classList.add('ready');
+}
+
+function goStep2() {
+  if (!selectedRole) return;
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+}
+
+function selectPlan(plan) {
+  selectedPlanId = plan;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('plan-' + plan).classList.add('selected');
+  const lang = localStorage.getItem('hksk-lang')||'es';
+  const noteEl = document.getElementById('plan-note');
+  const notes = {
+    free:    { es: 'Plan gratuito seleccionado. Puedes mejorar después.', en: 'Free plan selected. You can upgrade later.' },
+    premium: { es: 'Plan Premium — te redirigiremos a pago seguro.', en: 'Premium plan — you\'ll be redirected to secure checkout.' },
+    elite:   { es: 'Plan Elite — te redirigiremos a pago seguro.', en: 'Elite plan — you\'ll be redirected to secure checkout.' }
+  };
+  noteEl.innerHTML = `<span>${notes[plan][lang]}</span>`;
 }
 
 async function continuar() {
-  if (!selectedRole || !session) return;
-  const btn = document.getElementById('btn-continue');
+  if (!session) return;
+  const btn = document.getElementById('btn-step2');
   btn.classList.add('loading');
   btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
+
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${session.user.id}`, {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: selectedRole, plan: 'free', onboarding_done: true })
     });
-  } catch (e) { console.error('Error guardando role:', e); }
-  window.location.href = selectedRole === 'advisor' ? 'perfil.html?setup=advisor' : 'dashboard.html';
+  } catch(e) { console.error('Error:', e); }
+
+  if (selectedPlanId !== 'free') {
+    // Open Stripe in new tab, redirect to dashboard
+    window.open(STRIPE[selectedPlanId], '_blank');
+  }
+
+  if (selectedRole === 'advisor') {
+    window.location.href = 'perfil.html?setup=advisor';
+  } else {
+    window.location.href = 'dashboard.html';
+  }
 }
 
-// Lang system
 (function(){
   const saved=localStorage.getItem('hksk-lang');
   const browser=navigator.language||navigator.userLanguage;
