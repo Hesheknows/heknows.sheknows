@@ -9,57 +9,37 @@
 :root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--muted:#9A8880;--gold:#C9A96E;--blush:#E8C4B0;--border:#EDE7DF;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);color:var(--night);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:hidden;}
-
-/* Fondo decorativo */
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(232,196,176,0.35),transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(196,122,90,0.08),transparent 55%);pointer-events:none;}
-
 .logo{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.3em;text-transform:uppercase;color:var(--night);margin-bottom:48px;animation:fadeUp 0.6s ease both;}
 .logo span{color:var(--terra);font-style:italic;}
-
 .card{background:white;border-radius:4px;padding:52px 48px;max-width:600px;width:100%;box-shadow:0 24px 64px rgba(26,20,16,0.08);position:relative;animation:fadeUp 0.7s ease 0.1s both;}
-
 .step-label{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:12px;}
-
 .title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:300;line-height:1.1;color:var(--night);margin-bottom:8px;}
 .title em{font-style:italic;color:var(--terra);}
-
 .subtitle{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:40px;font-weight:300;}
-
 .divider{width:36px;height:1px;background:var(--gold);margin:20px 0 36px;}
-
-/* Cards de elección */
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
-
 .choice{border:2px solid var(--border);border-radius:4px;padding:32px 28px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;background:var(--cream);}
 .choice::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
 .choice:hover{border-color:var(--blush);background:white;}
 .choice:hover::after{transform:scaleX(1);}
 .choice.selected{border-color:var(--terra);background:white;}
 .choice.selected::after{transform:scaleX(1);}
-
 .choice-icon{font-size:2rem;margin-bottom:16px;display:block;}
 .choice-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--night);margin-bottom:8px;line-height:1.2;}
 .choice-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;font-weight:300;}
-
 .check{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
 .choice.selected .check{opacity:1;transform:scale(1);}
 .check svg{width:12px;height:12px;}
-
 .btn-continue{width:100%;padding:16px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
 .btn-continue.ready{opacity:1;pointer-events:all;}
 .btn-continue.ready:hover{background:var(--terra);}
-
-.note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:16px;line-height:1.6;}
-
-/* Loading state */
 .btn-continue.loading{background:var(--muted);cursor:not-allowed;}
-
+.note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:16px;line-height:1.6;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-@media(max-width:480px){
-  .card{padding:36px 24px;}
-  .choices{grid-template-columns:1fr;}
-}
+@media(max-width:480px){.card{padding:36px 24px;}.choices{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -67,20 +47,31 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="logo">He Knows · <span>She Knows</span></div>
 
 <div class="card">
-  <p class="step-label">Bienvenido/a · Último paso</p>
-  <h1 class="title">¿Qué buscas en<br><em>He Knows She Knows?</em></h1>
-  <p class="subtitle">Esto nos ayuda a personalizar tu experiencia. Puedes cambiar esto después.</p>
+  <p class="step-label"><span class="es">Bienvenido/a · Último paso</span><span class="en">Welcome · Last step</span></p>
+  <h1 class="title">
+    <span class="es">¿Qué buscas en<br><em>He Knows She Knows?</em></span>
+    <span class="en">What are you looking for in<br><em>He Knows She Knows?</em></span>
+  </h1>
+  <p class="subtitle">
+    <span class="es">Esto nos ayuda a personalizar tu experiencia. Puedes cambiar esto después.</span>
+    <span class="en">This helps us personalize your experience. You can change this later.</span>
+  </p>
   <div class="divider"></div>
 
   <div class="choices">
-
     <div class="choice" id="choice-user" onclick="select('user')">
       <div class="check">
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="choice-icon">💬</span>
-      <div class="choice-title">Busco consejos del sexo opuesto</div>
-      <p class="choice-desc">Quiero entender cómo piensa la otra persona y recibir perspectivas reales.</p>
+      <div class="choice-title">
+        <span class="es">Busco consejos del sexo opuesto</span>
+        <span class="en">I want advice from the opposite sex</span>
+      </div>
+      <p class="choice-desc">
+        <span class="es">Quiero entender cómo piensa la otra persona y recibir perspectivas reales.</span>
+        <span class="en">I want to understand how the other person thinks and get real perspectives.</span>
+      </p>
     </div>
 
     <div class="choice" id="choice-advisor" onclick="select('advisor')">
@@ -88,21 +79,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="choice-icon">⭐</span>
-      <div class="choice-title">Quiero ser Advisor</div>
-      <p class="choice-desc">Me interesa dar consejos y ganar dinero compartiendo mi perspectiva.</p>
+      <div class="choice-title">
+        <span class="es">Quiero ser Advisor</span>
+        <span class="en">I want to be an Advisor</span>
+      </div>
+      <p class="choice-desc">
+        <span class="es">Me interesa dar consejos y ganar dinero compartiendo mi perspectiva.</span>
+        <span class="en">I want to give advice and earn money sharing my perspective.</span>
+      </p>
     </div>
-
   </div>
 
   <button class="btn-continue" id="btn-continue" onclick="continuar()">
-    Continuar →
+    <span class="es">Continuar →</span>
+    <span class="en">Continue →</span>
   </button>
-  <p class="note">Puedes ser las dos cosas — esto solo define tu vista principal.</p>
+  <p class="note">
+    <span class="es">Puedes ser las dos cosas — esto solo define tu vista principal.</span>
+    <span class="en">You can be both — this just sets your main view.</span>
+  </p>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTE5NzMyMywiZXhwIjoyMDk0NzczMzIzfQ.rDHpeek7NjbCluBk8hO-AknG9JFQaZcoFNj2YPt-ROU';
 
 let selectedRole = null;
@@ -123,38 +122,26 @@ function select(role) {
 
 async function continuar() {
   if (!selectedRole || !session) return;
-
   const btn = document.getElementById('btn-continue');
   btn.classList.add('loading');
-  btn.textContent = 'Guardando…';
-
+  btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
   try {
-    // Guardar el role en el perfil del usuario
     await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${session.user.id}`, {
       method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        role: selectedRole,
-        plan: 'free',
-        onboarding_done: true
-      })
+      headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: selectedRole, plan: 'free', onboarding_done: true })
     });
-  } catch (e) {
-    console.error('Error guardando role:', e);
-    // No bloqueamos el flujo si falla el patch
-  }
-
-  // Redirigir según el rol
-  if (selectedRole === 'advisor') {
-    window.location.href = 'perfil.html?setup=advisor';
-  } else {
-    window.location.href = 'dashboard.html';
-  }
+  } catch (e) { console.error('Error guardando role:', e); }
+  window.location.href = selectedRole === 'advisor' ? 'perfil.html?setup=advisor' : 'dashboard.html';
 }
+
+// Lang system
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+})();
 
 init();
 </script>
