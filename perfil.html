@@ -336,6 +336,15 @@ main {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.error { background: #c0392b; }
 
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--terra);}
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
+
 /* Loading */
 .loading {
   display: flex; align-items: center; justify-content: center;
@@ -347,12 +356,14 @@ main {
 
 <nav>
   <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
-  <a href="dashboard.html" class="nav-back">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Home
-  </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Home</a>
+    <a href="buscar-advisors.html">Advisors</a>
+    <a href="the-real.html">The Real</a>
+    <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+    <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+  </div>
 </nav>
 
 <div id="loading" class="loading">Cargando perfil…</div>
@@ -363,7 +374,7 @@ main {
   <aside>
     <div class="preview-card">
       <div class="preview-header">
-        <span class="preview-label">Así te ven los demás</span>
+        <span class="preview-label"><span class="es">Así te ven los demás</span><span class="en">How others see you</span></span>
         <div class="preview-avatar-wrap">
           <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
           <div id="preview-avatar-ph" class="preview-avatar-placeholder">
@@ -397,9 +408,9 @@ main {
         </div>
         <div id="preview-price" class="preview-price" style="display:none">
           <div>
-            <div class="preview-price-label">Consulta</div>
+            <div class="preview-price-label"><span class="es">Consulta</span><span class="en">Session</span></div>
             <div class="preview-price-amount" id="pm-price">$0</div>
-            <div class="preview-price-unit">MXN / sesión</div>
+            <div class="preview-price-unit"><span class="es">MXN / sesión</span><span class="en">MXN / session</span></div>
           </div>
           <div id="preview-icon-desahogo"></div>
         </div>
@@ -408,7 +419,7 @@ main {
             <circle cx="8" cy="8" r="7" stroke="var(--muted)" stroke-width="1.2"/>
             <path d="M5 8C5 6.3 6.3 5 8 5C9.7 5 11 6.3 11 8C11 9.7 9.7 11 8 11C6.3 11 5 9.7 5 8Z" stroke="var(--muted)" stroke-width="1.2"/>
           </svg>
-          Modo anónimo activo
+          <span class="es">Modo anónimo activo</span><span class="en">Anonymous mode on</span>
         </div>
       </div>
     </div>
@@ -428,14 +439,14 @@ main {
       <div class="bar-actions" id="bar-actions"></div>
       <div class="privacy-toggle">
         <button id="anon-toggle" class="toggle" title="Modo anónimo" onclick="toggleAnon()"></button>
-        <span>Anónimo</span>
+        <span><span class="es">Anónimo</span><span class="en">Anonymous</span></span>
       </div>
     </div>
 
     <!-- Datos personales -->
     <div class="settings-section">
       <div class="section-head">
-        <span class="section-title">Datos personales</span>
+        <span class="section-title"><span class="es">Datos personales</span><span class="en">Personal info</span></span>
       </div>
       <div class="section-body">
 
@@ -449,43 +460,34 @@ main {
             </svg>
           </div>
           <div class="avatar-info">
-            <label class="btn-avatar" for="avatar-file">Cambiar foto</label>
+            <label class="btn-avatar" for="avatar-file"><span class="es">Cambiar foto</span><span class="en">Change photo</span></label>
             <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
-            <span class="avatar-hint">JPG o PNG, máx. 2MB</span>
+            <span class="avatar-hint"><span class="es">JPG o PNG, máx. 2MB</span><span class="en">JPG or PNG, max. 2MB</span></span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nombre completo</label>
+            <label class="form-label"><span class="es">Nombre completo</span><span class="en">Full name</span></label>
             <input type="text" id="full-name" class="form-input" placeholder="Tu nombre"
               oninput="syncPreview()"/>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="es">Ciudad</span><span class="en">City</span></label>
-            <input type="text" id="city" class="form-input" placeholder="Ciudad"
+            <label class="form-label">Ciudad</label>
+            <input type="text" id="city" class="form-input" placeholder="Ciudad, País"
               oninput="syncPreview()"/>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label"><span class="es">País</span><span class="en">Country</span></label>
-            <input type="text" id="country" class="form-input" placeholder="México"
-              oninput="syncPreview()"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="es">Género</span><span class="en">Gender</span></label>
-            <select id="gender" class="form-select">
-              <option value="">Prefiero no decir</option>
-              <option value="hombre">Hombre / Man</option>
-              <option value="mujer">Mujer / Woman</option>
-              <option value="otro">Otro / Other</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Género</label>
+          <select id="gender" class="form-select">
+            <option value="">Prefiero no decir</option>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="otro">Otro</option>
+          </select>
         </div>
-
-
 
         <div class="form-group">
           <label class="form-label">Bio</label>
@@ -494,7 +496,7 @@ main {
             oninput="syncPreview()"></textarea>
         </div>
 
-        <button class="btn-save" onclick="saveProfile()">Guardar cambios</button>
+        <button class="btn-save" onclick="saveProfile()"><span class="es">Guardar cambios</span><span class="en">Save changes</span></button>
       </div>
     </div>
 
@@ -515,7 +517,7 @@ main {
       <div class="advisor-collapsed-body" id="advisor-panel">
 
         <div class="form-group">
-          <label class="form-label">Activo como advisor</label>
+          <label class="form-label"><span class="es">Activo como advisor</span><span class="en">Active as advisor</span></label>
           <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
             <button id="advisor-available-toggle" class="toggle" onclick="toggleAdvisorAvailable()"></button>
             <span id="advisor-available-label" style="font-size:13px;color:var(--muted)">Disponible</span>
@@ -523,7 +525,7 @@ main {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Bio de advisor</label>
+          <label class="form-label"><span class="es">Bio de advisor</span><span class="en">Advisor bio</span></label>
           <textarea id="advisor-bio" class="form-textarea"
             placeholder="Cuéntales qué los hace especial…"
             oninput="syncPreview()"></textarea>
@@ -547,19 +549,19 @@ main {
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Años en relación/matrimonio</label>
+            <label class="form-label"><span class="es">Años en relación/matrimonio</span><span class="en">Years in relationship</span></label>
             <input type="number" id="years-together" class="form-input"
               min="0" max="60" placeholder="0" onchange="syncPreview()"/>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Precio por sesión (MXN)</label>
+          <label class="form-label"><span class="es">Precio por sesión (MXN)</span><span class="en">Price per session (MXN)</span></label>
           <input type="number" id="price" class="form-input"
             min="0" step="50" placeholder="500" onchange="syncPreview()"/>
         </div>
 
-        <button class="btn-save" onclick="saveAdvisor()">Guardar perfil de advisor</button>
+        <button class="btn-save" onclick="saveAdvisor()"><span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span></button>
       </div>
     </div>
 
@@ -622,7 +624,6 @@ async function loadProfile() {
   document.getElementById('full-name').value = profile.full_name || '';
   document.getElementById('bio').value = profile.bio || '';
   document.getElementById('city').value = profile.city || '';
-  document.getElementById('country').value = profile.country || '';
   document.getElementById('gender').value = profile.gender || '';
   isAnon = !!profile.is_anonymous;
 
@@ -673,7 +674,7 @@ function setPlanUI(plan) {
   const p = plans[plan] || plans.free;
   badge.textContent = p.label;
   badge.className = `plan-badge ${p.cls}`;
-  name.innerHTML = `${p.display} <span>· plan actual</span>`;
+  name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
 
   if (plan === 'free') {
     actions.innerHTML = `<a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" class="btn-sm btn-upgrade">Upgrade →</a>`;
@@ -691,22 +692,20 @@ function syncPreview() {
   const name = document.getElementById('full-name').value.trim();
   const bio = document.getElementById('bio').value.trim() || document.getElementById('advisor-bio').value.trim();
   const city = document.getElementById('city').value.trim();
-  const country = document.getElementById('country').value.trim();
   const price = document.getElementById('price').value;
   const civil = document.getElementById('civil-status').value;
   const years = document.getElementById('years-together').value;
 
-  document.getElementById('preview-name').textContent = name || 'Tu nombre';
+  document.getElementById('preview-name').textContent = name || (localStorage.getItem('hksk-lang')==='en'?'Your name':'Tu nombre');
 
   const bioEl = document.getElementById('preview-bio');
   if (bio) { bioEl.textContent = bio; bioEl.classList.remove('empty'); }
-  else { bioEl.textContent = 'Aquí aparecerá tu bio…'; bioEl.classList.add('empty'); }
+  else { bioEl.textContent = localStorage.getItem('hksk-lang')==='en'?'Your bio will appear here…':'Aquí aparecerá tu bio…'; bioEl.classList.add('empty'); }
 
   const cityEl = document.getElementById('preview-city');
-  const cityCountry = [city, country].filter(Boolean).join(', ');
-  if (cityCountry) {
+  if (city) {
     cityEl.style.display = 'flex';
-    document.getElementById('preview-city-text').textContent = cityCountry;
+    document.getElementById('preview-city-text').textContent = city;
   } else { cityEl.style.display = 'none'; }
 
   const specContainer = document.getElementById('preview-specialties');
@@ -752,7 +751,8 @@ function syncPreview() {
     metaEl.style.display = 'flex';
     priceEl.style.display = 'flex';
     document.getElementById('pm-civil').textContent = civil || '—';
-    document.getElementById('pm-exp').textContent = years ? `${years} año${years == 1 ? '' : 's'}` : '—';
+    const lang=localStorage.getItem('hksk-lang')||'es';
+    document.getElementById('pm-exp').textContent = years ? `${years} ${lang==='en'?'year':'año'}${years==1?'':'s'}` : '—';
     document.getElementById('pm-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : '$0';
   } else {
     metaEl.style.display = 'none';
@@ -788,7 +788,7 @@ async function uploadAvatar(input) {
   };
   reader.readAsDataURL(file);
 
-  showToast('Subiendo foto…');
+  showToast(localStorage.getItem('hksk-lang')==='en'?'Uploading photo…':'Subiendo foto…');
   const formData = new FormData();
   formData.append('file', file);
   formData.append('userId', session.user.id);
@@ -797,7 +797,7 @@ async function uploadAvatar(input) {
   try {
     const res = await fetch('/.netlify/functions/avatar-upload', { method: 'POST', body: formData });
     const data = await res.json();
-    if (data.url) showToast('Foto actualizada');
+    if (data.url) showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
     else showToast(data.error || 'Error al subir', true);
   } catch { showToast('Error de conexión', true); }
 }
@@ -824,22 +824,23 @@ function toggleAdvisorPanel() {
   const panel = document.getElementById('advisor-panel');
   panel.classList.toggle('open');
   document.getElementById('advisor-expand-btn').textContent =
-    panel.classList.contains('open') ? 'Cerrar ↑' : 'Configurar →';
+    panel.classList.contains('open') ? (localStorage.getItem('hksk-lang')==='en'?'Close ↑':'Cerrar ↑') : (localStorage.getItem('hksk-lang')==='en'?'Set up →':'Configurar →');
 }
 
 function updateAdvisorSectionHeader(isAdvisor) {
   document.getElementById('advisor-dot').classList.toggle('inactive', !isAdvisor);
-  document.getElementById('advisor-section-title').textContent = isAdvisor ? 'Perfil de advisor' : 'Ser advisor';
+  const lang=localStorage.getItem('hksk-lang')||'es';
+  document.getElementById('advisor-section-title').textContent = isAdvisor ? (lang==='en'?'Advisor profile':'Perfil de advisor') : (lang==='en'?'Become an advisor':'Ser advisor');
   document.getElementById('advisor-section-sub').textContent = isAdvisor
-    ? `${selectedSpecs.length} especialidad${selectedSpecs.length !== 1 ? 'es' : ''}`
-    : 'Ayuda a otros y gana dinero';
-  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? 'Editar →' : 'Configurar →';
+    ? `${selectedSpecs.length} ${(localStorage.getItem('hksk-lang')||'es')==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?((localStorage.getItem('hksk-lang')||'es')==='en'?'ies':'es'):((localStorage.getItem('hksk-lang')||'es')==='en'?'y':'')}`
+    : (localStorage.getItem('hksk-lang')==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
+  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (localStorage.getItem('hksk-lang')==='en'?'Edit →':'Editar →') : (localStorage.getItem('hksk-lang')==='en'?'Set up →':'Configurar →');
 }
 
 function setAdvisorAvailableUI(val) {
   const btn = document.getElementById('advisor-available-toggle');
   btn.classList.toggle('on', val);
-  document.getElementById('advisor-available-label').textContent = val ? 'Disponible' : 'No disponible';
+  document.getElementById('advisor-available-label').textContent = val ? (localStorage.getItem('hksk-lang')==='en'?'Available':'Disponible') : (localStorage.getItem('hksk-lang')==='en'?'Unavailable':'No disponible');
 }
 
 function toggleAdvisorAvailable() {
@@ -872,13 +873,13 @@ function toggleSpec(name, el) {
   }
   syncPreview();
   document.getElementById('advisor-section-sub').textContent =
-    `${selectedSpecs.length} especialidad${selectedSpecs.length !== 1 ? 'es' : ''}`;
+    `${selectedSpecs.length} ${(localStorage.getItem('hksk-lang')||'es')==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?((localStorage.getItem('hksk-lang')||'es')==='en'?'ies':'es'):((localStorage.getItem('hksk-lang')||'es')==='en'?'y':'')}`; 
 }
 
 // ── GUARDAR PERFIL ───────────────────────────
 async function saveProfile() {
   const btn = document.querySelector('.settings-section .btn-save');
-  btn.disabled = true; btn.textContent = 'Guardando…';
+  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
 
   const body = {
     action: 'update-profile',
@@ -887,7 +888,6 @@ async function saveProfile() {
     full_name: document.getElementById('full-name').value.trim(),
     bio: document.getElementById('bio').value.trim(),
     city: document.getElementById('city').value.trim(),
-    country: document.getElementById('country').value.trim(),
     gender: document.getElementById('gender').value,
     is_anonymous: isAnon
   };
@@ -900,16 +900,16 @@ async function saveProfile() {
     });
     const data = await res.json();
     if (data.error) showToast(data.error, true);
-    else showToast('Perfil actualizado');
+    else showToast(localStorage.getItem('hksk-lang')==='en'?'Profile updated':'Perfil actualizado');
   } catch { showToast('Error de conexión', true); }
 
-  btn.disabled = false; btn.textContent = 'Guardar cambios';
+  btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save changes':'Guardar cambios';
 }
 
 // ── GUARDAR ADVISOR ──────────────────────────
 async function saveAdvisor() {
   const btn = document.querySelectorAll('.btn-save')[1];
-  btn.disabled = true; btn.textContent = 'Guardando…';
+  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
 
   const body = {
     userId: session.user.id,
@@ -931,20 +931,20 @@ async function saveAdvisor() {
     const data = await res.json();
     if (data.error) showToast(data.error, true);
     else {
-      showToast('Perfil de advisor guardado');
+      showToast(localStorage.getItem('hksk-lang')==='en'?'Advisor profile saved':'Perfil de advisor guardado');
       profile.role = 'advisor';
       updateAdvisorSectionHeader(true);
       syncPreview();
     }
   } catch { showToast('Error de conexión', true); }
 
-  btn.disabled = false; btn.textContent = 'Guardar perfil de advisor';
+  btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save advisor profile':'Guardar perfil de advisor';
 }
 
 // ── CANCELAR PLAN ────────────────────────────
 function cancelPlan() {
-  if (!confirm('¿Seguro que quieres cancelar tu plan?')) return;
-  showToast('Escríbenos a soporte para cancelar tu suscripción');
+  if (!confirm(localStorage.getItem('hksk-lang')==='en'?'Are you sure?':'¿Seguro que quieres cancelar tu plan?')) return;
+  showToast(localStorage.getItem('hksk-lang')==='en'?'Contact support to cancel':'Escríbenos a soporte para cancelar');
 }
 
 // ── TOAST ────────────────────────────────────
@@ -956,6 +956,26 @@ function showToast(msg, error = false) {
 }
 
 init();
+</script>
+
+<script>
+function setLang(lang){
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  localStorage.setItem('hksk-lang',lang);
+  const g=document.getElementById('gender');
+  if(g){const gv=g.value;g.innerHTML=lang==='en'?'<option value="">Prefer not to say</option><option value="hombre">Man</option><option value="mujer">Woman</option><option value="otro">Other</option>':'<option value="">Prefiero no decir</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option>';g.value=gv;}
+  const cs=document.getElementById('civil-status');
+  if(cs){const cv=cs.value;cs.innerHTML=lang==='en'?'<option value="">Select</option><option value="Soltero/a">Single</option><option value="En relación">In a relationship</option><option value="Casado/a">Married</option><option value="Divorciado/a">Divorced</option><option value="Viudo/a">Widowed</option>':'<option value="">Selecciona</option><option value="Soltero/a">Soltero/a</option><option value="En relación">En relación</option><option value="Casado/a">Casado/a</option><option value="Divorciado/a">Divorciado/a</option><option value="Viudo/a">Viudo/a</option>';cs.value=cv;}
+}
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  if(lang==='en') setTimeout(()=>setLang('en'),500);
+})();
 </script>
 </body>
 </html>
