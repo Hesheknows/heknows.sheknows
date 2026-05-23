@@ -231,17 +231,8 @@ input:checked+.dsl::before{transform:translateX(16px);}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
-.hamburger span{width:22px;height:2px;background:var(--night);border-radius:2px;transition:all 0.3s;display:block;}
-.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(247,243,238,0.98);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.15);padding:20px 24px;flex-direction:column;gap:4px;z-index:99;}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(196,122,90,0.08);}
-.mobile-menu a:last-child{border-bottom:none;}
-.mobile-menu a:hover{color:var(--terra);}
-.mobile-menu .mm-cta{background:var(--night);color:var(--cream)!important;padding:12px 20px;border-radius:2px;text-align:center;margin-top:8px;}
-.mobile-menu .mm-cta:hover{background:var(--terra)!important;}
 @media(max-width:768px){
-nav{padding:16px 20px;} .nav-links{display:none;} .hamburger{display:flex;}
+nav{padding:16px 20px;} .nav-links{display:none;}
 .hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
 .s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
 .pgrid{grid-template-columns:1fr;} .pc.feat{transform:none;}
@@ -258,9 +249,8 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <body>
 <nav>
   <div class="nav-logo">He Knows · <span>She Knows</span></div>
-  <button class="hamburger" onclick="toggleMenu()" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+    <a href="/login.html" id="login-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--night);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Entrar</a>
+    <a href="/dashboard.html" id="profile-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--terra);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Mi perfil</a>
   <div class="nav-links">
     <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
     <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
@@ -271,17 +261,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <a href="/dashboard.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   </div>
 </nav>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="#cf" onclick="closeMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
-  <a href="#areas" onclick="closeMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
-  <a href="#precios" onclick="closeMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
-  <a href="#advsec" onclick="closeMenu()"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
-  <a href="about.html" onclick="closeMenu()"><span class="es">Historia</span><span class="en">Our Story</span></a>
-  <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
-  <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
-</div>
 
 <section class="hero">
   <div class="hero-left">
@@ -354,14 +333,14 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section class="s s-mid" id="areas">
   <div class="sh"><p class="sl"><span class="es">Áreas de consejo</span><span class="en">Advice Areas</span></p><h2 class="st"><span class="es">En lo que nuestros<br><em>Advisors</em> te ayudan.</span><span class="en">What our <em>Advisors</em><br>help you with.</span></h2><p class="ss"><span class="es">Cada advisor elige su especialidad. Tú eliges al que más se alinea con lo que necesitas.</span><span class="en">Each advisor picks their specialty. You choose the one that best fits what you need.</span></p></div>
   <div class="areas">
-    <div class="area"><span class="aico">💔</span><div class="anm"><span class="es">Relaciones y pareja</span><span class="en">Relationships & Couples</span></div><p class="ades"><span class="es">Conflictos, comunicación y cómo mejorar tu relación actual.</span><span class="en">Conflicts, communication and how to improve your current relationship.</span></p></div>
-    <div class="area"><span class="aico">👻</span><div class="anm"><span class="es">Ghosting e infidelidad</span><span class="en">Ghosting & Infidelity</span></div><p class="ades"><span class="es">Por qué desaparecen y qué hacer después de una traición.</span><span class="en">Why they disappear and what to do after a betrayal.</span></p></div>
-    <div class="area"><span class="aico">🧠</span><div class="anm"><span class="es">Cómo piensa el sexo opuesto</span><span class="en">How the Opposite Sex Thinks</span></div><p class="ades"><span class="es">Entiende la lógica y las motivaciones del otro lado.</span><span class="en">Understand the logic and motivations of the other side.</span></p></div>
-    <div class="area"><span class="aico">💪</span><div class="anm"><span class="es">Confianza y autoestima</span><span class="en">Confidence & Self-Esteem</span></div><p class="ades"><span class="es">Cómo proyectarte mejor y atraer lo que buscas.</span><span class="en">How to project yourself better and attract what you're looking for.</span></p></div>
-    <div class="area"><span class="aico">👗</span><div class="anm"><span class="es">Styling y presencia</span><span class="en">Styling & Presence</span></div><p class="ades"><span class="es">Qué imagen das al sexo opuesto y cómo mejorarla.</span><span class="en">What image you project and how to improve it.</span></p></div>
-    <div class="area"><span class="aico">💬</span><div class="anm"><span class="es">Texting y comunicación</span><span class="en">Texting & Communication</span></div><p class="ades"><span class="es">Qué decir, cuándo escribir e interpretar mensajes.</span><span class="en">What to say, when to text and how to interpret messages.</span></p></div>
-    <div class="area"><span class="aico">❤️‍🔥</span><div class="anm"><span class="es">Citas y conquista</span><span class="en">Dating & Attraction</span></div><p class="ades"><span class="es">Primera cita, flirteo y señales de interés real.</span><span class="en">First dates, flirting and real signs of interest.</span></p></div>
-    <div class="area"><span class="aico">🗣️</span><div class="anm"><span class="es">Desahogo real</span><span class="en">Real Venting</span></div><p class="ades"><span class="es">Que alguien del sexo opuesto te escuche sin juzgarte.</span><span class="en">Have someone of the opposite sex listen without judging you.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M22 36C22 36 7 26 7 15.5C7 11 10.5 8 15 8C17.8 8 20.2 9.8 22 12C23.8 9.8 26.2 8 29 8C33.5 8 37 11 37 15.5C37 26 22 36 22 36Z" fill="#C47A5A" opacity="0.85"/><path d="M22 36C22 36 7 26 7 15.5C7 11 10.5 8 15 8C17.8 8 20.2 9.8 22 12C23.8 9.8 26.2 8 29 8C33.5 8 37 11 37 15.5C37 26 22 36 22 36Z" stroke="#C47A5A" stroke-width="1"/><line x1="22" y1="14" x2="22" y2="30" stroke="#F7F3EE" stroke-width="1.5" opacity="0.6"/><line x1="15" y1="20" x2="29" y2="20" stroke="#F7F3EE" stroke-width="1.5" opacity="0.6"/></svg></span><div class="anm"><span class="es">Relaciones y pareja</span><span class="en">Relationships & Couples</span></div><p class="ades"><span class="es">Conflictos, comunicación y cómo mejorar tu relación actual.</span><span class="en">Conflicts, communication and how to improve your current relationship.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><ellipse cx="22" cy="20" rx="12" ry="14" fill="#9A8880" opacity="0.7"/><rect x="10" y="28" width="24" height="8" rx="0" fill="#9A8880" opacity="0.7"/><path d="M10 36 L14 32 L18 36 L22 32 L26 36 L30 32 L34 36" fill="#9A8880" opacity="0.7"/><circle cx="18" cy="18" r="2" fill="#1A1410"/><circle cx="26" cy="18" r="2" fill="#1A1410"/><path d="M18 24 Q22 27 26 24" stroke="#C47A5A" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span><div class="anm"><span class="es">Ghosting e infidelidad</span><span class="en">Ghosting & Infidelity</span></div><p class="ades"><span class="es">Por qué desaparecen y qué hacer después de una traición.</span><span class="en">Why they disappear and what to do after a betrayal.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="16" cy="18" r="8" fill="#C47A5A" opacity="0.75"/><circle cx="28" cy="18" r="8" fill="#C9A96E" opacity="0.75"/><rect x="14" y="26" width="6" height="10" rx="3" fill="#C47A5A" opacity="0.75"/><rect x="24" y="26" width="6" height="10" rx="3" fill="#C9A96E" opacity="0.75"/><line x1="22" y1="12" x2="22" y2="24" stroke="#F7F3EE" stroke-width="1.5" opacity="0.5"/></svg></span><div class="anm"><span class="es">Cómo piensa el sexo opuesto</span><span class="en">How the Opposite Sex Thinks</span></div><p class="ades"><span class="es">Entiende la lógica y las motivaciones del otro lado.</span><span class="en">Understand the logic and motivations of the other side.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="14" r="7" fill="#C47A5A" opacity="0.85"/><path d="M10 36C10 28 15 24 22 24C29 24 34 28 34 36" fill="#C47A5A" opacity="0.85"/><polygon points="34,4 36,10 42,10 37,14 39,20 34,16 29,20 31,14 26,10 32,10" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Confianza y autoestima</span><span class="en">Confidence & Self-Esteem</span></div><p class="ades"><span class="es">Cómo proyectarte mejor y atraer lo que buscas.</span><span class="en">How to project yourself better and attract what you're looking for.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M16 6 L8 18 L14 18 L12 38 L32 38 L30 18 L36 18 L28 6 Q22 10 16 6Z" fill="#C47A5A" opacity="0.8"/><path d="M16 6 Q22 10 28 6" stroke="#C9A96E" stroke-width="1.5" fill="none"/><ellipse cx="22" cy="6" rx="4" ry="3" fill="#E8C4B0"/></svg></span><div class="anm"><span class="es">Styling y presencia</span><span class="en">Styling & Presence</span></div><p class="ades"><span class="es">Qué imagen das al sexo opuesto y cómo mejorarla.</span><span class="en">What image you project and how to improve it.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><rect x="4" y="8" width="28" height="20" rx="6" fill="#C47A5A" opacity="0.85"/><path d="M4 26 L2 36 L14 28" fill="#C47A5A" opacity="0.85"/><circle cx="12" cy="18" r="2.5" fill="#F7F3EE"/><circle cx="18" cy="18" r="2.5" fill="#F7F3EE"/><circle cx="24" cy="18" r="2.5" fill="#F7F3EE"/><rect x="20" y="18" width="22" height="14" rx="5" fill="#C9A96E" opacity="0.85"/><path d="M42 30 L44 36 L36 32" fill="#C9A96E" opacity="0.85"/></svg></span><div class="anm"><span class="es">Texting y comunicación</span><span class="en">Texting & Communication</span></div><p class="ades"><span class="es">Qué decir, cuándo escribir e interpretar mensajes.</span><span class="en">What to say, when to text and how to interpret messages.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M22 34C22 34 8 25 8 15C8 10.5 11.5 8 16 8C18.8 8 21 9.6 22 11.5C23 9.6 25.2 8 28 8C32.5 8 36 10.5 36 15C36 25 22 34 22 34Z" fill="#C47A5A" opacity="0.85"/><path d="M26 22 Q28 16 24 14 Q26 18 22 20 Q24 14 20 12 Q22 18 18 22 Q20 18 22 20 Q20 24 24 26 Q22 22 26 22Z" fill="#C9A96E" opacity="0.9"/></svg></span><div class="anm"><span class="es">Citas y conquista</span><span class="en">Dating & Attraction</span></div><p class="ades"><span class="es">Primera cita, flirteo y señales de interés real.</span><span class="en">First dates, flirting and real signs of interest.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="18" cy="14" r="7" fill="#C47A5A" opacity="0.85"/><path d="M6 36C6 28 11 24 18 24C25 24 30 28 30 36" fill="#C47A5A" opacity="0.85"/><path d="M32 16 Q36 14 36 18 Q36 22 32 22" stroke="#C9A96E" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M32 12 Q40 10 40 18 Q40 26 32 26" stroke="#C9A96E" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg></span><div class="anm"><span class="es">Desahogo real</span><span class="en">Real Venting</span></div><p class="ades"><span class="es">Que alguien del sexo opuesto te escuche sin juzgarte.</span><span class="en">Have someone of the opposite sex listen without judging you.</span></p></div>
   </div>
 </section>
 
@@ -626,22 +605,11 @@ async function showSuc(id){
     if(session?.access_token){
       document.getElementById('login-btn').style.display='none';
       document.getElementById('profile-btn').style.display='inline-block';
-      document.getElementById('mm-login').style.display='none';
-      document.getElementById('mm-profile').style.display='block';
-    }
-  }catch(e){}
+      document.getElementById('login-btn-mobile').style.display='none';
+      document.getElementById('profile-btn-mobile').style.display='inline-block';
+    }else{document.getElementById('login-btn-mobile').style.display='inline-block';}
+  }catch(e){document.getElementById('login-btn-mobile').style.display='inline-block';}
 })();
-
-function toggleMenu(){
-  const menu=document.getElementById('mobile-menu');
-  const ham=document.getElementById('hamburger');
-  menu.classList.toggle('open');
-  ham.classList.toggle('open');
-}
-function closeMenu(){
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-}
 </script>
 <script>
 function setLang(lang){
