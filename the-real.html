@@ -158,12 +158,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 
   <div class="filters" id="filters">
     <button class="filter-pill active" data-cat="all" onclick="setFilter('all', this)"><span class="es">Todos</span><span class="en">All</span></button>
-    <button class="filter-pill" data-cat="relaciones" onclick="setFilter('relaciones', this)">💔 Relaciones</button>
+    <button class="filter-pill" data-cat="relaciones" onclick="setFilter('relaciones', this)">💔 <span class="es">Relaciones</span><span class="en">Relationships</span></button>
     <button class="filter-pill" data-cat="ghosting" onclick="setFilter('ghosting', this)">👻 Ghosting</button>
-    <button class="filter-pill" data-cat="como-piensa" onclick="setFilter('como-piensa', this)">🧠 Cómo piensa</button>
+    <button class="filter-pill" data-cat="como-piensa" onclick="setFilter('como-piensa', this)">🧠 <span class="es">Cómo piensa</span><span class="en">How they think</span></button>
     <button class="filter-pill" data-cat="texting" onclick="setFilter('texting', this)">💬 Texting</button>
-    <button class="filter-pill" data-cat="conquista" onclick="setFilter('conquista', this)">❤️‍🔥 Conquista</button>
-    <button class="filter-pill" data-cat="confianza" onclick="setFilter('confianza', this)">💪 Confianza</button>
+    <button class="filter-pill" data-cat="conquista" onclick="setFilter('conquista', this)">❤️‍🔥 <span class="es">Conquista</span><span class="en">Dating</span></button>
+    <button class="filter-pill" data-cat="confianza" onclick="setFilter('confianza', this)">💪 <span class="es">Confianza</span><span class="en">Confidence</span></button>
   </div>
 
   <div class="layout">
@@ -174,26 +174,26 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
         <textarea class="ask-textarea" id="ask-input" placeholder="¿Qué necesitas que el sexo opuesto te explique?..."></textarea>
         <div class="ask-bottom">
           <div class="ask-toggles">
-            <button class="ask-tog anon-on" id="tog-anon" onclick="toggleAnon()">Anónimo</button>
-            <button class="ask-tog" id="tog-name" onclick="toggleAnon()">Con mi nombre</button>
+            <button class="ask-tog anon-on" id="tog-anon" onclick="toggleAnon()"><span class="es">Anónimo</span><span class="en">Anonymous</span></button>
+            <button class="ask-tog" id="tog-name" onclick="toggleAnon()"><span class="es">Con mi nombre</span><span class="en">My name</span></button>
             <select class="ask-category" id="ask-cat">
-              <option value="general">Categoría</option>
-              <option value="relaciones">💔 Relaciones</option>
+              <option value="general">Categoría / Category</option>
+              <option value="relaciones">💔 <span class="es">Relaciones</span><span class="en">Relationships</span></option>
               <option value="ghosting">👻 Ghosting</option>
-              <option value="como-piensa">🧠 Cómo piensa</option>
+              <option value="como-piensa">🧠 <span class="es">Cómo piensa</span><span class="en">How they think</span></option>
               <option value="texting">💬 Texting</option>
-              <option value="conquista">❤️‍🔥 Conquista</option>
-              <option value="confianza">💪 Confianza</option>
+              <option value="conquista">❤️‍🔥 <span class="es">Conquista</span><span class="en">Dating</span></option>
+              <option value="confianza">💪 <span class="es">Confianza</span><span class="en">Confidence</span></option>
             </select>
           </div>
-          <button class="ask-btn" id="ask-btn" onclick="publishPost()">Publicar →</button>
+          <button class="ask-btn" id="ask-btn" onclick="publishPost()"><span class="es">Publicar →</span><span class="en">Post →</span></button>
         </div>
         <div class="ask-note" id="ask-note"></div>
       </div>
 
       <!-- FEED -->
       <div id="feed">
-        <div class="loading">Cargando preguntas...</div>
+        <div class="loading"><span class="es">Cargando preguntas...</span><span class="en">Loading questions...</span></div>
       </div>
 
       <button class="load-more" id="load-more-btn" onclick="loadMore()" style="display:none;"><span class="es">Ver más →</span><span class="en">Load more →</span></button>
@@ -276,7 +276,8 @@ function setFilter(cat, el) {
 function renderFeed(posts) {
   const feed = document.getElementById('feed');
   if (!posts.length) {
-    feed.innerHTML = `<div class="empty-feed"><p>Aún no hay preguntas en esta categoría.<br>¡Sé el primero en preguntar!</p></div>`;
+    const lang=localStorage.getItem('hksk-lang')||'es';
+  feed.innerHTML = `<div class="empty-feed"><p>${lang==='en'?'No questions yet. Be the first!':'Aún no hay preguntas. ¡Sé el primero!'}</p></div>`;
     return;
   }
   feed.innerHTML = posts.map(p => renderPost(p)).join('');
@@ -284,7 +285,8 @@ function renderFeed(posts) {
 
 function renderPost(p) {
   const timeAgo = getTimeAgo(p.created_at);
-  const authorName = p.is_anonymous ? 'Anónimo/a' : (p.author?.full_name || 'Usuario');
+  const lang=localStorage.getItem('hksk-lang')||'es';
+  const authorName = p.is_anonymous ? (lang==='en'?'Anonymous':'Anónimo/a') : (p.author?.full_name || (lang==='en'?'User':'Usuario'));
   const avatarHtml = p.is_anonymous
     ? `<div class="post-av anon">?</div>`
     : p.author?.avatar_url
@@ -311,28 +313,28 @@ function renderPost(p) {
     <div class="reply-form" id="rf-${p.id}">
       <textarea class="reply-input" id="ri-${p.id}" placeholder="Tu respuesta..."></textarea>
       <div class="reply-form-bottom">
-        <button class="reply-anon-tog" id="rat-${p.id}" onclick="toggleReplyAnon('${p.id}')">Anónimo</button>
-        <button class="reply-send-btn" onclick="sendReply('${p.id}')">Responder →</button>
+        <button class="reply-anon-tog" id="rat-${p.id}" onclick="toggleReplyAnon('${p.id}')"><span class="es">Anónimo</span><span class="en">Anonymous</span></button>
+        <button class="reply-send-btn" onclick="sendReply('${p.id}')">${localStorage.getItem('hksk-lang')==='en'?'Reply →':'Responder →'}</button>
       </div>
     </div>
     <div class="post-actions">
       <button class="post-action" onclick="likePost('${p.id}', this)">
         ${liked ? '❤️' : '🤍'} ${likeCount}
       </button>
-      <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">+ Responder</button>
-      <span class="post-replies-count">${p.reply_count || 0} respuesta${p.reply_count !== 1 ? 's' : ''}</span>
+      <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">${localStorage.getItem('hksk-lang')==='en'?'+ Reply':'+ Responder'}</button>
+      <span class="post-replies-count">${p.reply_count || 0} ${localStorage.getItem('hksk-lang')==='en'?(p.reply_count===1?'reply':'replies'):(p.reply_count===1?'respuesta':'respuestas')}</span>
     </div>
   </div>`;
 }
 
 function renderReplyPreview(reply) {
   const isAdvisor = reply.author?.is_advisor || reply.author?.role === 'advisor';
-  const name = reply.is_anonymous ? 'Anónimo/a' : (reply.author?.full_name || 'Usuario');
+  const name = reply.is_anonymous ? (localStorage.getItem('hksk-lang')==='en'?'Anonymous':'Anónimo/a') : (reply.author?.full_name || (localStorage.getItem('hksk-lang')==='en'?'User':'Usuario'));
   const avatarHtml = !reply.is_anonymous && reply.author?.avatar_url
     ? `<img src="${reply.author.avatar_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;margin-right:6px;vertical-align:middle;" alt="">`
     : '';
   const badgeClass = isAdvisor ? 'reply-badge' : 'reply-badge f';
-  const badgeText = isAdvisor ? 'Advisor' : 'Usuario';
+  const badgeText = isAdvisor ? 'Advisor' : (localStorage.getItem('hksk-lang')==='en'?'User':'Usuario');
   return `<div class="reply-preview">
     <div class="reply-meta-row">
       <span class="${badgeClass}">${badgeText}</span>
@@ -354,7 +356,7 @@ function toggleReplyAnon(postId) {
   replyAnonState[postId] = !replyAnonState[postId];
   const btn = document.getElementById(`rat-${postId}`);
   btn.classList.toggle('on', replyAnonState[postId]);
-  btn.textContent = replyAnonState[postId] ? 'Anónimo' : 'Con mi nombre';
+  btn.textContent = replyAnonState[postId] ? (localStorage.getItem('hksk-lang')==='en'?'Anonymous':'Anónimo') : (localStorage.getItem('hksk-lang')==='en'?'My name':'Con mi nombre');
 }
 
 async function sendReply(postId) {
@@ -373,10 +375,10 @@ async function sendReply(postId) {
   if (res.ok) {
     input.value = '';
     document.getElementById(`rf-${postId}`).classList.remove('open');
-    showToast('Respuesta publicada');
+    showToast(localStorage.getItem('hksk-lang')==='en'?'Reply published':'Respuesta publicada');
     await loadPosts(true);
   } else {
-    showToast('Error al responder. Intenta de nuevo.');
+    showToast(localStorage.getItem('hksk-lang')==='en'?'Error. Try again.':'Error al responder.');
   }
 }
 
@@ -389,11 +391,11 @@ function toggleAnon() {
 async function publishPost() {
   if (!session) { window.location.href = 'login.html'; return; }
   const text = document.getElementById('ask-input').value.trim();
-  if (!text) { showToast('Escribe tu pregunta primero.'); return; }
-  if (text.length < 10) { showToast('Tu pregunta es muy corta.'); return; }
+  if (!text) { showToast(localStorage.getItem('hksk-lang')==='en'?'Write your question first.':'Escribe tu pregunta primero.'); return; }
+  if (text.length < 10) { showToast(localStorage.getItem('hksk-lang')==='en'?'Question too short.':'Tu pregunta es muy corta.'); return; }
 
   const btn = document.getElementById('ask-btn');
-  btn.disabled = true; btn.textContent = 'Publicando...';
+  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Publishing...':'Publicando...';
 
   const category = document.getElementById('ask-cat').value;
 
@@ -405,14 +407,14 @@ async function publishPost() {
 
   if (res.ok) {
     document.getElementById('ask-input').value = '';
-    showToast('¡Tu pregunta fue publicada!');
+    showToast(localStorage.getItem('hksk-lang')==='en'?'Question published!':'¡Tu pregunta fue publicada!');
     await loadPosts(true);
   } else {
     const data = await res.json();
     showToast('Error: ' + (data.error || 'Intenta de nuevo.'));
   }
 
-  btn.disabled = false; btn.textContent = 'Publicar →';
+  btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Post →':'Publicar →';
 }
 
 async function likePost(postId, btn) {
@@ -434,13 +436,13 @@ function updateStats(posts) {
 function updateTrending(posts) {
   const sorted = [...posts].sort((a, b) => (b.reply_count || 0) - (a.reply_count || 0)).slice(0, 3);
   const list = document.getElementById('trending-list');
-  if (!sorted.length) { list.innerHTML = '<p style="font-size:0.78rem;color:var(--muted);">Aún sin tendencias.</p>'; return; }
+  if (!sorted.length) { list.innerHTML = `<p style="font-size:0.78rem;color:var(--muted);">${localStorage.getItem('hksk-lang')==='en'?'No trending yet.':'Aún sin tendencias.'}</p>`; return; }
   list.innerHTML = sorted.map((p, i) => `
     <div class="trend-item" onclick="scrollToPost('${p.id}')">
       <div class="trend-num">${i + 1}</div>
       <div>
         <div class="trend-text">${escHtml(p.body.slice(0, 60))}${p.body.length > 60 ? '…' : ''}</div>
-        <div class="trend-count">${p.reply_count || 0} respuestas</div>
+        <div class="trend-count">${p.reply_count || 0} ${localStorage.getItem('hksk-lang')==='en'?'replies':'respuestas'}</div>
       </div>
     </div>`).join('');
 }
@@ -451,16 +453,20 @@ function scrollToPost(id) {
 }
 
 function getCatLabel(cat) {
-  const map = { relaciones: '💔 Relaciones', ghosting: '👻 Ghosting', 'como-piensa': '🧠 Cómo piensa', texting: '💬 Texting', conquista: '❤️‍🔥 Conquista', confianza: '💪 Confianza' };
+  const lang=localStorage.getItem('hksk-lang')||'es';
+  const map = lang==='en'
+    ? { relaciones: '💔 Relationships', ghosting: '👻 Ghosting', 'como-piensa': '🧠 How they think', texting: '💬 Texting', conquista: '❤️‍🔥 Dating', confianza: '💪 Confidence' }
+    : { relaciones: '💔 Relaciones', ghosting: '👻 Ghosting', 'como-piensa': '🧠 Cómo piensa', texting: '💬 Texting', conquista: '❤️‍🔥 Conquista', confianza: '💪 Confianza' };
   return map[cat] || '';
 }
 
 function getTimeAgo(dateStr) {
   const diff = (Date.now() - new Date(dateStr)) / 1000;
-  if (diff < 60) return 'hace un momento';
-  if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`;
-  if (diff < 86400) return `hace ${Math.floor(diff / 3600)} hr`;
-  return `hace ${Math.floor(diff / 86400)} días`;
+  const lang=localStorage.getItem('hksk-lang')||'es';
+  if (diff < 60) return lang==='en'?'just now':'hace un momento';
+  if (diff < 3600) return lang==='en'?`${Math.floor(diff/60)} min ago`:`hace ${Math.floor(diff/60)} min`;
+  if (diff < 86400) return lang==='en'?`${Math.floor(diff/3600)} hr ago`:`hace ${Math.floor(diff/3600)} hr`;
+  return lang==='en'?`${Math.floor(diff/86400)} days ago`:`hace ${Math.floor(diff/86400)} días`;
 }
 
 function escHtml(str) {
