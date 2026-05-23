@@ -461,7 +461,7 @@ main {
           <div class="avatar-info">
             <label class="btn-avatar" for="avatar-file"><span class="es">Cambiar foto</span><span class="en">Change photo</span></label>
             <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
-            <span class="avatar-hint">JPG o PNG, máx. 2MB</span>
+            <span class="avatar-hint"><span class="es">JPG o PNG, máx. 2MB</span><span class="en">JPG or PNG, max. 2MB</span></span>
           </div>
         </div>
 
@@ -481,10 +481,11 @@ main {
         <div class="form-group">
           <label class="form-label">Género</label>
           <select id="gender" class="form-select">
-            <option value="">${localStorage.getItem("hksk-lang")==="en"?"Prefer not to say":"Prefiero no decir"}</option>
-            <option value="hombre">${localStorage.getItem("hksk-lang")==="en"?"Man":"Hombre"}</option>
-            <option value="mujer">${localStorage.getItem("hksk-lang")==="en"?"Woman":"Mujer"}</option>
-            <option value="otro">${localStorage.getItem("hksk-lang")==="en"?"Other":"Otro"}</option>
+            <option value="" class="es">Prefiero no decir</option>
+            <option value="" class="en" style="display:none">Prefer not to say</option>
+            <option value="hombre">Hombre / Man</option>
+            <option value="mujer">Mujer / Woman</option>
+            <option value="otro">Otro / Other</option>
           </select>
         </div>
 
@@ -750,7 +751,8 @@ function syncPreview() {
     metaEl.style.display = 'flex';
     priceEl.style.display = 'flex';
     document.getElementById('pm-civil').textContent = civil || '—';
-    document.getElementById('pm-exp').textContent = years ? `${years} año${years == 1 ? '' : 's'}` : '—';
+    const lang=localStorage.getItem('hksk-lang')||'es';
+    document.getElementById('pm-exp').textContent = years ? `${years} ${lang==='en'?'year':'año'}${years == 1 ? '' : 's'}` : '—';
     document.getElementById('pm-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : '$0';
   } else {
     metaEl.style.display = 'none';
@@ -961,6 +963,24 @@ function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
+  // Update gender select
+  const g = document.getElementById('gender');
+  if(g){
+    const gval = g.value;
+    g.innerHTML = lang==='en'
+      ? '<option value="">Prefer not to say</option><option value="hombre">Man</option><option value="mujer">Woman</option><option value="otro">Other</option>'
+      : '<option value="">Prefiero no decir</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option>';
+    g.value = gval;
+  }
+  // Update civil status select
+  const cs = document.getElementById('civil-status');
+  if(cs){
+    const csval = cs.value;
+    cs.innerHTML = lang==='en'
+      ? '<option value="">Select</option><option value="Soltero/a">Single</option><option value="En relación">In a relationship</option><option value="Casado/a">Married</option><option value="Divorciado/a">Divorced</option><option value="Viudo/a">Widowed</option>'
+      : '<option value="">Selecciona</option><option value="Soltero/a">Soltero/a</option><option value="En relación">En relación</option><option value="Casado/a">Casado/a</option><option value="Divorciado/a">Divorciado/a</option><option value="Viudo/a">Viudo/a</option>';
+    cs.value = csval;
+  }
 }
 (function(){
   const saved=localStorage.getItem('hksk-lang');
@@ -968,6 +988,7 @@ function setLang(lang){
   const lang=saved||(browser.startsWith('es')?'es':'en');
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  if(lang==='en') setTimeout(()=>setLang('en'),500);
 })();
 </script>
 </body>
