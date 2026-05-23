@@ -128,6 +128,11 @@ nav { flex-shrink:0; background:var(--white); border-bottom:1px solid var(--bord
   transition:opacity 0.3s; pointer-events:none; z-index:999;
 }
 .toast.show { opacity:1; }
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
 </style>
 </head>
 <body>
