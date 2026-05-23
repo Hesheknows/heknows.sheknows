@@ -13,11 +13,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);}
 .nav-logo span{color:var(--terra);font-style:italic;}
-.nav-links{display:flex;gap:18px;align-items:center;}
+.nav-links{display:flex;gap:28px;align-items:center;}
 .nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
 .nav-links a:hover{color:var(--terra);}
 .nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
-.nav-mobile-btn{display:none!important;}
 .nav-cta:hover{background:var(--terra)!important;}
 .btn-p{background:var(--night);color:var(--cream);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
 .btn-p:hover{background:var(--terra);}
@@ -232,8 +231,17 @@ input:checked+.dsl::before{transform:translateX(16px);}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{width:22px;height:2px;background:var(--night);border-radius:2px;transition:all 0.3s;display:block;}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(247,243,238,0.98);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.15);padding:20px 24px;flex-direction:column;gap:4px;z-index:99;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(196,122,90,0.08);}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu .mm-cta{background:var(--night);color:var(--cream)!important;padding:12px 20px;border-radius:2px;text-align:center;margin-top:8px;}
+.mobile-menu .mm-cta:hover{background:var(--terra)!important;}
 @media(max-width:768px){
-nav{padding:16px 20px;} .nav-links{display:none;}
+nav{padding:16px 20px;} .nav-links{display:none;} .hamburger{display:flex;}
 .hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
 .s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
 .pgrid{grid-template-columns:1fr;} .pc.feat{transform:none;}
@@ -250,19 +258,30 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <body>
 <nav>
   <div class="nav-logo">He Knows · <span>She Knows</span></div>
-    <a href="/login.html" id="login-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--night);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Entrar</a>
-    <a href="/dashboard.html" id="profile-btn-mobile" class="nav-mobile-btn" style="display:none;background:var(--terra);color:var(--cream);padding:8px 16px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;text-decoration:none;font-weight:500;">Mi perfil</a>
+  <button class="hamburger" onclick="toggleMenu()" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
   <div class="nav-links">
     <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
     <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
     <a href="#precios"><span class="es">Precios</span><span class="en">Pricing</span></a>
     <a href="#advsec"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
-    <a href="about.html"><span class="es">Historia</span><span class="en">Our Story</span></a>
     <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <a href="/login.html" id="login-btn" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
     <a href="/dashboard.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#cf" onclick="closeMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
+  <a href="#areas" onclick="closeMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
+  <a href="#precios" onclick="closeMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
+  <a href="#advsec" onclick="closeMenu()"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
+  <a href="about.html" onclick="closeMenu()"><span class="es">Historia</span><span class="en">Our Story</span></a>
+  <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
+  <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+</div>
 
 <section class="hero">
   <div class="hero-left">
@@ -440,7 +459,7 @@ async function subscribeNewsletter() {
 
 <footer>
   <div class="fl">He Knows · <span>She Knows</span></div>
-  <div class="flk"><a href="about.html"><span class="es">Historia</span><span class="en">Our Story</span></a><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
+  <div class="flk"><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
   <div class="fc2"><span class="es">© 2026 He Knows She Knows · México · Todo en MXN</span><span class="en">© 2026 He Knows She Knows · Mexico · All in MXN</span></div>
 </footer>
 
@@ -607,11 +626,22 @@ async function showSuc(id){
     if(session?.access_token){
       document.getElementById('login-btn').style.display='none';
       document.getElementById('profile-btn').style.display='inline-block';
-      document.getElementById('login-btn-mobile').style.display='none';
-      document.getElementById('profile-btn-mobile').style.display='inline-block';
-    }else{document.getElementById('login-btn-mobile').style.display='inline-block';}
-  }catch(e){document.getElementById('login-btn-mobile').style.display='inline-block';}
+      document.getElementById('mm-login').style.display='none';
+      document.getElementById('mm-profile').style.display='block';
+    }
+  }catch(e){}
 })();
+
+function toggleMenu(){
+  const menu=document.getElementById('mobile-menu');
+  const ham=document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
 </script>
 <script>
 function setLang(lang){
