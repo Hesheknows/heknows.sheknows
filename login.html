@@ -33,7 +33,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 <div class="wrap">
   <div class="logo">He Knows · <span>She Knows</span></div>
   <div class="card">
-    <div class="tabs" id="main-tabs">
+    <div class="tabs">
       <div class="tab on" onclick="showTab('login')">Iniciar sesión</div>
       <div class="tab" onclick="showTab('register')">Registrarse</div>
     </div>
@@ -44,9 +44,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
       <div class="err" id="login-err"></div>
-      <div style="text-align:center;margin-top:14px;">
-        <a href="#" onclick="showTab('reset');return false;" style="font-size:0.72rem;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--muted)'">¿Olvidaste tu contraseña?</a>
-      </div>
     </div>
 
     <!-- REGISTRO -->
@@ -56,20 +53,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
       <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña" onkeydown="if(event.key==='Enter')doRegister()"></div>
       <button class="btn" id="btn-reg" onclick="doRegister()">Crear cuenta →</button>
       <div class="err" id="reg-err"></div>
-    </div>
-
-    <!-- RESET PASSWORD -->
-    <div id="tab-reset" style="display:none;">
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--night);margin-bottom:6px;">Recuperar contraseña</div>
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Te enviaremos un enlace para crear una nueva contraseña.</div>
-      </div>
-      <div class="field"><label>Correo electrónico</label><input type="email" id="reset-email" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')doReset()"></div>
-      <button class="btn" id="btn-reset" onclick="doReset()">Enviar enlace →</button>
-      <div class="err" id="reset-err"></div>
-      <div style="text-align:center;margin-top:14px;">
-        <a href="#" onclick="showTab('login');return false;" style="font-size:0.72rem;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--muted)'">← Volver al login</a>
-      </div>
     </div>
 
     <a href="/" class="back">← Volver al inicio</a>
@@ -97,9 +80,7 @@ if (window.location.hash.includes("access_token")) {
 function showTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('tab-reset').style.display = tab === 'reset' ? 'block' : 'none';
-  document.getElementById('main-tabs').style.display = tab === 'reset' ? 'none' : 'flex';
-  if(tab !== 'reset') document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
 }
 
 async function doLogin() {
@@ -158,6 +139,27 @@ async function doRegister() {
     }
   }
 }
-<\/script>
+
+async function doReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  const errEl = document.getElementById('reset-err');
+  const btn = document.getElementById('btn-reset');
+  errEl.textContent = '';
+  errEl.style.color = '#8B2A1A';
+  if (!email) { errEl.textContent = 'Por favor ingresa tu correo.'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  const { error } = await HKSK.db.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://he-sheknows.com/reset-password.html'
+  });
+  if (error) {
+    errEl.textContent = 'Error al enviar. Verifica el correo.';
+    btn.disabled = false; btn.textContent = 'Enviar enlace →';
+  } else {
+    errEl.style.color = 'var(--terra)';
+    errEl.textContent = '✓ Revisa tu correo — te enviamos el enlace.';
+    btn.textContent = 'Enviado ✓';
+  }
+}
+</script>
 </body>
 </html>
