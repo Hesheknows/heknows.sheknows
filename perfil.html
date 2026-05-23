@@ -829,11 +829,9 @@ function updateAdvisorSectionHeader(isAdvisor) {
   document.getElementById('advisor-dot').classList.toggle('inactive', !isAdvisor);
   const lang=localStorage.getItem('hksk-lang')||'es';
   document.getElementById('advisor-section-title').textContent = isAdvisor ? (lang==='en'?'Advisor profile':'Perfil de advisor') : (lang==='en'?'Become an advisor':'Ser advisor');
-  const lang=localStorage.getItem('hksk-lang')||'es';
   document.getElementById('advisor-section-sub').textContent = isAdvisor
     ? `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length !== 1 ? (lang==='en'?'ies':'es') : (lang==='en'?'y':'')}`
     : (lang==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
-  const lang=localStorage.getItem('hksk-lang')||'es';
   document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (lang==='en'?'Edit →':'Editar →') : (lang==='en'?'Set up →':'Configurar →');
 }
 
