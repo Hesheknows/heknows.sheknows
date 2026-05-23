@@ -338,6 +338,11 @@ main {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.error { background: #c0392b; }
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
 
 /* Loading */
 .loading {
@@ -355,7 +360,8 @@ main {
     <a href="buscar-advisors.html">Advisors</a>
     <a href="the-real.html">The Real</a>
     <a href="mensajes.html">Mensajes</a>
-    <a href="perfil.html" class="active">Mi perfil</a>
+    <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
   </div>
 </nav>
 
@@ -367,7 +373,7 @@ main {
   <aside>
     <div class="preview-card">
       <div class="preview-header">
-        <span class="preview-label">Así te ven los demás</span>
+        <span class="preview-label"><span class="es">Así te ven los demás</span><span class="en">How others see you</span></span>
         <div class="preview-avatar-wrap">
           <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
           <div id="preview-avatar-ph" class="preview-avatar-placeholder">
@@ -391,11 +397,11 @@ main {
         <div id="preview-specialties" class="preview-specialties" style="display:none"></div>
         <div id="preview-advisor-meta" class="preview-meta" style="display:none">
           <div class="preview-meta-row">
-            <span>Estado civil</span>
+            <span><span class="es">Estado civil</span><span class="en">Rel. status</span></span>
             <span id="pm-civil">—</span>
           </div>
           <div class="preview-meta-row">
-            <span>Experiencia</span>
+            <span><span class="es">Experiencia</span><span class="en">Experience</span></span>
             <span id="pm-exp">—</span>
           </div>
         </div>
@@ -403,7 +409,7 @@ main {
           <div>
             <div class="preview-price-label">Consulta</div>
             <div class="preview-price-amount" id="pm-price">$0</div>
-            <div class="preview-price-unit">MXN / sesión</div>
+            <div class="preview-price-unit"><span class="es">MXN / sesión</span><span class="en">MXN / session</span></div>
           </div>
           <div id="preview-icon-desahogo"></div>
         </div>
@@ -412,7 +418,7 @@ main {
             <circle cx="8" cy="8" r="7" stroke="var(--muted)" stroke-width="1.2"/>
             <path d="M5 8C5 6.3 6.3 5 8 5C9.7 5 11 6.3 11 8C11 9.7 9.7 11 8 11C6.3 11 5 9.7 5 8Z" stroke="var(--muted)" stroke-width="1.2"/>
           </svg>
-          Modo anónimo activo
+          <span class="es">Modo anónimo activo</span><span class="en">Anonymous mode on</span>
         </div>
       </div>
     </div>
@@ -426,7 +432,7 @@ main {
       <div class="bar-plan">
         <span id="plan-badge" class="plan-badge plan-free">Free</span>
         <div>
-          <div id="bar-plan-name" class="bar-plan-name">Explorador <span>· plan actual</span></div>
+          <div id="bar-plan-name" class="bar-plan-name">Explorador <span>· <span class="es">plan actual</span><span class="en">current plan</span></span></div>
         </div>
       </div>
       <div class="bar-actions" id="bar-actions"></div>
@@ -439,7 +445,7 @@ main {
     <!-- Datos personales -->
     <div class="settings-section">
       <div class="section-head">
-        <span class="section-title">Datos personales</span>
+        <span class="section-title"><span class="es">Datos personales</span><span class="en">Personal info</span></span>
       </div>
       <div class="section-body">
 
@@ -453,7 +459,7 @@ main {
             </svg>
           </div>
           <div class="avatar-info">
-            <label class="btn-avatar" for="avatar-file">Cambiar foto</label>
+            <label class="btn-avatar" for="avatar-file"><span class="es">Cambiar foto</span><span class="en">Change photo</span></label>
             <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
             <span class="avatar-hint">JPG o PNG, máx. 2MB</span>
           </div>
@@ -461,7 +467,7 @@ main {
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nombre completo</label>
+            <label class="form-label"><span class="es">Nombre completo</span><span class="en">Full name</span></label>
             <input type="text" id="full-name" class="form-input" placeholder="Tu nombre"
               oninput="syncPreview()"/>
           </div>
@@ -489,7 +495,7 @@ main {
             oninput="syncPreview()"></textarea>
         </div>
 
-        <button class="btn-save" onclick="saveProfile()">Guardar cambios</button>
+        <button class="btn-save" onclick="saveProfile()"><span class="es">Guardar cambios</span><span class="en">Save changes</span></button>
       </div>
     </div>
 
@@ -510,7 +516,7 @@ main {
       <div class="advisor-collapsed-body" id="advisor-panel">
 
         <div class="form-group">
-          <label class="form-label">Activo como advisor</label>
+          <label class="form-label"><span class="es">Activo como advisor</span><span class="en">Active as advisor</span></label>
           <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
             <button id="advisor-available-toggle" class="toggle" onclick="toggleAdvisorAvailable()"></button>
             <span id="advisor-available-label" style="font-size:13px;color:var(--muted)">Disponible</span>
@@ -518,20 +524,20 @@ main {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Bio de advisor</label>
+          <label class="form-label"><span class="es">Bio de advisor</span><span class="en">Advisor bio</span></label>
           <textarea id="advisor-bio" class="form-textarea"
             placeholder="Cuéntales qué los hace especial…"
             oninput="syncPreview()"></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Especialidades</label>
+          <label class="form-label"><span class="es">Especialidades</span><span class="en">Specialties</span></label>
           <div class="specialties-grid" id="specialties-grid"></div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Estado civil</label>
+            <label class="form-label"><span class="es">Estado civil</span><span class="en">Rel. status</span></label>
             <select id="civil-status" class="form-select" onchange="syncPreview()">
               <option value="">Selecciona</option>
               <option value="Soltero/a">Soltero/a</option>
@@ -542,19 +548,19 @@ main {
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Años en relación/matrimonio</label>
+            <label class="form-label"><span class="es">Años en relación/matrimonio</span><span class="en">Years in relationship</span></label>
             <input type="number" id="years-together" class="form-input"
               min="0" max="60" placeholder="0" onchange="syncPreview()"/>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Precio por sesión (MXN)</label>
+          <label class="form-label"><span class="es">Precio por sesión (MXN)</span><span class="en">Price per session (MXN)</span></label>
           <input type="number" id="price" class="form-input"
             min="0" step="50" placeholder="500" onchange="syncPreview()"/>
         </div>
 
-        <button class="btn-save" onclick="saveAdvisor()">Guardar perfil de advisor</button>
+        <button class="btn-save" onclick="saveAdvisor()"><span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span></button>
       </div>
     </div>
 
@@ -667,7 +673,7 @@ function setPlanUI(plan) {
   const p = plans[plan] || plans.free;
   badge.textContent = p.label;
   badge.className = `plan-badge ${p.cls}`;
-  name.innerHTML = `${p.display} <span>· plan actual</span>`;
+  name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
 
   if (plan === 'free') {
     actions.innerHTML = `<a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" class="btn-sm btn-upgrade">Upgrade →</a>`;
@@ -947,6 +953,21 @@ function showToast(msg, error = false) {
 }
 
 init();
+</script>
+
+<script>
+function setLang(lang){
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  localStorage.setItem('hksk-lang',lang);
+}
+(function(){
+  const saved=localStorage.getItem('hksk-lang');
+  const browser=navigator.language||navigator.userLanguage;
+  const lang=saved||(browser.startsWith('es')?'es':'en');
+  document.body.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+})();
 </script>
 </body>
 </html>
