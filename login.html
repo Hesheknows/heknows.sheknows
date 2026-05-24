@@ -21,6 +21,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .field label{display:block;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px;}
 .field input{width:100%;padding:12px 15px;border:1px solid rgba(61,53,48,0.15);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--night);background:var(--cream);outline:none;transition:border-color 0.2s;}
 .field input:focus{border-color:var(--terra);background:white;}
+.pass-wrap{position:relative;}
+.pass-wrap input{padding-right:42px;}
+.pass-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:color 0.2s;border-radius:2px;}
+.pass-toggle:hover{color:var(--terra);}
+.pass-toggle svg{display:block;width:18px;height:18px;}
 .btn{width:100%;padding:13px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background 0.2s;margin-top:8px;}
 .btn:hover{background:var(--terra);}
 .btn:disabled{opacity:0.5;cursor:default;}
@@ -41,7 +46,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
     <!-- LOGIN -->
     <div id="tab-login">
       <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="field">
+        <label>Contraseña</label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="pass-toggle" id="pass-toggle-btn" onclick="togglePassword()" aria-label="Mostrar contraseña">
+            <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M2 12s3.5-7 10-7c2 0 3.7.6 5.2 1.5"/>
+              <path d="M22 12s-3.5 7-10 7c-2 0-3.7-.6-5.2-1.5"/>
+              <path d="M9.5 9.5a3 3 0 0 0 4.2 4.2"/>
+              <line x1="3" y1="3" x2="21" y2="21"/>
+            </svg>
+          </button>
+        </div>
+      </div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
       <div class="err" id="login-err"></div>
       <div style="text-align:center;margin-top:14px;">
@@ -100,6 +122,24 @@ function showTab(tab) {
   document.getElementById('tab-reset').style.display = tab === 'reset' ? 'block' : 'none';
   document.getElementById('main-tabs').style.display = tab === 'reset' ? 'none' : 'flex';
   if (tab !== 'reset') document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', (i === 0) === (tab === 'login')));
+}
+
+function togglePassword() {
+  const input = document.getElementById('login-pass');
+  const eyeShow = document.getElementById('eye-show');
+  const eyeHide = document.getElementById('eye-hide');
+  const btn = document.getElementById('pass-toggle-btn');
+  if (input.type === 'password') {
+    input.type = 'text';
+    eyeShow.style.display = 'none';
+    eyeHide.style.display = 'block';
+    btn.setAttribute('aria-label', 'Ocultar contraseña');
+  } else {
+    input.type = 'password';
+    eyeShow.style.display = 'block';
+    eyeHide.style.display = 'none';
+    btn.setAttribute('aria-label', 'Mostrar contraseña');
+  }
 }
 
 async function doLogin() {
