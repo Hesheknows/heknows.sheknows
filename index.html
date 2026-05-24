@@ -44,9 +44,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cst{color:var(--gold);font-size:0.8rem;margin-top:12px;letter-spacing:2px;}
 .cm{font-size:0.7rem;color:var(--muted);margin-top:8px;}
 .cm2{color:rgba(232,196,176,0.6);}
-.trust{background:var(--night);padding:20px 80px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.trust{background:var(--night);padding:24px 80px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
 .ti{display:flex;align-items:center;gap:10px;}
-.tic{color:var(--gold);font-size:1rem;}
+.tic{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--gold);}
+.tic svg{width:100%;height:100%;display:block;}
 .tit{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.6);}
 .s{padding:100px 80px;}
 .s-mid{background:#F0EAE3;}
@@ -63,7 +64,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .step{background:var(--cream);padding:56px 40px;position:relative;overflow:hidden;transition:background 0.3s;}
 .step:hover{background:#EDE7DF;}
 .sn{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:rgba(196,122,90,0.12);position:absolute;top:20px;right:24px;line-height:1;}
-.si{font-size:1.8rem;margin-bottom:20px;}
+.si{font-size:1.8rem;margin-bottom:20px;display:flex;align-items:center;}
+.si svg{display:block;}
 .sti{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:14px;color:var(--night);}
 .sd{font-size:0.88rem;line-height:1.7;color:var(--slate);font-weight:300;}
 .dual{display:grid;grid-template-columns:1fr 1fr;min-height:580px;}
@@ -83,6 +85,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .dtx{font-size:0.86rem;line-height:1.6;font-weight:300;}
 .dhim .dtx{color:rgba(247,243,238,0.7);}
 .dher .dtx{color:rgba(247,243,238,0.92);}
+.dual-close{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;margin-top:24px;line-height:1.5;}
+.dhim .dual-close{color:var(--gold);}
+.dher .dual-close{color:var(--night);}
 .areas{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(196,122,90,0.12);}
 .area{background:var(--cream);padding:36px 28px;transition:all 0.3s;position:relative;overflow:hidden;}
 .area::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
@@ -95,7 +100,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .anm{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--night);margin-bottom:8px;transition:color 0.3s;}
 .ades{font-size:0.76rem;line-height:1.6;color:var(--muted);font-weight:300;transition:color 0.3s;}
 
-/* NUEVA: Caja simple de cómo se cobra a usuarios */
+/* Caja simple de cómo se cobra a usuarios */
 .howpay{max-width:860px;margin:0 auto;background:var(--cream);border:1px solid rgba(196,122,90,0.18);border-radius:4px;padding:56px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
 .howpay-l .hpe{font-size:0.66rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;}
 .howpay-l .hpt{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;line-height:1.1;color:var(--night);margin-bottom:16px;}
@@ -111,7 +116,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 .rqg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,169,110,0.06);margin-bottom:64px;}
 .rq{background:rgba(255,255,255,0.03);padding:40px 32px;border-left:2px solid rgba(196,122,90,0.25);}
-.rqi{font-size:1.6rem;margin-bottom:14px;}
+.rqi{font-size:1.6rem;margin-bottom:14px;display:flex;align-items:center;}
+.rqi svg{display:block;}
 .rqt{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--cream);margin-bottom:10px;}
 .rqd{font-size:0.8rem;color:rgba(247,243,238,0.48);line-height:1.65;font-weight:300;}
 .agrid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(201,169,110,0.1);max-width:860px;margin:0 auto;}
@@ -220,7 +226,7 @@ nav{padding:16px 20px;} .nav-links{display:none;}
 .agrid,.rqg{grid-template-columns:1fr;}
 .dual{grid-template-columns:1fr;} .dhim,.dher{padding:64px 28px;}
 footer{flex-direction:column;text-align:center;padding:36px 24px;}
-.trust{padding:20px 24px;gap:20px;}
+.trust{padding:24px;gap:20px;}
 .modal{padding:36px 24px;} .frw{grid-template-columns:1fr;} .plno{grid-template-columns:1fr;}
 }
 </style>
@@ -245,11 +251,11 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section class="hero">
   <div class="hero-left">
     <p class="ey"><span class="es">México · 2026 · 100% Anónimo</span><span class="en">Mexico · 2026 · 100% Anonymous</span></p>
-    <h1 class="hero-t"><span class="es">Él sabe lo que<br>piensa un <em>hombre.</em><br>Ella lo que piensa<br>una <em>mujer.</em></span><span class="en">He knows what<br>a <em>man</em> thinks.<br>She knows what<br>a <em>woman</em> thinks.</span></h1>
+    <h1 class="hero-t"><span class="es">Lo que cambia cuando<br>escuchas la <em>otra versión.</em></span><span class="en">What changes when you<br>hear the <em>other side.</em></span></h1>
     <div class="hdv"></div>
-    <p class="hero-s"><span class="es">Personas reales del sexo opuesto respondiendo tus dudas amorosas. Sin filtros. Sin juicios. Sin IA.</span><span class="en">Real people of the opposite sex answering your relationship questions. No filters. No judgment. No AI.</span></p>
+    <p class="hero-s"><span class="es">Perspectivas reales sobre relaciones, emociones y el otro lado de la historia.</span><span class="en">Real perspectives on relationships, emotions and the other side of the story.</span></p>
     <div class="hero-a">
-      <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Quiero un consejo →</span><span class="en">Get Advice →</span></a>
+      <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
       <a href="#" onclick="openM('ma');return false;" class="btn-g"><span class="es">Quiero ser Advisor</span><span class="en">Become an Advisor</span></a>
     </div>
   </div>
@@ -271,56 +277,58 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 </section>
 
 <div class="trust">
-  <div class="ti"><span class="tic">🔒</span><span class="tit">100% Anónimo</span></div>
-  <div class="ti"><span class="tic">✓</span><span class="tit"><span class="es">Advisors verificados con ID</span><span class="en">ID-Verified Advisors</span></span></div>
-  <div class="ti"><span class="tic">⭐</span><span class="tit"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></span></div>
-  <div class="ti"><span class="tic">🚫</span><span class="tit"><span class="es">Sin IA — personas reales</span><span class="en">No AI — Real People</span></span></div>
-  <div class="ti"><span class="tic">🇲🇽</span><span class="tit"><span class="es">Hecho en México · Todo en MXN</span><span class="en">Made in Mexico · All in MXN</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="tit">100% Anónimo</span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><span class="tit"><span class="es">Advisors verificados con ID</span><span class="en">ID-Verified Advisors</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="12,3 14.5,9 21,9.5 16,13.5 17.5,20 12,16.5 6.5,20 8,13.5 3,9.5 9.5,9"/></svg></span><span class="tit"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="8" r="3.5"/><path d="M3 19c0-3 2.5-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M14 19c0-2 1.5-3.5 3-3.5s4 1.5 4 3.5"/></svg></span><span class="tit"><span class="es">Personas reales</span><span class="en">Real People</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="tit"><span class="es">Hecho en México · Todo en MXN</span><span class="en">Made in Mexico · All in MXN</span></span></div>
 </div>
 
 <section class="s" id="cf">
-  <div class="sh"><p class="sl">Cómo funciona</p><h2 class="st"><span class="es">Tres pasos para entender<br>al <em>sexo opuesto.</em></span><span class="en">Three steps to understand<br>the <em>opposite sex.</em></span></h2></div>
+  <div class="sh"><p class="sl"><span class="es">Así funciona</span><span class="en">How it works</span></p><h2 class="st"><span class="es">Así funciona<br><em>He Knows · She Knows.</em></span><span class="en">This is how<br><em>He Knows · She Knows</em> works.</span></h2></div>
   <div class="steps">
-    <div class="step"><span class="sn">01</span><div class="si">🔒</div><h3 class="sti"><span class="es">Crea tu perfil anónimo</span><span class="en">Create your anonymous profile</span></h3><p class="sd"><span class="es">Regístrate con tu correo. Nadie sabrá quién eres. Tu identidad está protegida en todo momento.</span><span class="en">Sign up with your email. No one will know who you are. Your identity is protected at all times.</span></p></div>
-    <div class="step"><span class="sn">02</span><div class="si">💬</div><h3 class="sti"><span class="es">Haz tu pregunta</span><span class="en">Ask your question</span></h3><p class="sd"><span class="es">Escribe lo que realmente quieres saber. Elige si quieres que sea pública o privada y selecciona tu advisor.</span><span class="en">Write what you really want to know. Choose if it's public or private and select your advisor.</span></p></div>
-    <div class="step"><span class="sn">03</span><div class="si">💡</div><h3 class="sti"><span class="es">Recibe perspectiva real</span><span class="en">Get real perspective</span></h3><p class="sd"><span class="es">Una persona real del sexo opuesto — verificada, con historial y calificaciones — te da su opinión honesta.</span><span class="en">A real person of the opposite sex — verified, with history and ratings — gives you their honest opinion.</span></p></div>
+    <div class="step"><span class="sn">01</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="20" width="24" height="18" rx="2"/><path d="M16 20v-6a6 6 0 0 1 12 0v6"/><circle cx="22" cy="29" r="2" fill="#C47A5A"/></svg></div><h3 class="sti"><span class="es">Crea tu perfil anónimo</span><span class="en">Create your anonymous profile</span></h3><p class="sd"><span class="es">Regístrate con tu correo. Nadie sabrá quién eres. Tu identidad está protegida en todo momento.</span><span class="en">Sign up with your email. No one will know who you are. Your identity is protected at all times.</span></p></div>
+    <div class="step"><span class="sn">02</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h32a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2H18l-8 6v-6H6a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2z"/><circle cx="16" cy="21" r="1.5" fill="#C47A5A"/><circle cx="22" cy="21" r="1.5" fill="#C47A5A"/><circle cx="28" cy="21" r="1.5" fill="#C47A5A"/></svg></div><h3 class="sti"><span class="es">Haz tu pregunta</span><span class="en">Ask your question</span></h3><p class="sd"><span class="es">Escribe lo que realmente quieres saber. Elige si quieres que sea pública o privada y selecciona tu advisor.</span><span class="en">Write what you really want to know. Choose if it's public or private and select your advisor.</span></p></div>
+    <div class="step"><span class="sn">03</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6c-6 0-10 4-10 10 0 4 2 6 4 9v4h12v-4c2-3 4-5 4-9 0-6-4-10-10-10z"/><line x1="18" y1="35" x2="26" y2="35"/><line x1="19" y1="38" x2="25" y2="38"/></svg></div><h3 class="sti"><span class="es">Recibe perspectiva real</span><span class="en">Get real perspective</span></h3><p class="sd"><span class="es">Escucha una perspectiva humana, honesta y completamente ajena a tu historia personal.</span><span class="en">Hear a human, honest perspective from someone completely outside your personal story.</span></p></div>
   </div>
 </section>
 
 <section class="dual">
   <div class="dhim">
     <h2 class="dtit"><span class="es">Para él,<br>la perspectiva <em>femenina.</em></span><span class="en">For him,<br>the <em>female</em> perspective.</span></h2>
-    <p class="ddes"><span class="es">Mujeres reales te dicen lo que ninguno de tus amigos te diría.</span><span class="en">Real women tell you what none of your friends would.</span></p>
+    <p class="ddes"><span class="es">La perspectiva femenina, sin filtros.</span><span class="en">The female perspective, unfiltered.</span></p>
     <div class="dls">
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Por qué me dejó de hablar sin explicación?</span><span class="en">Why did he stop talking to me without explanation?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Qué significa que me diga "estoy bien"?</span><span class="en">What does it mean when he says "I'm fine"?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo sé si realmente le intereso?</span><span class="en">How do I know if he's genuinely interested?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo reconquisto sin quedar desesperado?</span><span class="en">How do I win her back without seeming desperate?</span></span></div>
     </div>
+    <p class="dual-close"><span class="es">No para darte la razón.<br>Para ayudarte a entender.</span><span class="en">Not to take your side.<br>To help you understand.</span></p>
   </div>
   <div class="dher">
     <h2 class="dtit"><span class="es">Para ella,<br>la perspectiva <em>masculina.</em></span><span class="en">For her,<br>the <em>male</em> perspective.</span></h2>
-    <p class="ddes"><span class="es">Hombres verificados te dan respuestas directas y sin rodeos.</span><span class="en">Verified men give you direct, no-nonsense answers.</span></p>
+    <p class="ddes"><span class="es">La perspectiva masculina, sin filtros.</span><span class="en">The male perspective, unfiltered.</span></p>
     <div class="dls">
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Por qué desapareció si todo iba bien?</span><span class="en">Why did he disappear when everything was going well?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Un hombre que no da el paso realmente me quiere?</span><span class="en">Does a man who doesn't make a move really like me?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo sé si solo quiere algo casual?</span><span class="en">How do I know if he just wants something casual?</span></span></div>
       <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo actuar después de una pelea fuerte?</span><span class="en">How should I act after a big fight?</span></span></div>
     </div>
+    <p class="dual-close"><span class="es">No para darte la razón.<br>Para ayudarte a entender.</span><span class="en">Not to take your side.<br>To help you understand.</span></p>
   </div>
 </section>
 
 <section class="s s-mid" id="areas">
   <div class="sh"><p class="sl"><span class="es">Áreas de consejo</span><span class="en">Advice Areas</span></p><h2 class="st"><span class="es">En lo que nuestros<br><em>Advisors</em> te ayudan.</span><span class="en">What our <em>Advisors</em><br>help you with.</span></h2><p class="ss"><span class="es">Cada advisor elige su especialidad. Tú eliges al que más se alinea con lo que necesitas.</span><span class="en">Each advisor picks their specialty. You choose the one that best fits what you need.</span></p></div>
   <div class="areas">
-    <div class="area"><span class="aico">💔</span><div class="anm"><span class="es">Relaciones y pareja</span><span class="en">Relationships & Couples</span></div><p class="ades"><span class="es">Conflictos, comunicación y cómo mejorar tu relación actual.</span><span class="en">Conflicts, communication and how to improve your current relationship.</span></p></div>
-    <div class="area"><span class="aico">👻</span><div class="anm"><span class="es">Ghosting e infidelidad</span><span class="en">Ghosting & Infidelity</span></div><p class="ades"><span class="es">Por qué desaparecen y qué hacer después de una traición.</span><span class="en">Why they disappear and what to do after a betrayal.</span></p></div>
-    <div class="area"><span class="aico">🧠</span><div class="anm"><span class="es">Cómo piensa el sexo opuesto</span><span class="en">How the Opposite Sex Thinks</span></div><p class="ades"><span class="es">Entiende la lógica y las motivaciones del otro lado.</span><span class="en">Understand the logic and motivations of the other side.</span></p></div>
-    <div class="area"><span class="aico">💪</span><div class="anm"><span class="es">Confianza y autoestima</span><span class="en">Confidence & Self-Esteem</span></div><p class="ades"><span class="es">Cómo proyectarte mejor y atraer lo que buscas.</span><span class="en">How to project yourself better and attract what you're looking for.</span></p></div>
-    <div class="area"><span class="aico">👗</span><div class="anm"><span class="es">Styling y presencia</span><span class="en">Styling & Presence</span></div><p class="ades"><span class="es">Qué imagen das al sexo opuesto y cómo mejorarla.</span><span class="en">What image you project and how to improve it.</span></p></div>
-    <div class="area"><span class="aico">💬</span><div class="anm"><span class="es">Texting y comunicación</span><span class="en">Texting & Communication</span></div><p class="ades"><span class="es">Qué decir, cuándo escribir e interpretar mensajes.</span><span class="en">What to say, when to text and how to interpret messages.</span></p></div>
-    <div class="area"><span class="aico">❤️‍🔥</span><div class="anm"><span class="es">Citas y conquista</span><span class="en">Dating & Attraction</span></div><p class="ades"><span class="es">Primera cita, flirteo y señales de interés real.</span><span class="en">First dates, flirting and real signs of interest.</span></p></div>
-    <div class="area"><span class="aico">🗣️</span><div class="anm"><span class="es">Desahogo real</span><span class="en">Real Venting</span></div><p class="ades"><span class="es">Que alguien del sexo opuesto te escuche sin juzgarte.</span><span class="en">Have someone of the opposite sex listen without judging you.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M22 38C22 38 6 28 6 16.5C6 11.5 9.5 8 14 8C17.2 8 20 10 22 12.5C24 10 26.8 8 30 8C34.5 8 38 11.5 38 16.5C38 28 22 38 22 38Z" fill="#C47A5A"/></svg></span><div class="anm"><span class="es">Relaciones y pareja</span><span class="en">Relationships & Couples</span></div><p class="ades"><span class="es">Conflictos, comunicación y cómo mejorar tu relación actual.</span><span class="en">Conflicts, communication and how to improve your current relationship.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><ellipse cx="22" cy="20" rx="10" ry="13" fill="#9A8880"/><circle cx="18.5" cy="17" r="1.5" fill="#1A1410"/><circle cx="25.5" cy="17" r="1.5" fill="#1A1410"/><path d="M18.5 22.5C19.5 21.5 24.5 21.5 25.5 22.5" stroke="#C47A5A" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M22 33L20 38L22 36L24 38Z" fill="#9A8880"/></svg></span><div class="anm"><span class="es">Ghosting e infidelidad</span><span class="en">Ghosting & Infidelity</span></div><p class="ades"><span class="es">Por qué desaparecen y qué hacer después de una traición.</span><span class="en">Why they disappear and what to do after a betrayal.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="14" cy="16" r="6" fill="#C47A5A" opacity="0.85"/><circle cx="30" cy="16" r="6" fill="#C9A96E" opacity="0.85"/><rect x="10" y="22" width="8" height="11" rx="4" fill="#C47A5A" opacity="0.85"/><rect x="26" y="22" width="8" height="11" rx="4" fill="#C9A96E" opacity="0.85"/></svg></span><div class="anm"><span class="es">Cómo piensa el sexo opuesto</span><span class="en">How the Opposite Sex Thinks</span></div><p class="ades"><span class="es">Entiende la lógica y las motivaciones del otro lado.</span><span class="en">Understand the logic and motivations of the other side.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="20" cy="18" r="7" fill="#C47A5A" opacity="0.9"/><rect x="16" y="25" width="8" height="12" rx="4" fill="#C47A5A" opacity="0.9"/><polygon points="34,6 36,11 41,11 37,14 38.5,19 34,16 29.5,19 31,14 27,11 32,11" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Confianza y autoestima</span><span class="en">Confidence & Self-Esteem</span></div><p class="ades"><span class="es">Cómo proyectarte mejor y atraer lo que buscas.</span><span class="en">How to project yourself better and attract what you're looking for.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M16 8L22 12L28 8L32 16L26 20V38H18V20L12 16Z" fill="#C47A5A" opacity="0.9"/><circle cx="22" cy="11" r="1.5" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Styling y presencia</span><span class="en">Styling & Presence</span></div><p class="ades"><span class="es">Qué imagen das al sexo opuesto y cómo mejorarla.</span><span class="en">What image you project and how to improve it.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><rect x="6" y="10" width="28" height="20" rx="6" fill="#C47A5A" opacity="0.9"/><path d="M6 28L2 36L14 30" fill="#C47A5A" opacity="0.9"/><circle cx="14" cy="20" r="2" fill="#F7F3EE"/><circle cx="20" cy="20" r="2" fill="#F7F3EE"/><circle cx="26" cy="20" r="2" fill="#F7F3EE"/></svg></span><div class="anm"><span class="es">Texting y comunicación</span><span class="en">Texting & Communication</span></div><p class="ades"><span class="es">Qué decir, cuándo escribir e interpretar mensajes.</span><span class="en">What to say, when to text and how to interpret messages.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><rect x="6" y="10" width="32" height="28" rx="4" fill="none" stroke="#C47A5A" stroke-width="2"/><rect x="6" y="10" width="32" height="8" rx="4" fill="#C47A5A"/><rect x="6" y="14" width="32" height="4" fill="#C47A5A"/><line x1="14" y1="6" x2="14" y2="14" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="6" x2="30" y2="14" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/><path d="M22 32C22 32 16 28 16 24C16 22 17.5 21 19 21C20 21 21 21.5 22 22.5C23 21.5 24 21 25 21C26.5 21 28 22 28 24C28 28 22 32 22 32Z" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Citas y conquista</span><span class="en">Dating & Attraction</span></div><p class="ades"><span class="es">Primera cita, flirteo y señales de interés real.</span><span class="en">First dates, flirting and real signs of interest.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M6 14C6 11 8 9 11 9H22C25 9 27 11 27 14V22C27 25 25 27 22 27H14L8 32V27C7 27 6 24.5 6 22Z" fill="#C47A5A" opacity="0.9"/><path d="M38 20C38 17 36 15 33 15H28V22C28 26 25.5 29 22 29H20C20 31 22 33 25 33H32L37 37V33C38 33 38 30.5 38 28Z" fill="#C9A96E" opacity="0.9"/></svg></span><div class="anm"><span class="es">Perspectiva emocional</span><span class="en">Emotional Perspective</span></div><p class="ades"><span class="es">Que alguien del sexo opuesto te escuche sin juzgarte.</span><span class="en">Have someone of the opposite sex listen without judging you.</span></p></div>
   </div>
 </section>
 
@@ -347,11 +355,11 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 </section>
 
 <section class="s s-slate" id="advsec">
-  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w"><span class="es">Si entiendes al sexo opuesto y sabes dar consejos honestos, ya tienes todo lo que se necesita.</span><span class="en">If you understand the opposite sex and know how to give honest advice, you already have everything it takes.</span></p></div>
+  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w"><span class="es">Si has vivido, amado, perdido y aprendido… ya tienes una perspectiva que puede ayudar a alguien más.</span><span class="en">If you've lived, loved, lost and learned… you already have a perspective that can help someone else.</span></p></div>
   <div class="rqg">
-    <div class="rq"><div class="rqi">🪪</div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">Verificamos tu identidad con ID oficial. Tu nombre real nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
-    <div class="rq"><div class="rqi">⭐</div><div class="rqt"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></div><p class="rqd"><span class="es">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</span><span class="en">Each advice gets a rating. Better rating = more visibility and more earnings.</span></p></div>
-    <div class="rq"><div class="rqi">📱</div><div class="rqt"><span class="es">Desde tu celular</span><span class="en">From Your Phone</span></div><p class="rqd"><span class="es">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</span><span class="en">No fixed schedule. No boss. You decide when and how much you work.</span></p></div>
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="32" height="24" rx="2"/><circle cx="16" cy="20" r="4" fill="#C9A96E" fill-opacity="0.3"/><line x1="24" y1="18" x2="32" y2="18"/><line x1="24" y1="22" x2="30" y2="22"/><line x1="12" y1="28" x2="32" y2="28"/></svg></div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">Verificamos tu identidad con ID oficial. Tu nombre real nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.2" stroke-linejoin="round"><polygon points="22,5 27,16 39,17 30,25 33,37 22,30 11,37 14,25 5,17 17,16" fill="#C9A96E" fill-opacity="0.15"/></svg></div><div class="rqt"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></div><p class="rqd"><span class="es">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</span><span class="en">Each advice gets a rating. Better rating = more visibility and more earnings.</span></p></div>
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="5" width="18" height="34" rx="3"/><line x1="20" y1="34" x2="24" y2="34"/><line x1="13" y1="10" x2="31" y2="10"/></svg></div><div class="rqt"><span class="es">Desde tu celular</span><span class="en">From Your Phone</span></div><p class="rqd"><span class="es">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</span><span class="en">No fixed schedule. No boss. You decide when and how much you work.</span></p></div>
   </div>
   <div class="sh" style="margin-bottom:40px;"><p class="sl sl-w"><span class="es">Membresía Advisor · Pesos Mexicanos</span><span class="en">Advisor Membership · Mexican Pesos</span></p><h3 class="st st-w" style="font-size:clamp(1.8rem,3vw,2.6rem);"><span class="es">Elige tu plan<br>de <em>Advisor.</em></span><span class="en">Choose your<br><em>Advisor</em> plan.</span></h3></div>
   <div class="agrid">
@@ -388,7 +396,7 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section class="s s-mid">
   <div class="sh"><p class="sl"><span class="es">Lo que dicen</span><span class="en">What They Say</span></p><h2 class="st"><span class="es">Perspectivas que<br><em>cambian todo.</em></span><span class="en">Perspectives that<br><em>change everything.</em></span></h2></div>
   <div class="tgrid">
-    <div class="tsti"><span class="qm">"</span><p class="ttx">Llevaba semanas dándole vueltas a lo mismo. Un advisor me dijo en dos párrafos lo que ninguna amiga me había explicado en meses.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">En una conversación entendí algo que llevaba meses intentando procesar sola.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México</div><div class="tas">★★★★★</div></div></div></div>
     <div class="tsti"><span class="qm">"</span><p class="ttx">Lo que más me gustó fue la honestidad. No me dijeron lo que quería oír, me dijeron lo que necesitaba escuchar. Y funcionó.</p><div class="tau"><div class="tav tavm">R</div><div><div class="tan">@rod_gtz</div><div class="tam">Monterrey</div><div class="tas">★★★★★</div></div></div></div>
     <div class="tsti"><span class="qm">"</span><p class="ttx">Me da mucha pena hablar de estas cosas con mis amigas porque todas conocen a mi ex. Aquí puedo ser completamente honesta.</p><div class="tau"><div class="tav tavf">V</div><div><div class="tan">@vale_gdl</div><div class="tam">Guadalajara</div><div class="tas">★★★★★</div></div></div></div>
   </div>
@@ -399,7 +407,7 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   <h2 class="fct"><span class="es">¿Listo para entender<br>al <em>sexo opuesto?</em></span><span class="en">Ready to understand<br>the <em>opposite sex?</em></span></h2>
   <p class="fcs"><span class="es">Primera pregunta completamente gratis. Sin tarjeta. Sin compromisos.</span><span class="en">First question completely free. No card. No commitment.</span></p>
   <div class="fca">
-    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Quiero consejos →</span><span class="en">Get Advice →</span></a>
+    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
     <a href="#" onclick="openM('ma');return false;" class="btn-g" style="border-color:rgba(247,243,238,0.25);color:rgba(247,243,238,0.6);"><span class="es">Quiero ser Advisor</span><span class="en">Become an Advisor</span></a>
   </div>
 </section>
@@ -407,13 +415,13 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 <section style="background:#F0EAE3;padding:80px 80px;text-align:center;">
   <p style="font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;">Newsletter</p>
   <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:var(--night);margin-bottom:12px;line-height:1.1;"><span class="es">Consejos que <em style="color:var(--terra);font-style:italic;">te cambian.</em></span><span class="en">Advice that <em style="color:var(--terra);font-style:italic;">changes you.</em></span></h2>
-  <p style="font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto 40px;line-height:1.7;font-weight:300;"><span class="es">Perspectivas reales del sexo opuesto, directo a tu correo. Sin spam. Sin IA.</span><span class="en">Real perspectives from the opposite sex, straight to your inbox. No spam. No AI.</span></p>
+  <p style="font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto 40px;line-height:1.7;font-weight:300;"><span class="es">Perspectivas reales del sexo opuesto, directo a tu correo.</span><span class="en">Real perspectives from the opposite sex, straight to your inbox.</span></p>
   <div id="nl-form" style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;">
     <input id="nl-nombre" type="text" placeholder="Tu nombre (opcional)" style="flex:1;min-width:160px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
     <input id="nl-email" type="email" placeholder="tu@correo.com" style="flex:2;min-width:200px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
     <button onclick="subscribeNewsletter()" style="padding:14px 28px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap;" onmouseover="this.style.background='var(--terra)'" onmouseout="this.style.background='var(--night)'"><span class="es">Suscribirme →</span><span class="en">Subscribe →</span></button>
   </div>
-  <div id="nl-success" style="display:none;margin-top:24px;"><p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--terra);"><span class="es">¡Listo! Bienvenido/a al newsletter. 🎉</span><span class="en">Done! Welcome to the newsletter. 🎉</span></p></div>
+  <div id="nl-success" style="display:none;margin-top:24px;"><p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--terra);"><span class="es">¡Listo! Bienvenido/a al newsletter.</span><span class="en">Done! Welcome to the newsletter.</span></p></div>
   <div id="nl-error" style="display:none;margin-top:16px;"><p style="font-size:0.82rem;color:#c0392b;"><span class="es">Algo salió mal, intenta de nuevo.</span><span class="en">Something went wrong, please try again.</span></p></div>
 </section>
 
@@ -456,7 +464,7 @@ async function subscribeNewsletter() {
       <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;">Al registrarte aceptas nuestros <a href="terminos-condiciones.html" style="color:var(--terra);">Términos</a> y <a href="terminos-condiciones.html" style="color:var(--terra);">Privacidad</a></p>
     </div>
     <div class="sucs" id="mu-suc" style="display:none;">
-      <div class="suci">✨</div>
+      <div class="suci">✦</div>
       <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px;">¡Ya eres parte de<br>He Knows She Knows!</h3>
       <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:28px;">Te enviamos un correo de confirmación. Pronto podrás hacer tu primera pregunta gratis.</p>
       <button class="bfl" onclick="closeM('mu')">Perfecto, ¡gracias!</button>
@@ -485,7 +493,7 @@ async function subscribeNewsletter() {
       <p class="mlb">Paso 2 de 4 · Tu especialidad</p>
       <h2 class="mtt">¿En qué eres<br><em>bueno/a?</em></h2>
       <p class="msb">Selecciona todas las áreas en las que quieres dar consejos.</p>
-      <div class="fg"><label class="flbl">Áreas de expertise</label><div class="chips"><button class="chip" onclick="togC(this)">💔 Relaciones y pareja</button><button class="chip" onclick="togC(this)">👻 Ghosting e infidelidad</button><button class="chip" onclick="togC(this)">🧠 Cómo piensa el sexo opuesto</button><button class="chip" onclick="togC(this)">💪 Confianza y autoestima</button><button class="chip" onclick="togC(this)">👗 Styling y presencia</button><button class="chip" onclick="togC(this)">💬 Texting y comunicación</button><button class="chip" onclick="togC(this)">❤️‍🔥 Citas y conquista</button><button class="chip" onclick="togC(this)">🗣️ Desahogo real</button></div></div>
+      <div class="fg"><label class="flbl">Áreas de expertise</label><div class="chips"><button class="chip" onclick="togC(this)">💔 Relaciones y pareja</button><button class="chip" onclick="togC(this)">👻 Ghosting e infidelidad</button><button class="chip" onclick="togC(this)">🧠 Cómo piensa el sexo opuesto</button><button class="chip" onclick="togC(this)">💪 Confianza y autoestima</button><button class="chip" onclick="togC(this)">👗 Styling y presencia</button><button class="chip" onclick="togC(this)">💬 Texting y comunicación</button><button class="chip" onclick="togC(this)">❤️‍🔥 Citas y conquista</button><button class="chip" onclick="togC(this)">🗣️ Perspectiva emocional</button></div></div>
       <div class="fg" style="margin-top:20px;"><label class="flbl">Bio profesional</label><textarea class="finp" rows="4" placeholder="Cuéntanos tu experiencia..." style="resize:vertical;"></textarea></div>
       <div style="display:flex;gap:12px;"><button class="bfl bflo" onclick="aB(2)" style="flex:1;">← Atrás</button><button class="bfl" onclick="aN(2)" style="flex:2;">Continuar →</button></div>
     </div>
@@ -512,7 +520,7 @@ async function subscribeNewsletter() {
       <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br>Pagos seguros en MXN · <strong>70-90% de ganancias</strong></p>
     </div>
     <div class="sucs" id="ma-suc" style="display:none;">
-      <div class="suci">🎉</div>
+      <div class="suci">✦</div>
       <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--cream);margin-bottom:12px;">¡Ya eres Advisor!</h3>
       <p style="font-size:0.88rem;color:rgba(247,243,238,0.5);line-height:1.7;margin-bottom:28px;">Revisaremos tu perfil en las próximas 24 horas. Te avisamos por correo cuando estés activo/a.</p>
       <button class="bfl" onclick="closeM('ma')">¡Perfecto, gracias!</button>
