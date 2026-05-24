@@ -187,8 +187,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <script>
-const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkcWN4Ynd4Znp5eGR6aWRhZmNoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTE5NzMyMywiZXhwIjoyMDk0NzczMzIzfQ.rDHpeek7NjbCluBk8hO-AknG9JFQaZcoFNj2YPt-ROU';
+// ⚠️ SERVICE_KEY removed for security — now using Netlify function
+// Old code had SERVICE_KEY directly in HTML, visible to anyone.
+// Now we call /.netlify/functions/update-onboarding which uses the key server-side.
 
 const STRIPE = {
   premium: 'https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00',
@@ -238,16 +239,43 @@ async function continuar() {
   btn.classList.add('loading');
   btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
 
+  // Get access token (may be in session.access_token or session.token)
+  const token = session.access_token || session.token;
+  if (!token) {
+    alert('Sesión inválida, vuelve a iniciar sesión.');
+    window.location.href = 'login.html';
+    return;
+  }
+
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${session.user.id}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: selectedRole, plan: 'free', onboarding_done: true })
+    // ✅ SECURE: call Netlify function, the SERVICE_KEY stays on the server
+    const res = await fetch('/.netlify/functions/update-onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token,
+        role: selectedRole,
+        plan: 'free'
+      })
     });
-  } catch(e) { console.error('Error:', e); }
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      console.error('Error guardando onboarding:', data);
+      alert('No pude guardar tu información. Intenta de nuevo.');
+      btn.classList.remove('loading');
+      btn.innerHTML = '<span class="es">Empezar →</span><span class="en">Get started →</span>';
+      return;
+    }
+  } catch(e) {
+    console.error('Error:', e);
+    alert('Error de conexión. Intenta de nuevo.');
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span class="es">Empezar →</span><span class="en">Get started →</span>';
+    return;
+  }
 
   if (selectedPlanId !== 'free') {
-    // Open Stripe in new tab, redirect to dashboard
     window.open(STRIPE[selectedPlanId], '_blank');
   }
 
