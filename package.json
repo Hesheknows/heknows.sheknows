@@ -1,0 +1,10 @@
+{
+  "name": "heknows-sheknows",
+  "version": "1.0.0",
+  "description": "He Knows She Knows - plataforma de consultas de relaciones",
+  "private": true,
+  "dependencies": {
+    "stripe": "^17.5.0",
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
