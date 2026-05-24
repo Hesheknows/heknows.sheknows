@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurar pagos · He Knows She Knows</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F7F3EE;
+      --terra: #C47A5A;
+      --terra-dark: #A8654A;
+      --night: #1A1410;
+      --muted: #9A8880;
+      --gold: #C9A96E;
+      --blush: #E8C4B0;
+      --border: #E8DFD5;
+      --success: #4A7C59;
+      --warn: #B8860B;
+      --danger: #A8463E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--night);
+      padding: 40px 20px;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 36px;
+      margin-bottom: 8px;
+      color: var(--night);
+    }
+    .lede {
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+    .status {
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      display: none;
+    }
+    .status.success { background: #E8F0EA; color: var(--success); display: block; }
+    .status.warn { background: #FAF1DC; color: var(--warn); display: block; }
+    .status.danger { background: #F5DEDC; color: var(--danger); display: block; }
+    .status.info { background: var(--cream); color: var(--night); display: block; border: 1px solid var(--border); }
+    .info-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px 24px;
+      padding: 24px;
+      background: var(--cream);
+      border-radius: 10px;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+    .info-grid dt { color: var(--muted); }
+    .info-grid dd { color: var(--night); font-weight: 500; }
+    button {
+      background: var(--terra);
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    button:hover:not(:disabled) { background: var(--terra-dark); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .secondary {
+      background: transparent;
+      color: var(--terra);
+      border: 1px solid var(--terra);
+      margin-top: 12px;
+    }
+    .footnote {
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .req-list { margin: 8px 0 0 20px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Configurar pagos</h1>
+    <p class="lede">Conecta tu cuenta bancaria para recibir el pago de tus consultas directamente en tu CLABE, automáticamente.</p>
+
+    <div id="status" class="status"></div>
+
+    <dl class="info-grid">
+      <dt>Comisión que recibes</dt>
+      <dd id="commission-rate">—</dd>
+      <dt>Precio por consulta</dt>
+      <dd id="consultation-price">—</dd>
+      <dt>Depósitos</dt>
+      <dd>Diarios a tu CLABE</dd>
+    </dl>
+
+    <button id="primary-btn" disabled>Cargando…</button>
+
+    <p class="footnote">
+      Stripe maneja tu información bancaria de forma segura. He Knows She Knows nunca ve ni almacena tus datos bancarios.
+    </p>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
+    const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
+    const SESSION_KEY = 'hksk-session';
+    const FN_BASE = '/.netlify/functions';
+
+    const statusEl = document.getElementById('status');
+    const primaryBtn = document.getElementById('primary-btn');
+
+    function setStatus(kind, msg) {
+      statusEl.className = `status ${kind}`;
+      statusEl.innerHTML = msg;
+    }
+
+    function getSession() {
+      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+      catch { return null; }
+    }
+
+    const session = getSession();
+    const accessToken = session?.access_token || session?.token;
+    const userId = session?.user?.id || session?.user_id;
+
+    if (!accessToken || !userId) {
+      setStatus('danger', 'No hay sesión activa. <a href="/login.html">Inicia sesión</a> para continuar.');
+      throw new Error('No session');
+    }
+
+    function formatMXN(pesos) {
+      if (pesos == null) return '—';
+      return new Intl.NumberFormat('es-MX', {
+        style: 'currency', currency: 'MXN', minimumFractionDigits: 0,
+      }).format(pesos);
+    }
+
+    async function loadAdvisorInfo() {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${userId}&select=price_per_session,commission_rate,stripe_account_id,stripe_onboarding_complete`,
+        { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } }
+      );
+      if (!res.ok) throw new Error('No pude cargar tu perfil');
+      const rows = await res.json();
+      return rows[0];
+    }
+
+    async function startOnboarding() {
+      primaryBtn.disabled = true;
+      primaryBtn.textContent = 'Redirigiendo a Stripe…';
+      try {
+        const res = await fetch(`${FN_BASE}/connect-advisor-onboarding`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: accessToken }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error desconocido');
+        window.location.href = data.url;
+      } catch (err) {
+        setStatus('danger', `Error: ${err.message}`);
+        primaryBtn.disabled = false;
+        primaryBtn.textContent = 'Reintentar';
+      }
+    }
+
+    async function checkStatus() {
+      const res = await fetch(`${FN_BASE}/connect-account-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: accessToken }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error');
+      return data;
+    }
+
+    async function render() {
+      try {
+        const advisor = await loadAdvisorInfo();
+        if (!advisor) {
+          setStatus('danger', 'No tienes perfil de advisor. Contacta soporte.');
+          return;
+        }
+
+        document.getElementById('commission-rate').textContent =
+          advisor.commission_rate ? `${Math.round(advisor.commission_rate * 100)}%` : '70%';
+        document.getElementById('consultation-price').textContent =
+          formatMXN(advisor.price_per_session);
+
+        if (advisor.stripe_account_id) {
+          const status = await checkStatus();
+          if (status.onboarded) {
+            setStatus('success', '✓ Tu cuenta está lista. Recibirás depósitos automáticos a tu CLABE después de cada consulta.');
+            primaryBtn.textContent = 'Actualizar información bancaria';
+          } else {
+            const reqs = status.requirements.currently_due;
+            let msg = 'Tu configuración está incompleta.';
+            if (reqs.length) {
+              msg += `<ul class="req-list">${reqs.map(r => `<li>${r}</li>`).join('')}</ul>`;
+            }
+            setStatus('warn', msg);
+            primaryBtn.textContent = 'Continuar configuración';
+          }
+        } else {
+          setStatus('info', 'Aún no has conectado tu cuenta. El proceso toma unos 5 minutos.');
+          primaryBtn.textContent = 'Conectar mi cuenta bancaria';
+        }
+
+        primaryBtn.disabled = false;
+        primaryBtn.onclick = startOnboarding;
+
+        const params = new URLSearchParams(location.search);
+        if (params.get('onboarded') === 'true') {
+          setStatus('success', '✓ ¡Listo! Tu cuenta quedó configurada.');
+        }
+      } catch (err) {
+        setStatus('danger', err.message);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
