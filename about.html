@@ -24,6 +24,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
 
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
+.hamburger span:nth-child(1){top:13px;}
+.hamburger span:nth-child(2){top:20px;}
+.hamburger span:nth-child(3){top:27px;}
+.hamburger.open span{background:var(--cream);}
+.hamburger.open span:nth-child(1){top:20px;transform:rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){top:20px;transform:rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:0;right:-100%;width:80%;max-width:340px;height:100vh;background:var(--night);z-index:150;padding:90px 32px 40px;transition:right 0.35s ease;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.3);}
+.mobile-menu.open{right:0;}
+.mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu .mm-cta{display:inline-block;background:var(--terra);color:var(--cream);padding:14px 28px;border-radius:2px;margin-top:24px;border:none;width:auto;font-size:0.78rem;letter-spacing:0.15em;font-weight:600;}
+.mobile-menu .mm-cta:hover{background:var(--gold);color:var(--night);}
+.mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
+.mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
+.mobile-overlay.open{display:block;opacity:1;}
+body.menu-open{overflow:hidden;}
+
 /* HERO */
 .hero{padding:160px 80px 100px;max-width:900px;margin:0 auto;}
 .hero-tag{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:20px;}
@@ -85,7 +108,10 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
 .flk a:hover{color:var(--terra);}
 
 @media(max-width:768px){
-  nav{padding:16px 20px;}.nav-links{display:none;}
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{display:block;}
   .hero{padding:100px 24px 60px;}
   .story{padding:64px 24px;}.story-inner{grid-template-columns:1fr;gap:40px;}
   .values{padding:64px 24px;}.values-grid{grid-template-columns:1fr;}
@@ -107,7 +133,24 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
     <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <a href="login.html" class="nav-cta"><span class="es">Entrar</span><span class="en">Log In</span></a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
+  <a href="index.html#areas" onclick="closeMobileMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
+  <a href="index.html#precios" onclick="closeMobileMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
+  <a href="about.html" onclick="closeMobileMenu()" style="color:var(--terra);"><span class="es">Nuestra historia</span><span class="en">Our story</span></a>
+  <a href="login.html" class="mm-cta"><span class="es">Entrar</span><span class="en">Log In</span></a>
+  <div class="mm-lang">
+    <button class="active" onclick="setLang('es')">ES</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -209,7 +252,7 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
 
 <!-- ADVISORS REAL (Perspectivas reales) -->
 <section style="background:var(--night);padding:100px 80px;">
-  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;" class="ar-grid">
     <div>
       <p style="font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;opacity:0.7;"><span class="es">Perspectivas reales</span><span class="en">Real perspectives</span></p>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:24px;">
@@ -269,7 +312,7 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
 </section>
 
 <!-- UN ESPACIO PRIVADO -->
-<section style="background:var(--cream);padding:100px 80px;text-align:center;">
+<section style="background:var(--cream);padding:100px 80px;text-align:center;" class="priv-sec">
   <div style="max-width:680px;margin:0 auto;">
     <p style="font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:14px;"><span class="es">Tu espacio</span><span class="en">Your space</span></p>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--night);line-height:1.1;margin-bottom:32px;">
@@ -316,10 +359,37 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
   </div>
 </footer>
 
+<style>
+@media(max-width:768px){
+  .ar-grid{grid-template-columns:1fr!important;gap:40px!important;padding:0 24px;}
+  section[style*="padding:100px 80px"]{padding:64px 24px!important;}
+  .priv-sec{padding:64px 24px!important;}
+}
+</style>
+
 <script>
+/* ===== MENÚ MÓVIL ===== */
+function toggleMobileMenu(){
+  const ham=document.getElementById('hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMobileMenu();}else{
+    ham.classList.add('open');menu.classList.add('open');overlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+
 function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
 }
 (function(){
@@ -328,6 +398,7 @@ function setLang(lang){
   const lang=saved||(browser.startsWith('es')?'es':'en');
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
 </script>
 </body>
