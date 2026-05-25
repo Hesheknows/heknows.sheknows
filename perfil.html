@@ -51,6 +51,29 @@ nav {
   transition: color 0.2s;
 }
 .nav-back:hover { color: var(--terra); }
+.nav-links{display:flex;gap:20px;align-items:center;}
+
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
+.hamburger span:nth-child(1){top:13px;}
+.hamburger span:nth-child(2){top:20px;}
+.hamburger span:nth-child(3){top:27px;}
+.hamburger.open span{background:var(--cream);}
+.hamburger.open span:nth-child(1){top:20px;transform:rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){top:20px;transform:rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:0;right:-100%;width:80%;max-width:340px;height:100vh;background:var(--night);z-index:150;padding:90px 32px 40px;transition:right 0.35s ease;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.3);}
+.mobile-menu.open{right:0;}
+.mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu a.active{color:var(--terra);}
+.mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
+.mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
+.mobile-overlay.open{display:block;opacity:1;}
+body.menu-open{overflow:hidden;}
 
 /* LAYOUT */
 main {
@@ -60,6 +83,12 @@ main {
   grid-template-columns: 320px 1fr;
   gap: 24px;
   align-items: start;
+}
+@media (max-width: 768px) {
+  nav { padding: 15px 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .mobile-menu { display: block; }
 }
 @media (max-width: 700px) {
   main { grid-template-columns: 1fr; }
@@ -336,7 +365,6 @@ main {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.error { background: #c0392b; }
 
-.nav-links{display:flex;gap:20px;align-items:center;}
 .nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;font-weight:500;transition:color 0.2s;}
 .nav-links a:hover,.nav-links a.active{color:var(--terra);}
 .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
@@ -364,7 +392,24 @@ main {
     <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
     <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
+  <a href="buscar-advisors.html" onclick="closeMobileMenu()">Advisors</a>
+  <a href="the-real.html" onclick="closeMobileMenu()">The Real</a>
+  <a href="mensajes.html" onclick="closeMobileMenu()"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+  <a href="perfil.html" onclick="closeMobileMenu()" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+  <div class="mm-lang">
+    <button onclick="setLang('es')">ES</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</div>
 
 <div id="loading" class="loading">Cargando perfil…</div>
 
@@ -571,6 +616,24 @@ main {
 <div id="toast" class="toast"></div>
 
 <script>
+/* ===== MENÚ MÓVIL ===== */
+function toggleMobileMenu(){
+  const ham=document.getElementById('hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMobileMenu();}else{
+    ham.classList.add('open');menu.classList.add('open');overlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -588,7 +651,6 @@ let selectedSpecs = [];
 let isAdvisorAvailable = true;
 let isAnon = false;
 
-// ── INIT ────────────────────────────────────
 async function init() {
   const raw = localStorage.getItem('hksk-session');
   if (!raw) return window.location.href = 'login.html';
@@ -615,7 +677,6 @@ async function init() {
   document.getElementById('main-content').style.display = '';
 }
 
-// ── CARGAR PERFIL ────────────────────────────
 async function loadProfile() {
   const { data: p } = await sb.from('profiles')
     .select('*').eq('id', session.user.id).single();
@@ -658,7 +719,6 @@ async function loadAdvisorProfile() {
   syncPreview();
 }
 
-// ── PLAN UI ──────────────────────────────────
 function setPlanUI(plan) {
   const badge = document.getElementById('plan-badge');
   const name = document.getElementById('bar-plan-name');
@@ -677,17 +737,16 @@ function setPlanUI(plan) {
   name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
 
   if (plan === 'free') {
-    actions.innerHTML = `<a href="https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00" class="btn-sm btn-upgrade">Upgrade →</a>`;
-  } else if (plan === 'premium') {
+    actions.innerHTML = `<a href="index.html#advsec" class="btn-sm btn-upgrade">Ser Advisor →</a>`;
+  } else if (plan === 'advisor_mensual') {
     actions.innerHTML = `
-      <a href="https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01" class="btn-sm btn-outline">Subir a Elite</a>
+      <a href="https://buy.stripe.com/6oU5kw7FQagVftscIccQU03" class="btn-sm btn-outline" target="_blank">Subir a Anual</a>
       <button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar</button>`;
   } else {
     actions.innerHTML = `<button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar plan</button>`;
   }
 }
 
-// ── SYNC PREVIEW ─────────────────────────────
 function syncPreview() {
   const name = document.getElementById('full-name').value.trim();
   const bio = document.getElementById('bio').value.trim() || document.getElementById('advisor-bio').value.trim();
@@ -732,14 +791,12 @@ function syncPreview() {
       '❤ Citas y conquista': 'citas'
     };
     specContainer.innerHTML = selectedSpecs.map(s => {
-      // Quitar emojis del inicio para buscar en el mapa
       const clean = s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
       const iconKey = iconMap[clean] || iconMap[s] ||
         Object.keys(iconMap).find(k => clean.includes(k) || s.includes(k));
       const iconHtml = (HKSK && iconKey && HKSK.icons[iconKey])
         ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
         : '';
-      // Mostrar texto sin emoji si hay icono SVG, si no mostrar original
       const label = iconHtml ? clean : s;
       return `<span class="specialty-pill">${iconHtml}${label}</span>`;
     }).join('');
@@ -762,7 +819,6 @@ function syncPreview() {
   document.getElementById('preview-anon').style.display = isAnon ? 'flex' : 'none';
 }
 
-// ── AVATAR ───────────────────────────────────
 function setAvatarUI(url) {
   ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
     const img = document.getElementById(id);
@@ -802,7 +858,6 @@ async function uploadAvatar(input) {
   } catch { showToast('Error de conexión', true); }
 }
 
-// ── ANONIMATO ────────────────────────────────
 function setAnonUI(val) {
   const btn = document.getElementById('anon-toggle');
   btn.classList.toggle('on', val);
@@ -819,7 +874,6 @@ async function toggleAnon() {
   });
 }
 
-// ── ADVISOR PANEL ────────────────────────────
 function toggleAdvisorPanel() {
   const panel = document.getElementById('advisor-panel');
   panel.classList.toggle('open');
@@ -848,7 +902,6 @@ function toggleAdvisorAvailable() {
   setAdvisorAvailableUI(isAdvisorAvailable);
 }
 
-// ── ESPECIALIDADES ───────────────────────────
 function buildSpecialtyGrid() {
   const grid = document.getElementById('specialties-grid');
   grid.innerHTML = SPECIALTIES.map(s => `
@@ -876,7 +929,6 @@ function toggleSpec(name, el) {
     `${selectedSpecs.length} ${(localStorage.getItem('hksk-lang')||'es')==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?((localStorage.getItem('hksk-lang')||'es')==='en'?'ies':'es'):((localStorage.getItem('hksk-lang')||'es')==='en'?'y':'')}`; 
 }
 
-// ── GUARDAR PERFIL ───────────────────────────
 async function saveProfile() {
   const btn = document.querySelector('.settings-section .btn-save');
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
@@ -906,7 +958,6 @@ async function saveProfile() {
   btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save changes':'Guardar cambios';
 }
 
-// ── GUARDAR ADVISOR ──────────────────────────
 async function saveAdvisor() {
   const btn = document.querySelectorAll('.btn-save')[1];
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
@@ -941,13 +992,11 @@ async function saveAdvisor() {
   btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save advisor profile':'Guardar perfil de advisor';
 }
 
-// ── CANCELAR PLAN ────────────────────────────
 function cancelPlan() {
   if (!confirm(localStorage.getItem('hksk-lang')==='en'?'Are you sure?':'¿Seguro que quieres cancelar tu plan?')) return;
   showToast(localStorage.getItem('hksk-lang')==='en'?'Contact support to cancel':'Escríbenos a soporte para cancelar');
 }
 
-// ── TOAST ────────────────────────────────────
 function showToast(msg, error = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -962,6 +1011,7 @@ init();
 function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
   const g=document.getElementById('gender');
   if(g){const gv=g.value;g.innerHTML=lang==='en'?'<option value="">Prefer not to say</option><option value="hombre">Man</option><option value="mujer">Woman</option><option value="otro">Other</option>':'<option value="">Prefiero no decir</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option>';g.value=gv;}
@@ -974,6 +1024,7 @@ function setLang(lang){
   const lang=saved||(browser.startsWith('es')?'es':'en');
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   if(lang==='en') setTimeout(()=>setLang('en'),500);
 })();
 </script>
