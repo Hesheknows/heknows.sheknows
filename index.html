@@ -642,7 +642,7 @@ async function showSuc(id){
     }
     ['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
     document.getElementById('ma-suc').style.display='block';
-    const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
+    const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
     setTimeout(()=>window.open(stripeUrl,'_blank'),2000);
   }catch(e){alert('Error de conexión.');}
 }
