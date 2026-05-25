@@ -12,7 +12,7 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);co
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(232,196,176,0.35),transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(196,122,90,0.08),transparent 55%);pointer-events:none;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.3em;text-transform:uppercase;color:var(--night);margin-bottom:48px;}
 .logo span{color:var(--terra);font-style:italic;}
-.card{background:white;border-radius:4px;padding:52px 48px;max-width:640px;width:100%;box-shadow:0 24px 64px rgba(26,20,16,0.08);position:relative;}
+.card{background:white;border-radius:4px;padding:52px 48px;max-width:680px;width:100%;box-shadow:0 24px 64px rgba(26,20,16,0.08);position:relative;}
 .step-dots{display:flex;gap:8px;margin-bottom:28px;}
 .step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s;}
 .step-dot.on{background:var(--terra);}
@@ -37,42 +37,53 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .choice.selected .check{opacity:1;transform:scale(1);}
 .check svg{width:10px;height:10px;}
 
-/* STEP 2 - Plan cards */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
-.plan-card{border:2px solid var(--border);border-radius:4px;padding:24px 18px;cursor:pointer;transition:all 0.25s;position:relative;background:var(--cream);text-align:center;}
+/* STEP 2 - Advisor plans */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.plan-card{border:2px solid var(--border);border-radius:4px;padding:32px 24px;cursor:pointer;transition:all 0.25s;position:relative;background:var(--cream);}
 .plan-card:hover{border-color:var(--blush);background:white;}
-.plan-card.selected{border-color:var(--terra);background:white;}
+.plan-card.selected{border-color:var(--terra);background:white;box-shadow:0 12px 32px rgba(196,122,90,0.12);}
 .plan-card.featured{background:var(--night);border-color:var(--night);}
 .plan-card.featured:hover{border-color:var(--terra);}
-.plan-card.featured.selected{border-color:var(--gold);}
-.plan-badge-top{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--terra);color:white;font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:3px 12px;border-radius:10px;font-weight:700;white-space:nowrap;}
+.plan-card.featured.selected{border-color:var(--gold);box-shadow:0 12px 32px rgba(201,169,110,0.18);}
+.plan-badge-top{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--terra);color:white;font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:4px 14px;border-radius:10px;font-weight:700;white-space:nowrap;}
+.plan-card.featured .plan-badge-top{background:var(--gold);color:var(--night);}
 .plan-name{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;}
 .plan-card.featured .plan-name{color:rgba(247,243,238,0.5);}
-.plan-price{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--night);line-height:1;}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;color:var(--night);line-height:1;}
+.plan-price span{font-size:1rem;color:var(--muted);font-family:'DM Sans',sans-serif;}
 .plan-card.featured .plan-price{color:var(--cream);}
-.plan-period{font-size:0.7rem;color:var(--muted);margin-top:4px;margin-bottom:14px;}
+.plan-card.featured .plan-price span{color:rgba(247,243,238,0.4);}
+.plan-period{font-size:0.72rem;color:var(--muted);margin-top:4px;margin-bottom:16px;}
 .plan-card.featured .plan-period{color:rgba(247,243,238,0.4);}
-.plan-divider{width:20px;height:1px;background:var(--gold);margin:0 auto 14px;}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left;}
-.plan-feature{font-size:0.72rem;color:var(--muted);display:flex;gap:7px;align-items:flex-start;line-height:1.45;}
-.plan-card.featured .plan-feature{color:rgba(247,243,238,0.6);}
-.plan-check{color:var(--terra);font-size:0.75rem;flex-shrink:0;margin-top:1px;}
+.plan-divider{width:24px;height:1px;background:var(--gold);margin-bottom:16px;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.plan-feature{font-size:0.78rem;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.plan-card.featured .plan-feature{color:rgba(247,243,238,0.7);}
+.plan-feature strong{color:var(--terra);}
+.plan-card.featured .plan-feature strong{color:var(--gold);}
+.plan-check{color:var(--terra);font-size:0.8rem;flex-shrink:0;margin-top:2px;}
 .plan-card.featured .plan-check{color:var(--gold);}
-.plan-card-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
+.plan-card-check{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.5);transition:all 0.2s;}
 .plan-card.selected .plan-card-check{opacity:1;transform:scale(1);}
 .plan-card.featured .plan-card-check{background:var(--gold);}
 
-.btn-continue{width:100%;padding:15px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
+.btn-continue{width:100%;padding:16px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
 .btn-continue.ready{opacity:1;pointer-events:all;}
 .btn-continue.ready:hover{background:var(--terra);}
 .btn-continue.loading{background:var(--muted);cursor:not-allowed;opacity:1;}
-.note{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:14px;line-height:1.6;}
+.note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;line-height:1.6;}
+.note strong{color:var(--terra);}
 
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 .card{animation:fadeUp 0.5s ease both;}
-@media(max-width:500px){.card{padding:32px 20px;}.choices{grid-template-columns:1fr;}.plans{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  body{padding:16px;}
+  .card{padding:32px 22px;}
+  .choices,.plans{grid-template-columns:1fr;}
+  .logo{margin-bottom:28px;font-size:0.9rem;}
+}
 </style>
 </head>
 <body>
@@ -99,7 +110,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <span class="choice-icon">💬</span>
         <div class="choice-title"><span class="es">Busco consejos del sexo opuesto</span><span class="en">I want advice from the opposite sex</span></div>
-        <p class="choice-desc"><span class="es">Quiero entender cómo piensa la otra persona y recibir perspectivas reales.</span><span class="en">I want to understand how the other person thinks and get real perspectives.</span></p>
+        <p class="choice-desc"><span class="es">Quiero entender cómo piensa la otra persona y recibir perspectivas reales. <strong style="color:var(--terra);">Gratis para empezar.</strong></span><span class="en">I want to understand how the other person thinks and get real perspectives. <strong style="color:var(--terra);">Free to start.</strong></span></p>
       </div>
       <div class="choice" id="choice-advisor" onclick="selectRole('advisor')">
         <div class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -108,96 +119,79 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <p class="choice-desc"><span class="es">Me interesa dar consejos y ganar dinero compartiendo mi perspectiva.</span><span class="en">I want to give advice and earn money sharing my perspective.</span></p>
       </div>
     </div>
-    <button class="btn-continue" id="btn-step1" onclick="goStep2()">
+    <button class="btn-continue" id="btn-step1" onclick="goNext()">
       <span class="es">Continuar →</span><span class="en">Continue →</span>
     </button>
-    <p class="note"><span class="es">Puedes ser las dos cosas — esto solo define tu vista principal.</span><span class="en">You can be both — this just sets your main view.</span></p>
+    <p class="note"><span class="es">Puedes ser las dos cosas después — esto solo define tu vista principal.</span><span class="en">You can be both later — this just sets your main view.</span></p>
   </div>
 
-  <!-- ── PASO 2: PLAN ── -->
+  <!-- ── PASO 2: PLAN ADVISOR (solo se muestra si eligió advisor) ── -->
   <div id="step2" style="display:none;">
     <div class="step-dots"><div class="step-dot on"></div><div class="step-dot on"></div></div>
-    <p class="step-label"><span class="es">Paso 2 de 2 · Tu plan</span><span class="en">Step 2 of 2 · Your plan</span></p>
+    <p class="step-label"><span class="es">Paso 2 de 2 · Tu membresía Advisor</span><span class="en">Step 2 of 2 · Your Advisor membership</span></p>
     <h1 class="title">
-      <span class="es">Elige cómo quieres<br><em>empezar.</em></span>
-      <span class="en">Choose how you want<br><em>to start.</em></span>
+      <span class="es">Elige tu plan<br>de <em>Advisor.</em></span>
+      <span class="en">Choose your<br><em>Advisor</em> plan.</span>
     </h1>
     <p class="subtitle">
-      <span class="es">Empieza gratis. Actualiza cuando quieras.</span>
-      <span class="en">Start free. Upgrade anytime.</span>
+      <span class="es">Todo en pesos mexicanos. Cancela cuando quieras.</span>
+      <span class="en">All in Mexican pesos. Cancel anytime.</span>
     </p>
     <div class="divider"></div>
 
     <div class="plans">
-      <!-- FREE -->
-      <div class="plan-card selected" id="plan-free" onclick="selectPlan('free')">
+      <!-- MENSUAL -->
+      <div class="plan-card" id="plan-mensual" onclick="selectPlan('mensual')">
         <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="plan-name">Free</div>
-        <div class="plan-price">$0</div>
-        <div class="plan-period"><span class="es">para siempre</span><span class="en">forever</span></div>
+        <div class="plan-name"><span class="es">Mensual</span><span class="en">Monthly</span></div>
+        <div class="plan-price">$99 <span>MXN</span></div>
+        <div class="plan-period"><span class="es">por mes</span><span class="en">per month</span></div>
         <div class="plan-divider"></div>
         <ul class="plan-features">
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">1 pregunta pública/día</span><span class="en">1 public question/day</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Ver el feed completo</span><span class="en">View full feed</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Perfil anónimo</span><span class="en">Anonymous profile</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es"><strong>70%</strong> de ganancias por consulta</span><span class="en"><strong>70%</strong> earnings per consult</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Tú pones tu precio</span><span class="en">You set your price</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Perfil en el directorio</span><span class="en">Profile in directory</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Pagos quincenales SPEI</span><span class="en">Bi-weekly SPEI payouts</span></li>
         </ul>
       </div>
 
-      <!-- PREMIUM -->
-      <div class="plan-card featured" id="plan-premium" onclick="selectPlan('premium')">
-        <div class="plan-badge-top"><span class="es">Más popular</span><span class="en">Most popular</span></div>
+      <!-- ANUAL (featured) -->
+      <div class="plan-card featured selected" id="plan-anual" onclick="selectPlan('anual')">
+        <div class="plan-badge-top"><span class="es">GANA 20% MÁS</span><span class="en">EARN 20% MORE</span></div>
         <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="plan-name">Premium</div>
-        <div class="plan-price">$199</div>
-        <div class="plan-period"><span class="es">MXN / mes</span><span class="en">MXN / month</span></div>
+        <div class="plan-name"><span class="es">Anual</span><span class="en">Annual</span></div>
+        <div class="plan-price">$999 <span>MXN</span></div>
+        <div class="plan-period"><span class="es">por año · ~$83/mes</span><span class="en">per year · ~$83/mo</span></div>
         <div class="plan-divider"></div>
         <ul class="plan-features">
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">5 consultas privadas/mes</span><span class="en">5 private consults/month</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Elige advisor por rating</span><span class="en">Choose advisor by rating</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Respuesta en 12h</span><span class="en">Response in 12h</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Preguntas ilimitadas</span><span class="en">Unlimited questions</span></li>
-        </ul>
-      </div>
-
-      <!-- ELITE -->
-      <div class="plan-card" id="plan-elite" onclick="selectPlan('elite')">
-        <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="plan-name">Elite</div>
-        <div class="plan-price">$299</div>
-        <div class="plan-period"><span class="es">MXN / mes</span><span class="en">MXN / month</span></div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Consultas ilimitadas</span><span class="en">Unlimited consults</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Advisor Top 10 exclusivo</span><span class="en">Exclusive Top 10 advisor</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Respuesta garantizada 6h</span><span class="en">Guaranteed response 6h</span></li>
-          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">30 créditos mensuales</span><span class="en">30 monthly credits</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es"><strong>90%</strong> de ganancias por consulta</span><span class="en"><strong>90%</strong> earnings per consult</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Prioridad #1 en búsquedas</span><span class="en">Priority #1 in search</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Badge "Verificado Premium"</span><span class="en">"Premium Verified" badge</span></li>
+          <li class="plan-feature"><span class="plan-check">✓</span><span class="es">Pagos quincenales SPEI</span><span class="en">Bi-weekly SPEI payouts</span></li>
         </ul>
       </div>
     </div>
 
     <button class="btn-continue ready" id="btn-step2" onclick="continuar()">
-      <span class="es">Empezar →</span><span class="en">Get started →</span>
+      <span class="es">Continuar al pago →</span><span class="en">Continue to payment →</span>
     </button>
-    <p class="note" id="plan-note">
-      <span class="es">Plan gratuito seleccionado. Puedes mejorar después.</span>
-      <span class="en">Free plan selected. You can upgrade later.</span>
+    <p class="note">
+      <span class="es">Pago seguro vía Stripe · Ganas <strong>70-90%</strong> de cada consulta</span>
+      <span class="en">Secure Stripe checkout · Earn <strong>70-90%</strong> per consult</span>
     </p>
   </div>
 
 </div>
 
 <script>
-// ⚠️ SERVICE_KEY removed for security — now using Netlify function
-// Old code had SERVICE_KEY directly in HTML, visible to anyone.
-// Now we call /.netlify/functions/update-onboarding which uses the key server-side.
-
 const STRIPE = {
-  premium: 'https://buy.stripe.com/7sY9AM4tEfBf4OO37CcQU00',
-  elite:   'https://buy.stripe.com/5kQfZagcm88Ndlk0ZucQU01'
+  // ⚠️ Reemplaza con tus links reales de Stripe cuando los tengas separados
+  mensual: 'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02',
+  anual:   'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02'
 };
 
 let selectedRole = null;
-let selectedPlanId = 'free';
+let selectedPlan = 'anual'; // default Anual seleccionado
 let session = null;
 
 function init() {
@@ -213,33 +207,35 @@ function selectRole(role) {
   document.getElementById('btn-step1').classList.add('ready');
 }
 
-function goStep2() {
+// Si eligió usuario → salta paso 2 y guarda directo
+// Si eligió advisor → muestra paso 2 con planes
+async function goNext() {
   if (!selectedRole) return;
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('step2').style.display = 'block';
+  if (selectedRole === 'user') {
+    await saveAndRedirect('free');
+  } else {
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+  }
 }
 
 function selectPlan(plan) {
-  selectedPlanId = plan;
+  selectedPlan = plan;
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('plan-' + plan).classList.add('selected');
-  const lang = localStorage.getItem('hksk-lang')||'es';
-  const noteEl = document.getElementById('plan-note');
-  const notes = {
-    free:    { es: 'Plan gratuito seleccionado. Puedes mejorar después.', en: 'Free plan selected. You can upgrade later.' },
-    premium: { es: 'Plan Premium — te redirigiremos a pago seguro.', en: 'Premium plan — you\'ll be redirected to secure checkout.' },
-    elite:   { es: 'Plan Elite — te redirigiremos a pago seguro.', en: 'Elite plan — you\'ll be redirected to secure checkout.' }
-  };
-  noteEl.innerHTML = `<span>${notes[plan][lang]}</span>`;
 }
 
 async function continuar() {
+  await saveAndRedirect(selectedPlan);
+}
+
+async function saveAndRedirect(plan) {
   if (!session) return;
-  const btn = document.getElementById('btn-step2');
+  const btnId = selectedRole === 'user' ? 'btn-step1' : 'btn-step2';
+  const btn = document.getElementById(btnId);
   btn.classList.add('loading');
   btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
 
-  // Get access token (may be in session.access_token or session.token)
   const token = session.access_token || session.token;
   if (!token) {
     alert('Sesión inválida, vuelve a iniciar sesión.');
@@ -248,14 +244,13 @@ async function continuar() {
   }
 
   try {
-    // ✅ SECURE: call Netlify function, the SERVICE_KEY stays on the server
     const res = await fetch('/.netlify/functions/update-onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         token,
         role: selectedRole,
-        plan: 'free'
+        plan: plan
       })
     });
 
@@ -264,24 +259,27 @@ async function continuar() {
       console.error('Error guardando onboarding:', data);
       alert('No pude guardar tu información. Intenta de nuevo.');
       btn.classList.remove('loading');
-      btn.innerHTML = '<span class="es">Empezar →</span><span class="en">Get started →</span>';
+      btn.innerHTML = selectedRole === 'user'
+        ? '<span class="es">Continuar →</span><span class="en">Continue →</span>'
+        : '<span class="es">Continuar al pago →</span><span class="en">Continue to payment →</span>';
       return;
     }
   } catch(e) {
     console.error('Error:', e);
     alert('Error de conexión. Intenta de nuevo.');
     btn.classList.remove('loading');
-    btn.innerHTML = '<span class="es">Empezar →</span><span class="en">Get started →</span>';
     return;
   }
 
-  if (selectedPlanId !== 'free') {
-    window.open(STRIPE[selectedPlanId], '_blank');
-  }
-
-  if (selectedRole === 'advisor') {
+  // Redirección
+  if (selectedRole === 'advisor' && plan !== 'free') {
+    // Abre Stripe en nueva pestaña y manda a perfil para configurar
+    window.open(STRIPE[plan], '_blank');
+    window.location.href = 'perfil.html?setup=advisor';
+  } else if (selectedRole === 'advisor') {
     window.location.href = 'perfil.html?setup=advisor';
   } else {
+    // Usuario gratis → dashboard
     window.location.href = 'dashboard.html';
   }
 }
