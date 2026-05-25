@@ -9,9 +9,10 @@
 <style>
 :root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 .wrap{width:100%;max-width:420px;padding:24px;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;text-align:center;margin-bottom:48px;}
+.logo a{color:var(--night);text-decoration:none;}
 .logo span{color:var(--terra);font-style:italic;}
 .card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:40px 36px;}
 .tabs{display:flex;border-bottom:1px solid rgba(196,122,90,0.15);margin-bottom:32px;}
@@ -32,11 +33,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 .err{font-size:0.78rem;color:#8B2A1A;text-align:center;margin-top:12px;min-height:20px;}
 .back{display:block;text-align:center;margin-top:24px;font-size:0.72rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
 .back:hover{color:var(--terra);}
+
+@media(max-width:600px){
+  body{padding:12px;align-items:flex-start;padding-top:40px;}
+  .wrap{padding:8px;}
+  .logo{font-size:0.95rem;margin-bottom:32px;}
+  .card{padding:28px 22px;}
+  .tab{font-size:0.65rem;padding:8px;letter-spacing:0.1em;}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="logo">He Knows · <span>She Knows</span></div>
+  <div class="logo"><a href="/">He Knows · <span>She Knows</span></a></div>
   <div class="card">
     <div class="tabs" id="main-tabs">
       <div class="tab on" onclick="showTab('login')">Iniciar sesión</div>
@@ -45,11 +54,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 
     <!-- LOGIN -->
     <div id="tab-login">
-      <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="tu@correo.com" autocomplete="email"></div>
       <div class="field">
         <label>Contraseña</label>
         <div class="pass-wrap">
-          <input type="password" id="login-pass" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+          <input type="password" id="login-pass" placeholder="Tu contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
           <button type="button" class="pass-toggle" id="pass-toggle-btn" onclick="togglePassword()" aria-label="Mostrar contraseña">
             <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
@@ -73,9 +82,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
 
     <!-- REGISTRO -->
     <div id="tab-register" style="display:none;">
-      <div class="field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@correo.com"></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
-      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="tu@correo.com" autocomplete="email"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
+      <div class="field"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="Repite tu contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
       <button class="btn" id="btn-reg" onclick="doRegister()">Crear cuenta →</button>
       <div class="err" id="reg-err"></div>
     </div>
@@ -86,7 +95,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night)
         <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--night);margin-bottom:6px;">Recuperar contraseña</div>
         <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Te enviaremos un enlace para crear una nueva contraseña.</div>
       </div>
-      <div class="field"><label>Correo electrónico</label><input type="email" id="reset-email" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')doReset()"></div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="reset-email" placeholder="tu@correo.com" autocomplete="email" onkeydown="if(event.key==='Enter')doReset()"></div>
       <button class="btn" id="btn-reset" onclick="doReset()">Enviar enlace →</button>
       <div class="err" id="reset-err"></div>
       <div style="text-align:center;margin-top:14px;">
