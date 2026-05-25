@@ -19,6 +19,29 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 .nav-links a.active{color:var(--terra);border-bottom:1.5px solid var(--terra);padding-bottom:2px;}
 .nav-user{font-size:0.7rem;color:var(--muted);}
 
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
+.hamburger span:nth-child(1){top:13px;}
+.hamburger span:nth-child(2){top:20px;}
+.hamburger span:nth-child(3){top:27px;}
+.hamburger.open span{background:var(--cream);}
+.hamburger.open span:nth-child(1){top:20px;transform:rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){top:20px;transform:rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:0;right:-100%;width:80%;max-width:340px;height:100vh;background:var(--night);z-index:150;padding:90px 32px 40px;transition:right 0.35s ease;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.3);}
+.mobile-menu.open{right:0;}
+.mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu a.active{color:var(--terra);}
+.mobile-menu .mm-email{display:block;color:rgba(247,243,238,0.4);font-size:0.7rem;padding:14px 0;border-bottom:1px solid rgba(247,243,238,0.08);}
+.mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
+.mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
+.mobile-overlay.open{display:block;opacity:1;}
+body.menu-open{overflow:hidden;}
+
 .page{max-width:1100px;margin:0 auto;padding:40px 24px 60px;}
 
 .page-header{margin-bottom:28px;}
@@ -127,6 +150,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 @media(max-width:768px){
   nav{padding:0 20px;}
   .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{display:block;}
   .page{padding:24px 16px 40px;}
   .layout{grid-template-columns:1fr;}
   .sidebar{display:none;}
@@ -146,7 +171,25 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
     <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <span class="nav-user" id="nav-user"></span>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
+  <a href="buscar-advisors.html" onclick="closeMobileMenu()">Advisors</a>
+  <a href="the-real.html" onclick="closeMobileMenu()" class="active">The Real</a>
+  <a href="mensajes.html" onclick="closeMobileMenu()"><span class="es">Mensajes</span><span class="en">Messages</span></a>
+  <a href="perfil.html" onclick="closeMobileMenu()"><span class="es">Mi Perfil</span><span class="en">My Profile</span></a>
+  <span class="mm-email" id="mm-user"></span>
+  <div class="mm-lang">
+    <button onclick="setLang('es')">ES</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</div>
 
 <div class="page">
   <div class="page-header">
@@ -225,6 +268,24 @@ nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;a
 <div class="toast" id="toast"></div>
 
 <script>
+/* ===== MENÚ MÓVIL ===== */
+function toggleMobileMenu(){
+  const ham=document.getElementById('hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMobileMenu();}else{
+    ham.classList.add('open');menu.classList.add('open');overlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+
 const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 let session = null;
 let isAnonymous = true;
@@ -237,7 +298,10 @@ async function init() {
   const raw = localStorage.getItem('hksk-session');
   if (raw) {
     session = JSON.parse(raw);
-    document.getElementById('nav-user').textContent = session.user?.email?.split('@')[0] || '';
+    const email = session.user?.email?.split('@')[0] || '';
+    document.getElementById('nav-user').textContent = email;
+    const mmu = document.getElementById('mm-user');
+    if (mmu) mmu.textContent = session.user?.email || '';
   } else {
     document.getElementById('ask-box').innerHTML = `
       <div style="text-align:center;padding:16px;">
@@ -394,17 +458,6 @@ async function publishPost() {
   if (!text) { showToast(localStorage.getItem('hksk-lang')==='en'?'Write your question first.':'Escribe tu pregunta primero.'); return; }
   if (text.length < 10) { showToast(localStorage.getItem('hksk-lang')==='en'?'Question too short.':'Tu pregunta es muy corta.'); return; }
 
-  // Check daily limit for free users
-  if (!isPremium() && checkDailyLimit()) {
-    showUpgrade(
-      'Ya publicaste hoy',
-      'Daily limit reached',
-      'El plan gratuito permite 1 pregunta pública por día. Mejora tu plan para publicar sin límites y consultar advisors privadamente.',
-      'The free plan allows 1 public question per day. Upgrade to post unlimited and consult advisors privately.'
-    );
-    return;
-  }
-
   const btn = document.getElementById('ask-btn');
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Publishing...':'Publicando...';
 
@@ -419,7 +472,6 @@ async function publishPost() {
   if (res.ok) {
     document.getElementById('ask-input').value = '';
     showToast(localStorage.getItem('hksk-lang')==='en'?'Question published!':'¡Tu pregunta fue publicada!');
-    if (!isPremium()) markPostedToday();
     await loadPosts(true);
   } else {
     const data = await res.json();
@@ -499,6 +551,7 @@ init();
 function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
   const ta=document.getElementById('ask-input');
   if(ta) ta.placeholder=lang==='en'?'What do you need the opposite sex to explain?...':'¿Qué necesitas que el sexo opuesto te explique?...';
@@ -509,6 +562,7 @@ function setLang(lang){
   const lang=saved||(browser.startsWith('es')?'es':'en');
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
 </script>
 </body>
