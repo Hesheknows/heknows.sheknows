@@ -19,6 +19,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-email{font-size:0.72rem;color:var(--muted);}
 .btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
 .btn-logout:hover{background:var(--terra);color:white;}
+
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
+.hamburger span:nth-child(1){top:13px;}
+.hamburger span:nth-child(2){top:20px;}
+.hamburger span:nth-child(3){top:27px;}
+.hamburger.open span{background:var(--cream);}
+.hamburger.open span:nth-child(1){top:20px;transform:rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){top:20px;transform:rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:0;right:-100%;width:80%;max-width:340px;height:100vh;background:var(--night);z-index:150;padding:90px 32px 40px;transition:right 0.35s ease;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.3);}
+.mobile-menu.open{right:0;}
+.mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu a.active{color:var(--terra);}
+.mobile-menu .mm-email{display:block;color:rgba(247,243,238,0.4);font-size:0.7rem;padding:14px 0;border-bottom:1px solid rgba(247,243,238,0.08);}
+.mobile-menu .mm-logout{display:inline-block;background:transparent;border:1px solid rgba(196,122,90,0.4);color:var(--terra);padding:12px 24px;border-radius:2px;margin-top:24px;font-size:0.72rem;letter-spacing:0.12em;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-transform:uppercase;}
+.mobile-menu .mm-logout:hover{background:var(--terra);color:white;}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
+.mobile-overlay.open{display:block;opacity:1;}
+body.menu-open{overflow:hidden;}
+
 .page{padding:100px 0 80px;max-width:960px;margin:0 auto;padding-left:24px;padding-right:24px;}
 .page-hd{margin-bottom:40px;}
 .page-tag{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;}
@@ -60,7 +83,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .loader-logo span{color:var(--terra);font-style:italic;}
 @keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
 @media(max-width:900px){.advisors-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){nav{padding:15px 20px;}.advisors-grid{grid-template-columns:1fr;}.nav-links{gap:12px;}.nav-email{display:none;}}
+@media(max-width:768px){
+  nav{padding:15px 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{display:block;}
+}
+@media(max-width:600px){.advisors-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -76,7 +105,23 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <span class="nav-email" id="nav-email"></span>
     <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
+  <a href="buscar-advisors.html" onclick="closeMobileMenu()" class="active">Advisors</a>
+  <a href="the-real.html" onclick="closeMobileMenu()">The Real</a>
+  <a href="mensajes.html" onclick="closeMobileMenu()">Mensajes</a>
+  <a href="perfil.html" onclick="closeMobileMenu()">Mi perfil</a>
+  <span class="mm-email" id="mm-email"></span>
+  <button class="mm-logout" onclick="HKSK.signOut()">Salir</button>
+</div>
+
 <div class="page">
   <div class="page-hd">
     <div class="page-tag">Directorio de Advisors</div>
@@ -100,6 +145,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 </div>
 <script src="supabase.js"></script>
 <script>
+/* ===== MENÚ MÓVIL ===== */
+function toggleMobileMenu(){
+  const ham=document.getElementById('hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMobileMenu();}else{
+    ham.classList.add('open');menu.classList.add('open');overlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+
 let ALL_ADVISORS = [];
 
 (async () => {
@@ -108,6 +171,7 @@ let ALL_ADVISORS = [];
     try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
     if (!session?.access_token) { window.location.replace('/login.html'); return; }
     document.getElementById('nav-email').textContent = session.user.email;
+    document.getElementById('mm-email').textContent = session.user.email;
     await loadAdvisors();
   } finally {
     document.getElementById('loader').classList.add('gone');
@@ -154,7 +218,6 @@ function renderAdvisors(list) {
     return;
   }
   grid.innerHTML = list.map(a => {
-    // Supabase puede regresar advisor_profiles como array o como objeto
     const adv = a.adv || {};
     const name = a.full_name || 'Advisor';
     const initial = name[0]?.toUpperCase() || 'A';
