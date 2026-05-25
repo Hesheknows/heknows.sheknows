@@ -18,6 +18,30 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-links a:hover{color:var(--terra);}
 .nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
 .nav-cta:hover{background:var(--terra)!important;}
+
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
+.hamburger span:nth-child(1){top:13px;}
+.hamburger span:nth-child(2){top:20px;}
+.hamburger span:nth-child(3){top:27px;}
+.hamburger.open span{background:var(--cream);}
+.hamburger.open span:nth-child(1){top:20px;transform:rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){top:20px;transform:rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:0;right:-100%;width:80%;max-width:340px;height:100vh;background:var(--night);z-index:150;padding:90px 32px 40px;transition:right 0.35s ease;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.3);}
+.mobile-menu.open{right:0;}
+.mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
+.mobile-menu a:hover{color:var(--terra);}
+.mobile-menu .mm-cta{display:inline-block;background:var(--terra);color:var(--cream);padding:14px 28px;border-radius:2px;margin-top:24px;border:none;width:auto;font-size:0.78rem;letter-spacing:0.15em;font-weight:600;}
+.mobile-menu .mm-cta:hover{background:var(--gold);color:var(--night);}
+.mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
+.mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
+.mobile-overlay.open{display:block;opacity:1;}
+body.menu-open{overflow:hidden;}
+
 .btn-p{background:var(--night);color:var(--cream);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
 .btn-p:hover{background:var(--terra);}
 .btn-g{background:transparent;color:var(--slate);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:1.5px solid rgba(61,53,48,0.3);cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
@@ -219,7 +243,10 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
 @media(max-width:768px){
-nav{padding:16px 20px;} .nav-links{display:none;}
+nav{padding:16px 20px;}
+.nav-links{display:none;}
+.hamburger{display:flex;}
+.mobile-menu{display:block;}
 .hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
 .s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
 .howpay{grid-template-columns:1fr;padding:36px 24px;gap:28px;}
@@ -227,6 +254,7 @@ nav{padding:16px 20px;} .nav-links{display:none;}
 .dual{grid-template-columns:1fr;} .dhim,.dher{padding:64px 28px;}
 footer{flex-direction:column;text-align:center;padding:36px 24px;}
 .trust{padding:24px;gap:20px;}
+.fcta{padding:80px 24px;}
 .modal{padding:36px 24px;} .frw{grid-template-columns:1fr;} .plno{grid-template-columns:1fr;}
 }
 </style>
@@ -246,7 +274,26 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <a href="/login.html" id="login-btn" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
     <a href="/dashboard.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
+  <a href="#areas" onclick="closeMobileMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
+  <a href="#precios" onclick="closeMobileMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
+  <a href="#advsec" onclick="closeMobileMenu()"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
+  <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+  <div class="mm-lang">
+    <button class="active" onclick="setLang('es')">ES</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</div>
 
 <section class="hero">
   <div class="hero-left">
@@ -529,7 +576,25 @@ async function subscribeNewsletter() {
 </div>
 
 <script>
-function openM(id){document.getElementById(id).classList.add('active');document.body.style.overflow='hidden';}
+/* ===== MENÚ MÓVIL ===== */
+function toggleMobileMenu(){
+  const ham=document.getElementById('hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMobileMenu();}else{
+    ham.classList.add('open');menu.classList.add('open');overlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+  document.body.classList.remove('menu-open');
+}
+
+function openM(id){closeMobileMenu();document.getElementById(id).classList.add('active');document.body.style.overflow='hidden';}
 function closeM(id){document.getElementById(id).classList.remove('active');document.body.style.overflow='';}
 document.querySelectorAll('.mov').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this)closeM(this.id);});});
 function togC(b){b.classList.toggle('active');}
@@ -590,6 +655,8 @@ async function showSuc(id){
     if(session?.access_token){
       document.getElementById('login-btn').style.display='none';
       document.getElementById('profile-btn').style.display='inline-block';
+      document.getElementById('mm-login').style.display='none';
+      document.getElementById('mm-profile').style.display='inline-block';
     }
   }catch(e){}
 })();
@@ -598,6 +665,7 @@ async function showSuc(id){
 function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
 }
 (function(){
@@ -606,6 +674,7 @@ function setLang(lang){
   const lang=saved||(browser.startsWith('es')?'es':'en');
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
+  document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
 </script>
 </body>
