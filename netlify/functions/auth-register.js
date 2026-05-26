@@ -1,6 +1,6 @@
 // netlify/functions/auth-register.js
-// Si role='advisor', además de crear el usuario crea profiles y advisor_profiles
-// inmediatamente usando service_role (no depende de email confirmation)
+// v3: si signup no devuelve user.id (cuenta nueva con email_confirmation activo),
+// busca el user.id en auth.users por email y crea advisor_profile.
 
 exports.handler = async (event) => {
   const headers = {
@@ -70,12 +70,42 @@ exports.handler = async (event) => {
     };
   }
 
-  const userId = supabaseData.user?.id;
+  // 2. Obtener user.id — primero del response, si no buscar por email
+  let userId = supabaseData.user?.id || supabaseData.id;
+
   if (!userId) {
-    return { statusCode: 200, headers, body: JSON.stringify({ error: 'Usuario creado pero sin id', raw: supabaseData }) };
+    // Buscar en auth.users por email usando admin endpoint
+    try {
+      const lookupRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (lookupRes.ok) {
+        const lookupData = await lookupRes.json();
+        // Puede venir como {users:[...]} o como array directo
+        const users = Array.isArray(lookupData) ? lookupData : (lookupData.users || []);
+        const found = users.find(u => u.email === email);
+        if (found) userId = found.id;
+      }
+    } catch(e) {
+      console.error('Error buscando user por email:', e.message);
+    }
   }
 
-  // 2. Crear/actualizar row en profiles
+  if (!userId) {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        error: 'No se pudo obtener el ID del usuario después del registro',
+        raw: supabaseData
+      })
+    };
+  }
+
+  // 3. Crear/actualizar row en profiles
   const profileBody = {
     id: userId,
     email,
@@ -97,11 +127,11 @@ exports.handler = async (event) => {
     });
   } catch(e) {
     console.error('Error creando profile:', e.message);
-    // No fallar el registro completo si profiles falla
   }
 
-  // 3. Si es advisor, crear row en advisor_profiles
+  // 4. Si es advisor, crear row en advisor_profiles
   let advisor_created = false;
+  let advisor_error = null;
   if (role === 'advisor') {
     const advisorBody = {
       id: userId,
@@ -127,10 +157,11 @@ exports.handler = async (event) => {
       });
       advisor_created = advRes.ok;
       if (!advRes.ok) {
-        const errText = await advRes.text().catch(() => '');
-        console.error('Error creando advisor_profile:', advRes.status, errText);
+        advisor_error = await advRes.text().catch(() => 'unknown error');
+        console.error('Error creando advisor_profile:', advRes.status, advisor_error);
       }
     } catch(e) {
+      advisor_error = e.message;
       console.error('Error creando advisor_profile:', e.message);
     }
   }
@@ -140,11 +171,13 @@ exports.handler = async (event) => {
     headers,
     body: JSON.stringify({
       success: true,
+      user_id: userId,
       access_token: supabaseData.session?.access_token || supabaseData.access_token || null,
       refresh_token: supabaseData.session?.refresh_token || supabaseData.refresh_token || null,
-      user: supabaseData.user,
+      user: supabaseData.user || { id: userId, email },
       email_confirmation_required: !supabaseData.session && !supabaseData.access_token,
-      advisor_created
+      advisor_created,
+      advisor_error
     })
   };
 };
