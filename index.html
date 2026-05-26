@@ -623,6 +623,7 @@ async function showSuc(id){
     }catch(e){alert('Error de conexión.');}
     return;
   }
+  // ✨ FLUJO ADVISOR ARREGLADO
   const email=document.querySelector('#as1 input[type="email"]').value.trim();
   const password=document.querySelector('#as1 input[type="password"]').value.trim();
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
@@ -633,18 +634,50 @@ async function showSuc(id){
   const specialties=Array.from(document.querySelectorAll('#as2 .chips .chip.active')).map(c=>c.textContent.trim()).join(', ');
   if(!email||!password){alert('Por favor completa el correo y contraseña en el paso 1.');return;}
   try{
+    // 1. Registrar usuario
     const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,full_name,gender,role:'advisor'})});
     const data=await res.json();
     if(data.error){alert('Error: '+data.error);return;}
-    if(data.session){
-      localStorage.setItem('hksk-session',JSON.stringify(data.session));
-      await fetch('/.netlify/functions/save-advisor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:data.session.user.id,token:data.session.access_token,bio,specialty:specialties,price_per_session:parseFloat(price)||100,available:true,civil_status:'',years_together:0})});
+    
+    // ✨ CAMBIO: auth-register devuelve access_token al nivel raíz, NO dentro de data.session
+    if(data.access_token && data.user){
+      const sessionData={access_token:data.access_token, refresh_token:data.refresh_token, user:data.user};
+      localStorage.setItem('hksk-session', JSON.stringify(sessionData));
+      
+      // 2. Guardar perfil advisor — AHORA SÍ se ejecuta
+      const advisorRes = await fetch('/.netlify/functions/save-advisor',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          userId: data.user.id,
+          token: data.access_token,
+          bio,
+          specialty: specialties,
+          price_per_session: parseFloat(price) || 100,
+          available: true,
+          civil_status: '',
+          years_together: 0
+        })
+      });
+      const advisorData = await advisorRes.json().catch(() => ({}));
+      if(advisorData.error){
+        console.error('save-advisor error:', advisorData.error);
+        alert('Cuenta creada pero hubo un problema con tu perfil de advisor: '+advisorData.error+'. Puedes completarlo desde Mi Perfil.');
+      } else {
+        console.log('Advisor guardado:', advisorData);
+      }
+    } else {
+      alert('Cuenta creada. Revisa tu correo para confirmar y luego completa tu perfil de advisor.');
     }
+    
     ['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
     document.getElementById('ma-suc').style.display='block';
     const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
     setTimeout(()=>window.open(stripeUrl,'_blank'),2000);
-  }catch(e){alert('Error de conexión.');}
+  }catch(e){
+    console.error(e);
+    alert('Error de conexión: '+e.message);
+  }
 }
 </script>
 
