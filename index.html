@@ -260,7 +260,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
     <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
     <a href="#precios"><span class="es">Precios</span><span class="en">Pricing</span></a>
-    <a href="#advsec"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
     <a href="about.html">About</a>
     <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
     <a href="/login.html" id="login-btn" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
@@ -271,12 +270,12 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   </button>
 </nav>
 
+<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
   <a href="#areas" onclick="closeMobileMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
   <a href="#precios" onclick="closeMobileMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
-  <a href="#advsec" onclick="closeMobileMenu()"><span class="es">Ser Advisor</span><span class="en">Become Advisor</span></a>
   <a href="about.html" onclick="closeMobileMenu()">About</a>
   <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
   <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
@@ -294,7 +293,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <p class="hero-s"><span class="es">Perspectivas reales sobre relaciones, emociones y el otro lado de la historia.</span><span class="en">Real perspectives on relationships, emotions and the other side of the story.</span></p>
     <div class="hero-a">
       <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
-      <a href="#" onclick="openM('ma');return false;" class="btn-g"><span class="es">Quiero ser Advisor</span><span class="en">Become an Advisor</span></a>
     </div>
   </div>
   <div class="hero-r">
@@ -446,7 +444,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   <p class="fcs"><span class="es">Primera pregunta completamente gratis. Sin tarjeta. Sin compromisos.</span><span class="en">First question completely free. No card. No commitment.</span></p>
   <div class="fca">
     <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
-    <a href="#" onclick="openM('ma');return false;" class="btn-g" style="border-color:rgba(247,243,238,0.25);color:rgba(247,243,238,0.6);"><span class="es">Quiero ser Advisor</span><span class="en">Become an Advisor</span></a>
   </div>
 </section>
 
@@ -478,7 +475,7 @@ async function subscribeNewsletter() {
 
 <footer>
   <div class="fl">He Knows · <span>She Knows</span></div>
-  <div class="flk"><a href="about.html">About</a><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="#advsec">Advisors</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
+  <div class="flk"><a href="about.html">About</a><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
   <div class="fc2"><span class="es">© 2026 He Knows She Knows · México · Todo en MXN</span><span class="en">© 2026 He Knows She Knows · Mexico · All in MXN</span></div>
 </footer>
 
@@ -615,7 +612,6 @@ async function showSuc(id){
     return;
   }
   
-  // ✨ FLUJO ADVISOR - todos los datos en UN solo request a auth-register
   const email=document.querySelector('#as1 input[type="email"]').value.trim();
   const password=document.querySelector('#as1 input[type="password"]').value.trim();
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
@@ -652,10 +648,6 @@ async function showSuc(id){
     if(data.error){
       alert('Error: '+data.error);
       return;
-    }
-    
-    if(data.advisor_created === false){
-      console.warn('Usuario creado pero advisor_profile NO');
     }
     
     if(data.access_token && data.user){
