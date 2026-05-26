@@ -814,29 +814,56 @@ async function uploadAvatar(input) {
   if (!file) return;
   if (file.size > 2 * 1024 * 1024) return showToast('La imagen debe ser menor a 2MB', true);
 
-  const reader = new FileReader();
-  reader.onload = e => {
-    ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-      const img = document.getElementById(id);
-      img.src = e.target.result; img.style.display = '';
-    });
-    document.getElementById('edit-avatar-ph').style.display = 'none';
-    document.getElementById('preview-avatar-ph').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+  // Convertir archivo a base64
+  const fileBase64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      // Preview inmediato
+      ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
+        const img = document.getElementById(id);
+        if (img) { img.src = e.target.result; img.style.display = ''; }
+      });
+      const editPh = document.getElementById('edit-avatar-ph');
+      const prevPh = document.getElementById('preview-avatar-ph');
+      if (editPh) editPh.style.display = 'none';
+      if (prevPh) prevPh.style.display = 'none';
+      // Devolver solo la parte base64 (sin el prefijo data:image/...;base64,)
+      resolve(e.target.result.split(',')[1]);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 
   showToast(localStorage.getItem('hksk-lang')==='en'?'Uploading photo…':'Subiendo foto…');
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('userId', session.user.id);
-  formData.append('token', session.access_token);
 
   try {
-    const res = await fetch('/.netlify/functions/avatar-upload', { method: 'POST', body: formData });
+    const res = await fetch('/.netlify/functions/avatar-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: session.user.id,
+        fileBase64: fileBase64,
+        fileName: file.name,
+        fileType: file.type
+      })
+    });
     const data = await res.json();
-    if (data.url) showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
-    else showToast(data.error || 'Error al subir', true);
-  } catch { showToast('Error de conexión', true); }
+    console.log('avatar-upload response:', data);
+    if (data.url || data.avatar_url) {
+      showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
+      // Refrescar la foto con la URL definitiva del servidor
+      const finalUrl = data.url || data.avatar_url;
+      ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
+        const img = document.getElementById(id);
+        if (img) img.src = finalUrl;
+      });
+    } else {
+      showToast(data.error || 'Error al subir', true);
+    }
+  } catch (e) {
+    console.error('Upload error:', e);
+    showToast('Error de conexión', true);
+  }
 }
 
 function setAnonUI(val) {
