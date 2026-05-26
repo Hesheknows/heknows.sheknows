@@ -678,9 +678,20 @@ async function init() {
 }
 
 async function loadProfile() {
-  const { data: p } = await sb.from('profiles')
-    .select('*').eq('id', session.user.id).single();
-  profile = p || {};
+  // ✨ CAMBIO: usar Netlify function en lugar de leer directo (RLS lo bloqueaba)
+  try {
+    const res = await fetch('/.netlify/functions/get-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: session.access_token })
+    });
+    const data = await res.json();
+    profile = data.profile || {};
+    advisorProfile = data.advisor_profile || null;
+  } catch(e) {
+    console.error('Error cargando perfil:', e);
+    profile = {};
+  }
 
   document.getElementById('full-name').value = profile.full_name || '';
   document.getElementById('bio').value = profile.bio || '';
@@ -693,16 +704,13 @@ async function loadProfile() {
   setAnonUI(isAnon);
   syncPreview();
 
-  if (profile.role === 'advisor') {
-    await loadAdvisorProfile();
+  if (profile.role === 'advisor' && advisorProfile) {
+    loadAdvisorProfileData();
   }
 }
 
-async function loadAdvisorProfile() {
-  const { data: ap } = await sb.from('advisor_profiles')
-    .select('*').eq('id', session.user.id).single();
-  advisorProfile = ap || {};
-
+function loadAdvisorProfileData() {
+  // ✨ CAMBIO: ya no llama a Supabase, usa los datos que get-profile ya trajo
   document.getElementById('advisor-bio').value = advisorProfile.bio || '';
   document.getElementById('civil-status').value = advisorProfile.civil_status || '';
   document.getElementById('years-together').value = advisorProfile.years_together || '';
@@ -1016,7 +1024,7 @@ function setLang(lang){
   const g=document.getElementById('gender');
   if(g){const gv=g.value;g.innerHTML=lang==='en'?'<option value="">Prefer not to say</option><option value="hombre">Man</option><option value="mujer">Woman</option><option value="otro">Other</option>':'<option value="">Prefiero no decir</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option>';g.value=gv;}
   const cs=document.getElementById('civil-status');
-  if(cs){const cv=cs.value;cs.innerHTML=lang==='en'?'<option value="">Select</option><option value="Soltero/a">Single</option><option value="En relación">In a relationship</option><option value="Casado/a">Married</option><option value="Divorciado/a">Divorced</option><option value="Viudo/a">Widowed</option>':'<option value="">Selecciona</option><option value="Soltero/a">Soltero/a</option><option value="En relación">En relación</option><option value="Casado/a">Casado/a</option><option value="Divorciado/a">Divorciado/a</option><option value="Viudo/a">Viudo/a</option>';cs.value=cv;}
+  if(cs){const cv=cs.value;cs.innerHTML=lang==='en'?'<option value="">Select</option><option value="Soltero/a">Single</option><option value="En relación">In a relationship</option><option value="Casado/a">Married</option><option value="Divorciado/a">Divorced</option><option value="Viudo/a">Viudo/a</option>':'<option value="">Selecciona</option><option value="Soltero/a">Soltero/a</option><option value="En relación">En relación</option><option value="Casado/a">Casado/a</option><option value="Divorciado/a">Divorciado/a</option><option value="Viudo/a">Viudo/a</option>';cs.value=cv;}
 }
 (function(){
   const saved=localStorage.getItem('hksk-lang');
