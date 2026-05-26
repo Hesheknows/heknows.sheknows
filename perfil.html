@@ -28,7 +28,6 @@ body {
   min-height: 100vh;
 }
 
-/* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
   background: rgba(247,243,238,0.95);
@@ -53,7 +52,6 @@ nav {
 .nav-back:hover { color: var(--terra); }
 .nav-links{display:flex;gap:20px;align-items:center;}
 
-/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
 .hamburger span:nth-child(1){top:13px;}
@@ -75,7 +73,6 @@ nav {
 .mobile-overlay.open{display:block;opacity:1;}
 body.menu-open{overflow:hidden;}
 
-/* LAYOUT */
 main {
   max-width: 900px; margin: 0 auto;
   padding: 32px 20px 80px;
@@ -94,9 +91,6 @@ main {
   main { grid-template-columns: 1fr; }
 }
 
-/* ═══════════════════════════════════
-   COLUMNA IZQUIERDA — VISTA PREVIA PÚBLICA
-══════════════════════════════════ */
 .preview-card {
   background: var(--white);
   border-radius: 20px;
@@ -192,12 +186,8 @@ main {
   border-radius: 8px; padding: 6px 10px;
 }
 
-/* ═══════════════════════════════════
-   COLUMNA DERECHA — SETTINGS
-══════════════════════════════════ */
 .settings-col { display: flex; flex-direction: column; gap: 16px; }
 
-/* Barra compacta superior */
 .settings-bar {
   background: var(--white);
   border: 1px solid var(--border);
@@ -242,7 +232,6 @@ main {
 }
 .toggle.on::after { transform: translateX(16px); }
 
-/* Secciones de edición */
 .settings-section {
   background: var(--white);
   border: 1px solid var(--border);
@@ -275,7 +264,6 @@ main {
 .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* Avatar upload */
 .avatar-area {
   display: flex; align-items: center; gap: 16px;
 }
@@ -301,7 +289,6 @@ main {
 #avatar-file { display: none; }
 .avatar-hint { font-size: 11px; color: var(--muted); }
 
-/* Especialidades multiselect */
 .specialties-grid {
   display: flex; flex-wrap: wrap; gap: 8px;
 }
@@ -315,7 +302,6 @@ main {
   background: var(--terra); color: var(--white); border-color: var(--terra);
 }
 
-/* Advisor colapsado */
 .advisor-collapsed {
   background: var(--white);
   border: 1px solid var(--border);
@@ -344,7 +330,6 @@ main {
 }
 .advisor-collapsed-body.open { display: block; }
 
-/* Botón guardar principal */
 .btn-save {
   font-family: 'DM Sans', sans-serif; font-weight: 400;
   font-size: 14px; padding: 12px 28px;
@@ -355,7 +340,6 @@ main {
 .btn-save:hover { background: #b5694a; }
 .btn-save:disabled { background: var(--blush); cursor: not-allowed; }
 
-/* Toast */
 .toast {
   position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
   background: var(--night); color: var(--white);
@@ -373,7 +357,6 @@ main {
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
 
-/* Loading */
 .loading {
   display: flex; align-items: center; justify-content: center;
   padding: 60px; color: var(--muted); font-size: 14px;
@@ -397,7 +380,6 @@ main {
   </button>
 </nav>
 
-<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
@@ -415,7 +397,6 @@ main {
 
 <main id="main-content" style="display:none">
 
-  <!-- COLUMNA IZQUIERDA — VISTA PREVIA -->
   <aside>
     <div class="preview-card">
       <div class="preview-header">
@@ -470,10 +451,8 @@ main {
     </div>
   </aside>
 
-  <!-- COLUMNA DERECHA — SETTINGS -->
   <div class="settings-col">
 
-    <!-- Barra compacta de suscripción + privacidad -->
     <div class="settings-bar">
       <div class="bar-plan">
         <span id="plan-badge" class="plan-badge plan-free">Free</span>
@@ -488,14 +467,12 @@ main {
       </div>
     </div>
 
-    <!-- Datos personales -->
     <div class="settings-section">
       <div class="section-head">
         <span class="section-title"><span class="es">Datos personales</span><span class="en">Personal info</span></span>
       </div>
       <div class="section-body">
 
-        <!-- Avatar -->
         <div class="avatar-area">
           <img id="edit-avatar-img" class="avatar-preview" style="display:none"/>
           <div id="edit-avatar-ph" class="avatar-preview-placeholder">
@@ -545,7 +522,6 @@ main {
       </div>
     </div>
 
-    <!-- Perfil de Advisor (colapsado si ya es advisor) -->
     <div class="advisor-collapsed" id="advisor-section">
       <div class="advisor-collapsed-header" onclick="toggleAdvisorPanel()">
         <div class="advisor-status">
@@ -610,13 +586,12 @@ main {
       </div>
     </div>
 
-  </div><!-- /settings-col -->
+  </div>
 </main>
 
 <div id="toast" class="toast"></div>
 
 <script>
-/* ===== MENÚ MÓVIL ===== */
 function toggleMobileMenu(){
   const ham=document.getElementById('hamburger');
   const menu=document.getElementById('mobile-menu');
@@ -668,9 +643,12 @@ async function init() {
   await loadProfile();
   buildSpecialtyGrid();
 
-  if (HKSK) {
-    document.getElementById('preview-icon-desahogo').innerHTML = HKSK.icons.desahogo
-      .replace('width="44"', 'width="32"').replace('height="44"', 'height="32"');
+  if (typeof HKSK !== 'undefined' && HKSK.icons) {
+    const desEl = document.getElementById('preview-icon-desahogo');
+    if (desEl) {
+      desEl.innerHTML = HKSK.icons.desahogo
+        .replace('width="44"', 'width="32"').replace('height="44"', 'height="32"');
+    }
   }
 
   document.getElementById('loading').style.display = 'none';
@@ -678,7 +656,6 @@ async function init() {
 }
 
 async function loadProfile() {
-  // ✨ CAMBIO: usar Netlify function en lugar de leer directo (RLS lo bloqueaba)
   try {
     const res = await fetch('/.netlify/functions/get-profile', {
       method: 'POST',
@@ -710,7 +687,6 @@ async function loadProfile() {
 }
 
 function loadAdvisorProfileData() {
-  // ✨ CAMBIO: ya no llama a Supabase, usa los datos que get-profile ya trajo
   document.getElementById('advisor-bio').value = advisorProfile.bio || '';
   document.getElementById('civil-status').value = advisorProfile.civil_status || '';
   document.getElementById('years-together').value = advisorProfile.years_together || '';
@@ -744,8 +720,9 @@ function setPlanUI(plan) {
   badge.className = `plan-badge ${p.cls}`;
   name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
 
+  // ✨ CAMBIO: ya no muestra botón "Ser Advisor →" para plan free
   if (plan === 'free') {
-    actions.innerHTML = `<a href="index.html#advsec" class="btn-sm btn-upgrade">Ser Advisor →</a>`;
+    actions.innerHTML = '';
   } else if (plan === 'advisor_mensual') {
     actions.innerHTML = `
       <a href="https://buy.stripe.com/6oU5kw7FQagVftscIccQU03" class="btn-sm btn-outline" target="_blank">Subir a Anual</a>
@@ -792,17 +769,13 @@ function syncPreview() {
       'Citas': 'citas', 'Citas y conquista': 'citas',
       'Desahogo': 'desahogo',
       'Sexualidad': 'relaciones',
-      'Divorcio': 'ghosting',
-      'Citas y conquista': 'citas',
-      '❤️🔥 Citas y conquista': 'citas',
-      '🔥 Citas y conquista': 'citas',
-      '❤ Citas y conquista': 'citas'
+      'Divorcio': 'ghosting'
     };
     specContainer.innerHTML = selectedSpecs.map(s => {
       const clean = s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
       const iconKey = iconMap[clean] || iconMap[s] ||
         Object.keys(iconMap).find(k => clean.includes(k) || s.includes(k));
-      const iconHtml = (HKSK && iconKey && HKSK.icons[iconKey])
+      const iconHtml = (typeof HKSK !== 'undefined' && iconKey && HKSK.icons[iconKey])
         ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
         : '';
       const label = iconHtml ? clean : s;
@@ -894,9 +867,9 @@ function updateAdvisorSectionHeader(isAdvisor) {
   const lang=localStorage.getItem('hksk-lang')||'es';
   document.getElementById('advisor-section-title').textContent = isAdvisor ? (lang==='en'?'Advisor profile':'Perfil de advisor') : (lang==='en'?'Become an advisor':'Ser advisor');
   document.getElementById('advisor-section-sub').textContent = isAdvisor
-    ? `${selectedSpecs.length} ${(localStorage.getItem('hksk-lang')||'es')==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?((localStorage.getItem('hksk-lang')||'es')==='en'?'ies':'es'):((localStorage.getItem('hksk-lang')||'es')==='en'?'y':'')}`
-    : (localStorage.getItem('hksk-lang')==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
-  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (localStorage.getItem('hksk-lang')==='en'?'Edit →':'Editar →') : (localStorage.getItem('hksk-lang')==='en'?'Set up →':'Configurar →');
+    ? `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`
+    : (lang==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
+  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (lang==='en'?'Edit →':'Editar →') : (lang==='en'?'Set up →':'Configurar →');
 }
 
 function setAdvisorAvailableUI(val) {
@@ -933,8 +906,9 @@ function toggleSpec(name, el) {
     el.classList.add('selected');
   }
   syncPreview();
+  const lang=localStorage.getItem('hksk-lang')||'es';
   document.getElementById('advisor-section-sub').textContent =
-    `${selectedSpecs.length} ${(localStorage.getItem('hksk-lang')||'es')==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?((localStorage.getItem('hksk-lang')||'es')==='en'?'ies':'es'):((localStorage.getItem('hksk-lang')||'es')==='en'?'y':'')}`; 
+    `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`;
 }
 
 async function saveProfile() {
@@ -942,8 +916,6 @@ async function saveProfile() {
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
 
   const body = {
-    action: 'update-profile',
-    userId: session.user.id,
     token: session.access_token,
     full_name: document.getElementById('full-name').value.trim(),
     bio: document.getElementById('bio').value.trim(),
@@ -958,12 +930,19 @@ async function saveProfile() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    const data = await res.json();
-    if (data.error) showToast(data.error, true);
-    else showToast(localStorage.getItem('hksk-lang')==='en'?'Profile updated':'Perfil actualizado');
-  } catch { showToast('Error de conexión', true); }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) {
+      showToast(data.error || 'Error al guardar', true);
+    } else {
+      showToast(localStorage.getItem('hksk-lang')==='en'?'Profile updated':'Perfil actualizado');
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Error de conexión', true);
+  }
 
-  btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save changes':'Guardar cambios';
+  btn.disabled = false;
+  btn.innerHTML = '<span class="es">Guardar cambios</span><span class="en">Save changes</span>';
 }
 
 async function saveAdvisor() {
@@ -971,7 +950,6 @@ async function saveAdvisor() {
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
 
   const body = {
-    userId: session.user.id,
     token: session.access_token,
     bio: document.getElementById('advisor-bio').value.trim(),
     specialty: selectedSpecs.join(', '),
@@ -987,17 +965,22 @@ async function saveAdvisor() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    const data = await res.json();
-    if (data.error) showToast(data.error, true);
-    else {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) {
+      showToast(data.error || 'Error al guardar', true);
+    } else {
       showToast(localStorage.getItem('hksk-lang')==='en'?'Advisor profile saved':'Perfil de advisor guardado');
       profile.role = 'advisor';
       updateAdvisorSectionHeader(true);
       syncPreview();
     }
-  } catch { showToast('Error de conexión', true); }
+  } catch(e) {
+    console.error(e);
+    showToast('Error de conexión', true);
+  }
 
-  btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Save advisor profile':'Guardar perfil de advisor';
+  btn.disabled = false;
+  btn.innerHTML = '<span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span>';
 }
 
 function cancelPlan() {
@@ -1021,10 +1004,6 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   localStorage.setItem('hksk-lang',lang);
-  const g=document.getElementById('gender');
-  if(g){const gv=g.value;g.innerHTML=lang==='en'?'<option value="">Prefer not to say</option><option value="hombre">Man</option><option value="mujer">Woman</option><option value="otro">Other</option>':'<option value="">Prefiero no decir</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option>';g.value=gv;}
-  const cs=document.getElementById('civil-status');
-  if(cs){const cv=cs.value;cs.innerHTML=lang==='en'?'<option value="">Select</option><option value="Soltero/a">Single</option><option value="En relación">In a relationship</option><option value="Casado/a">Married</option><option value="Divorciado/a">Divorced</option><option value="Viudo/a">Viudo/a</option>':'<option value="">Selecciona</option><option value="Soltero/a">Soltero/a</option><option value="En relación">En relación</option><option value="Casado/a">Casado/a</option><option value="Divorciado/a">Divorciado/a</option><option value="Viudo/a">Viudo/a</option>';cs.value=cv;}
 }
 (function(){
   const saved=localStorage.getItem('hksk-lang');
@@ -1033,7 +1012,6 @@ function setLang(lang){
   document.body.setAttribute('data-lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
-  if(lang==='en') setTimeout(()=>setLang('en'),500);
 })();
 </script>
 </body>
