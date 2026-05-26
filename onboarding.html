@@ -6,7 +6,7 @@
 <title>Bienvenido — He Knows She Knows</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--muted:#9A8880;--gold:#C9A96E;--blush:#E8C4B0;--border:#EDE7DF;}
+:root{--cream:#F7F3EE;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;--blush:#E8C4B0;--border:#EDE7DF;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--cream);color:var(--night);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(232,196,176,0.35),transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(196,122,90,0.08),transparent 55%);pointer-events:none;}
@@ -22,7 +22,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .subtitle{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:32px;font-weight:300;}
 .divider{width:36px;height:1px;background:var(--gold);margin:16px 0 28px;}
 
-/* STEP 1 - Role choices */
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
 .choice{border:2px solid var(--border);border-radius:4px;padding:28px 24px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;background:var(--cream);}
 .choice::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
@@ -37,7 +36,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .choice.selected .check{opacity:1;transform:scale(1);}
 .check svg{width:10px;height:10px;}
 
-/* STEP 2 - Advisor plans */
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
 .plan-card{border:2px solid var(--border);border-radius:4px;padding:32px 24px;cursor:pointer;transition:all 0.25s;position:relative;background:var(--cream);}
 .plan-card:hover{border-color:var(--blush);background:white;}
@@ -67,12 +65,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .plan-card.selected .plan-card-check{opacity:1;transform:scale(1);}
 .plan-card.featured .plan-card-check{background:var(--gold);}
 
+.form-group{margin-bottom:22px;}
+.form-label{display:block;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:8px;}
+.form-label .req{color:var(--terra);}
+.form-input,.form-select,.form-textarea{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:3px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);transition:all 0.2s;font-weight:300;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--terra);background:white;}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.5;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-help{font-size:0.7rem;color:var(--muted);margin-top:6px;font-style:italic;}
+.tags-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.tag-btn{padding:8px 14px;border:1.5px solid var(--border);background:white;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:500;}
+.tag-btn:hover{border-color:var(--terra);color:var(--terra);}
+.tag-btn.on{background:var(--terra);border-color:var(--terra);color:white;}
+
 .btn-continue{width:100%;padding:16px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s;opacity:0.4;pointer-events:none;}
 .btn-continue.ready{opacity:1;pointer-events:all;}
 .btn-continue.ready:hover{background:var(--terra);}
 .btn-continue.loading{background:var(--muted);cursor:not-allowed;opacity:1;}
 .note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;line-height:1.6;}
 .note strong{color:var(--terra);}
+.error-msg{background:rgba(196,122,90,0.08);border:1px solid var(--terra);color:var(--terra);padding:12px 14px;border-radius:3px;font-size:0.8rem;margin-bottom:18px;display:none;}
+.error-msg.show{display:block;}
 
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
@@ -81,7 +94,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @media(max-width:600px){
   body{padding:16px;}
   .card{padding:32px 22px;}
-  .choices,.plans{grid-template-columns:1fr;}
+  .choices,.plans,.form-row{grid-template-columns:1fr;}
   .logo{margin-bottom:28px;font-size:0.9rem;}
 }
 </style>
@@ -94,8 +107,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   <!-- ── PASO 1: ROL ── -->
   <div id="step1">
-    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot"></div></div>
-    <p class="step-label"><span class="es">Paso 1 de 2 · Tu rol</span><span class="en">Step 1 of 2 · Your role</span></p>
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <p class="step-label"><span class="es">Paso 1 de 3 · Tu rol</span><span class="en">Step 1 of 3 · Your role</span></p>
     <h1 class="title">
       <span class="es">¿Qué buscas en<br><em>He Knows She Knows?</em></span>
       <span class="en">What are you looking for in<br><em>He Knows She Knows?</em></span>
@@ -125,10 +138,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <p class="note"><span class="es">Puedes ser las dos cosas después — esto solo define tu vista principal.</span><span class="en">You can be both later — this just sets your main view.</span></p>
   </div>
 
-  <!-- ── PASO 2: PLAN ADVISOR (solo se muestra si eligió advisor) ── -->
+  <!-- ── PASO 2: PLAN ADVISOR ── -->
   <div id="step2" style="display:none;">
-    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot on"></div></div>
-    <p class="step-label"><span class="es">Paso 2 de 2 · Tu membresía Advisor</span><span class="en">Step 2 of 2 · Your Advisor membership</span></p>
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot on"></div><div class="step-dot"></div></div>
+    <p class="step-label"><span class="es">Paso 2 de 3 · Tu membresía</span><span class="en">Step 2 of 3 · Your membership</span></p>
     <h1 class="title">
       <span class="es">Elige tu plan<br>de <em>Advisor.</em></span>
       <span class="en">Choose your<br><em>Advisor</em> plan.</span>
@@ -140,7 +153,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="divider"></div>
 
     <div class="plans">
-      <!-- MENSUAL -->
       <div class="plan-card" id="plan-mensual" onclick="selectPlan('mensual')">
         <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="plan-name"><span class="es">Mensual</span><span class="en">Monthly</span></div>
@@ -155,7 +167,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </ul>
       </div>
 
-      <!-- ANUAL (featured) -->
       <div class="plan-card featured selected" id="plan-anual" onclick="selectPlan('anual')">
         <div class="plan-badge-top"><span class="es">GANA 20% MÁS</span><span class="en">EARN 20% MORE</span></div>
         <div class="plan-card-check"><svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -172,8 +183,77 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
-    <button class="btn-continue ready" id="btn-step2" onclick="continuar()">
-      <span class="es">Continuar al pago →</span><span class="en">Continue to payment →</span>
+    <button class="btn-continue ready" id="btn-step2" onclick="goToStep3()">
+      <span class="es">Continuar →</span><span class="en">Continue →</span>
+    </button>
+    <p class="note">
+      <span class="es">Falta un paso más: completa tu perfil profesional</span>
+      <span class="en">One more step: complete your professional profile</span>
+    </p>
+  </div>
+
+  <!-- ── PASO 3: PERFIL DE ADVISOR ── -->
+  <div id="step3" style="display:none;">
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot on"></div><div class="step-dot on"></div></div>
+    <p class="step-label"><span class="es">Paso 3 de 3 · Tu perfil profesional</span><span class="en">Step 3 of 3 · Your professional profile</span></p>
+    <h1 class="title">
+      <span class="es">Cuéntanos de <em>ti.</em></span>
+      <span class="en">Tell us about <em>you.</em></span>
+    </h1>
+    <p class="subtitle">
+      <span class="es">Esta información aparecerá en tu perfil público del directorio.</span>
+      <span class="en">This info will appear on your public directory profile.</span>
+    </p>
+    <div class="divider"></div>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="form-group">
+      <label class="form-label"><span class="es">Especialidades</span><span class="en">Specialties</span> <span class="req">*</span></label>
+      <div class="tags-grid" id="tags-grid">
+        <button type="button" class="tag-btn" data-tag="Relaciones y pareja">Relaciones y pareja</button>
+        <button type="button" class="tag-btn" data-tag="Ghosting e infidelidad">Ghosting e infidelidad</button>
+        <button type="button" class="tag-btn" data-tag="Cómo piensa el sexo opuesto">Cómo piensa el sexo opuesto</button>
+        <button type="button" class="tag-btn" data-tag="Confianza y autoestima">Confianza y autoestima</button>
+        <button type="button" class="tag-btn" data-tag="Texting y comunicación">Texting y comunicación</button>
+        <button type="button" class="tag-btn" data-tag="Citas y conquista">Citas y conquista</button>
+        <button type="button" class="tag-btn" data-tag="Styling y presencia">Styling y presencia</button>
+      </div>
+      <p class="form-help"><span class="es">Selecciona al menos 1 — máximo 5</span><span class="en">Select at least 1 — max 5</span></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="price"><span class="es">Precio por consulta</span><span class="en">Price per consultation</span> <span class="req">*</span></label>
+      <input type="number" id="price" class="form-input" placeholder="150" min="50" max="2000" value="150"/>
+      <p class="form-help"><span class="es">MXN · 24hrs de chat · Tú te quedas con 70-90%</span><span class="en">MXN · 24hrs of chat · You keep 70-90%</span></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="bio"><span class="es">Bio corta</span><span class="en">Short bio</span> <span class="req">*</span></label>
+      <textarea id="bio" class="form-textarea" placeholder="Cuéntanos quién eres y por qué la gente debería pedirte consejos..." maxlength="280"></textarea>
+      <p class="form-help"><span class="es">Mínimo 10 caracteres · Máx 280</span><span class="en">Min 10 chars · Max 280</span></p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="civil-status"><span class="es">Estado civil</span><span class="en">Civil status</span></label>
+        <select id="civil-status" class="form-select">
+          <option value="">—</option>
+          <option value="Soltero/a">Soltero/a</option>
+          <option value="En pareja">En pareja</option>
+          <option value="Casado/a">Casado/a</option>
+          <option value="Divorciado/a">Divorciado/a</option>
+          <option value="Viudo/a">Viudo/a</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="years-together"><span class="es">Años juntos</span><span class="en">Years together</span></label>
+        <input type="number" id="years-together" class="form-input" placeholder="0" min="0" max="80"/>
+      </div>
+    </div>
+
+    <button class="btn-continue" id="btn-step3" onclick="continuar()">
+      <span class="es">Guardar y continuar al pago →</span><span class="en">Save and continue to payment →</span>
     </button>
     <p class="note">
       <span class="es">Pago seguro vía Stripe · Ganas <strong>70-90%</strong> de cada consulta</span>
@@ -185,12 +265,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 const STRIPE = {
-  mensual: 'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02',  // $99 MXN/mes
-  anual:   'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03'   // $999 MXN/año
+  mensual: 'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02',
+  anual:   'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03'
 };
 
 let selectedRole = null;
-let selectedPlan = 'anual'; // default Anual seleccionado
+let selectedPlan = 'anual';
+let selectedTags = [];
 let session = null;
 
 function init() {
@@ -206,12 +287,10 @@ function selectRole(role) {
   document.getElementById('btn-step1').classList.add('ready');
 }
 
-// Si eligió usuario → salta paso 2 y guarda directo
-// Si eligió advisor → muestra paso 2 con planes
 async function goNext() {
   if (!selectedRole) return;
   if (selectedRole === 'user') {
-    await saveAndRedirect('free');
+    await saveOnboardingAndRedirect('free');
   } else {
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'block';
@@ -224,14 +303,133 @@ function selectPlan(plan) {
   document.getElementById('plan-' + plan).classList.add('selected');
 }
 
-async function continuar() {
-  await saveAndRedirect(selectedPlan);
+function goToStep3() {
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step3').style.display = 'block';
 }
 
-async function saveAndRedirect(plan) {
+document.querySelectorAll('.tag-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tag = btn.dataset.tag;
+    if (btn.classList.contains('on')) {
+      btn.classList.remove('on');
+      selectedTags = selectedTags.filter(t => t !== tag);
+    } else {
+      if (selectedTags.length >= 5) return;
+      btn.classList.add('on');
+      selectedTags.push(tag);
+    }
+    validateStep3();
+  });
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const priceEl = document.getElementById('price');
+  const bioEl = document.getElementById('bio');
+  if (priceEl) priceEl.addEventListener('input', validateStep3);
+  if (bioEl) bioEl.addEventListener('input', validateStep3);
+});
+
+function validateStep3() {
+  const btn = document.getElementById('btn-step3');
+  const price = parseInt(document.getElementById('price').value) || 0;
+  const bio = document.getElementById('bio').value.trim();
+  const valid = selectedTags.length > 0 && price >= 50 && bio.length >= 10;
+  if (valid) btn.classList.add('ready');
+  else btn.classList.remove('ready');
+}
+
+function showError(msg) {
+  const err = document.getElementById('error-msg');
+  err.textContent = msg;
+  err.classList.add('show');
+  setTimeout(() => err.classList.remove('show'), 6000);
+}
+
+function resetBtn3() {
+  const btn = document.getElementById('btn-step3');
+  btn.classList.remove('loading');
+  btn.innerHTML = '<span class="es">Guardar y continuar al pago →</span><span class="en">Save and continue to payment →</span>';
+}
+
+async function continuar() {
+  if (selectedTags.length === 0) {
+    showError('Selecciona al menos una especialidad');
+    return;
+  }
+  const price = parseInt(document.getElementById('price').value) || 0;
+  if (price < 50) {
+    showError('El precio mínimo es $50 MXN');
+    return;
+  }
+  const bio = document.getElementById('bio').value.trim();
+  if (bio.length < 10) {
+    showError('La bio debe tener al menos 10 caracteres');
+    return;
+  }
+
+  const btn = document.getElementById('btn-step3');
+  btn.classList.add('loading');
+  btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
+
+  const token = session.access_token || session.token;
+  if (!token) {
+    alert('Sesión inválida, vuelve a iniciar sesión.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    // 1. Guardar onboarding (role + plan)
+    const r1 = await fetch('/.netlify/functions/update-onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, role: 'advisor', plan: selectedPlan })
+    });
+    if (!r1.ok) {
+      const e = await r1.json().catch(() => ({}));
+      showError('Error guardando onboarding: ' + (e.error || 'Intenta de nuevo'));
+      resetBtn3();
+      return;
+    }
+
+    // 2. Guardar perfil de advisor
+    const civilStatus = document.getElementById('civil-status').value || null;
+    const yearsTog = document.getElementById('years-together').value || null;
+
+    const r2 = await fetch('/.netlify/functions/save-advisor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token,
+        specialty: selectedTags.join(', '),
+        price_per_session: price,
+        bio: bio,
+        civil_status: civilStatus,
+        years_together: yearsTog
+      })
+    });
+    if (!r2.ok) {
+      const e = await r2.json().catch(() => ({}));
+      showError('Error guardando advisor: ' + (e.error || 'Intenta de nuevo'));
+      resetBtn3();
+      return;
+    }
+  } catch(e) {
+    console.error('Error:', e);
+    showError('Error de conexión. Intenta de nuevo.');
+    resetBtn3();
+    return;
+  }
+
+  // 3. Stripe + redirect
+  window.open(STRIPE[selectedPlan], '_blank');
+  window.location.href = 'perfil.html?setup=advisor';
+}
+
+async function saveOnboardingAndRedirect(plan) {
   if (!session) return;
-  const btnId = selectedRole === 'user' ? 'btn-step1' : 'btn-step2';
-  const btn = document.getElementById(btnId);
+  const btn = document.getElementById('btn-step1');
   btn.classList.add('loading');
   btn.innerHTML = '<span class="es">Guardando…</span><span class="en">Saving…</span>';
 
@@ -246,41 +444,20 @@ async function saveAndRedirect(plan) {
     const res = await fetch('/.netlify/functions/update-onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token,
-        role: selectedRole,
-        plan: plan
-      })
+      body: JSON.stringify({ token, role: selectedRole, plan: plan })
     });
-
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      console.error('Error guardando onboarding:', data);
       alert('No pude guardar tu información. Intenta de nuevo.');
       btn.classList.remove('loading');
-      btn.innerHTML = selectedRole === 'user'
-        ? '<span class="es">Continuar →</span><span class="en">Continue →</span>'
-        : '<span class="es">Continuar al pago →</span><span class="en">Continue to payment →</span>';
+      btn.innerHTML = '<span class="es">Continuar →</span><span class="en">Continue →</span>';
       return;
     }
   } catch(e) {
-    console.error('Error:', e);
     alert('Error de conexión. Intenta de nuevo.');
     btn.classList.remove('loading');
     return;
   }
-
-  // Redirección
-  if (selectedRole === 'advisor' && plan !== 'free') {
-    // Abre Stripe en nueva pestaña y manda a perfil para configurar
-    window.open(STRIPE[plan], '_blank');
-    window.location.href = 'perfil.html?setup=advisor';
-  } else if (selectedRole === 'advisor') {
-    window.location.href = 'perfil.html?setup=advisor';
-  } else {
-    // Usuario gratis → dashboard
-    window.location.href = 'dashboard.html';
-  }
+  window.location.href = 'dashboard.html';
 }
 
 (function(){
