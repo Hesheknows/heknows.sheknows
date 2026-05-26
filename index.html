@@ -1,57 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mi Perfil — He Knows She Knows</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="icons.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>He Knows · She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --cream: #F7F3EE;
-  --terra: #C47A5A;
-  --night: #1A1410;
-  --muted: #9A8880;
-  --gold:  #C9A96E;
-  --blush: #E8C4B0;
-  --white: #FFFFFF;
-  --border: #EDE7DF;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  background: var(--cream);
-  color: var(--night);
-  min-height: 100vh;
-}
-
-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(247,243,238,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(196,122,90,0.12);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 48px;
-}
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem; font-weight: 300;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--night); text-decoration: none;
-}
-.nav-logo span { color: var(--terra); font-style: italic; }
-.nav-back {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; font-weight: 500;
-  transition: color 0.2s;
-}
-.nav-back:hover { color: var(--terra); }
-.nav-links{display:flex;gap:20px;align-items:center;}
-
+:root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(247,243,238,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(196,122,90,0.12);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);}
+.nav-logo span{color:var(--terra);font-style:italic;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:var(--terra);}
+.nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
+.nav-cta:hover{background:var(--terra)!important;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
 .hamburger span:nth-child(1){top:13px;}
@@ -65,531 +31,537 @@ nav {
 .mobile-menu.open{right:0;}
 .mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
 .mobile-menu a:hover{color:var(--terra);}
-.mobile-menu a.active{color:var(--terra);}
+.mobile-menu .mm-cta{display:inline-block;background:var(--terra);color:var(--cream);padding:14px 28px;border-radius:2px;margin-top:24px;border:none;width:auto;font-size:0.78rem;letter-spacing:0.15em;font-weight:600;}
+.mobile-menu .mm-cta:hover{background:var(--gold);color:var(--night);}
 .mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
 .mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
 .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
 .mobile-overlay.open{display:block;opacity:1;}
 body.menu-open{overflow:hidden;}
-
-main {
-  max-width: 900px; margin: 0 auto;
-  padding: 32px 20px 80px;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
-  align-items: start;
-}
-@media (max-width: 768px) {
-  nav { padding: 15px 20px; }
-  .nav-links { display: none; }
-  .hamburger { display: flex; }
-  .mobile-menu { display: block; }
-}
-@media (max-width: 700px) {
-  main { grid-template-columns: 1fr; }
-}
-
-.preview-card {
-  background: var(--white);
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  position: sticky; top: 72px;
-}
-.preview-header {
-  background: var(--white);
-  padding: 32px 24px 16px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  position: relative;
-  border-bottom: 1px solid var(--border);
-}
-.preview-label {
-  position: absolute; top: 10px; right: 12px;
-  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
-  color: var(--muted); text-transform: uppercase;
-}
-.preview-avatar-wrap {
-  width: 110px; height: 110px; position: relative;
-}
-.preview-avatar {
-  width: 110px; height: 110px; border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--blush);
-  background: var(--blush);
-  box-shadow: 0 4px 20px rgba(196,122,90,0.15);
-}
-.preview-avatar-placeholder {
-  width: 110px; height: 110px; border-radius: 50%;
-  background: var(--cream);
-  border: 3px solid var(--blush);
-  display: flex; align-items: center; justify-content: center;
-}
-.preview-avatar-placeholder svg { opacity: 0.4; }
-.preview-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300; font-size: 24px;
-  color: var(--night); text-align: center;
-}
-.preview-city {
-  font-size: 12px; color: var(--muted);
-  display: flex; align-items: center; gap: 4px;
-}
-.preview-body { padding: 20px 24px; }
-.preview-bio {
-  font-size: 13px; color: var(--muted);
-  line-height: 1.7; font-style: italic;
-  min-height: 40px;
-}
-.preview-bio.empty { color: var(--border); }
-.preview-divider {
-  height: 1px; background: var(--border);
-  margin: 16px 0;
-}
-.preview-specialties {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 12px;
-}
-.specialty-pill {
-  font-size: 11px; font-weight: 400;
-  background: var(--cream); color: var(--terra);
-  border: 1px solid var(--blush);
-  padding: 4px 10px; border-radius: 20px;
-  display: inline-flex; align-items: center; gap: 5px;
-}
-.preview-meta {
-  display: flex; flex-direction: column; gap: 6px;
-}
-.preview-meta-row {
-  display: flex; justify-content: space-between;
-  font-size: 12px; color: var(--muted);
-}
-.preview-meta-row span:last-child { color: var(--night); font-weight: 400; }
-.preview-price {
-  margin-top: 16px;
-  background: var(--cream); border-radius: 12px;
-  padding: 12px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.preview-price-label { font-size: 12px; color: var(--muted); }
-.preview-price-amount {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px; font-weight: 600; color: var(--terra);
-}
-.preview-price-unit { font-size: 11px; color: var(--muted); }
-.anon-badge {
-  margin-top: 12px;
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; color: var(--muted);
-  background: #FFF8F5; border: 1px solid var(--blush);
-  border-radius: 8px; padding: 6px 10px;
-}
-
-.settings-col { display: flex; flex-direction: column; gap: 16px; }
-
-.settings-bar {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 12px;
-}
-.bar-plan { display: flex; align-items: center; gap: 10px; }
-.plan-badge {
-  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
-  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
-}
-.plan-free    { background: #F0EDEA; color: var(--muted); }
-.plan-premium { background: #FFF3E0; color: #B06000; }
-.plan-elite   { background: var(--night); color: var(--gold); }
-.bar-plan-name { font-size: 13px; color: var(--night); }
-.bar-plan-name span { color: var(--muted); font-size: 12px; margin-left: 4px; }
-.bar-actions { display: flex; align-items: center; gap: 8px; }
-.btn-sm {
-  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
-  padding: 6px 14px; border-radius: 20px; cursor: pointer;
-  transition: all 0.2s; border: 1px solid transparent;
-}
-.btn-upgrade { background: var(--terra); color: var(--white); }
-.btn-upgrade:hover { background: #b5694a; }
-.btn-outline { background: transparent; color: var(--terra); border-color: var(--blush); }
-.btn-outline:hover { border-color: var(--terra); }
-.btn-danger  { background: transparent; color: #c0392b; border-color: #f5c6c6; }
-.btn-danger:hover  { background: #fff0f0; }
-.privacy-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-.toggle {
-  width: 36px; height: 20px; background: var(--border); border-radius: 20px;
-  position: relative; cursor: pointer; border: none; outline: none;
-  transition: background 0.2s; flex-shrink: 0;
-}
-.toggle.on { background: var(--terra); }
-.toggle::after {
-  content: ''; position: absolute; top: 2px; left: 2px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--white); transition: transform 0.2s;
-}
-.toggle.on::after { transform: translateX(16px); }
-
-.settings-section {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.section-head {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px; font-weight: 400; color: var(--night);
-}
-.section-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
-.form-input, .form-textarea, .form-select {
-  font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px;
-  color: var(--night);
-  background: var(--cream); border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 14px;
-  outline: none; transition: border-color 0.2s; width: 100%;
-}
-.form-input:focus, .form-textarea:focus, .form-select:focus {
-  border-color: var(--terra);
-}
-.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-.avatar-area {
-  display: flex; align-items: center; gap: 16px;
-}
-.avatar-preview {
-  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
-  object-fit: cover; background: var(--blush);
-  border: 2px solid var(--blush);
-}
-.avatar-preview-placeholder {
-  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
-  background: var(--cream); border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-}
-.avatar-info { display: flex; flex-direction: column; gap: 6px; }
-.btn-avatar {
-  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
-  padding: 7px 14px; border-radius: 20px; cursor: pointer;
-  background: var(--cream); color: var(--terra);
-  border: 1px solid var(--blush); transition: border-color 0.2s;
-  display: inline-block;
-}
-.btn-avatar:hover { border-color: var(--terra); }
-#avatar-file { display: none; }
-.avatar-hint { font-size: 11px; color: var(--muted); }
-
-.specialties-grid {
-  display: flex; flex-wrap: wrap; gap: 8px;
-}
-.spec-chip {
-  font-size: 12px; font-weight: 400;
-  padding: 5px 12px; border-radius: 20px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--cream); color: var(--muted);
-  transition: all 0.15s; user-select: none;
-}
-.spec-chip.selected {
-  background: var(--terra); color: var(--white); border-color: var(--terra);
-}
-
-.advisor-collapsed {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.advisor-collapsed-header {
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer;
-}
-.advisor-status {
-  display: flex; align-items: center; gap: 10px;
-}
-.advisor-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: #27ae60;
-}
-.advisor-dot.inactive { background: var(--muted); }
-.advisor-collapsed-expand {
-  font-size: 11px; color: var(--terra); font-weight: 400;
-  background: none; border: none; cursor: pointer; padding: 0;
-}
-.advisor-collapsed-body {
-  padding: 0 20px 20px;
-  display: none;
-}
-.advisor-collapsed-body.open { display: block; }
-
-.btn-save {
-  font-family: 'DM Sans', sans-serif; font-weight: 400;
-  font-size: 14px; padding: 12px 28px;
-  background: var(--terra); color: var(--white);
-  border: none; border-radius: 12px; cursor: pointer;
-  transition: background 0.2s; width: 100%;
-}
-.btn-save:hover { background: #b5694a; }
-.btn-save:disabled { background: var(--blush); cursor: not-allowed; }
-
-.toast {
-  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: var(--night); color: var(--white);
-  font-size: 13px; padding: 10px 20px; border-radius: 30px;
-  opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.error { background: #c0392b; }
-
-.nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;font-weight:500;transition:color 0.2s;}
-.nav-links a:hover,.nav-links a.active{color:var(--terra);}
-.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
-.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
+.btn-p{background:var(--night);color:var(--cream);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-p:hover{background:var(--terra);}
+.btn-g{background:transparent;color:var(--slate);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:1.5px solid rgba(61,53,48,0.3);cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-g:hover{border-color:var(--terra);color:var(--terra);}
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(232,196,176,0.3),transparent 60%);}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 64px 80px 80px;position:relative;z-index:2;}
+.ey{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:24px;font-weight:500;}
+.hero-t{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,5vw,5.2rem);font-weight:300;line-height:1.05;color:var(--night);margin-bottom:12px;}
+.hero-t em{font-style:italic;color:var(--terra);}
+.hdv{width:44px;height:1px;background:var(--gold);margin:28px 0;}
+.hero-s{font-size:1.05rem;line-height:1.75;color:var(--slate);max-width:440px;font-weight:300;margin-bottom:48px;}
+.hero-a{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.hero-r{position:relative;overflow:hidden;}
+.hv{position:absolute;inset:0;background:linear-gradient(135deg,#E8C4B0 0%,#D4956F 40%,#1A1410 100%);}
+.hcf{position:absolute;left:40px;top:50%;transform:translateY(-50%);background:rgba(247,243,238,0.96);border-radius:4px;padding:28px 32px;max-width:280px;box-shadow:0 32px 64px rgba(26,20,16,0.2);animation:fl 4s ease-in-out infinite;}
+.hcf2{position:absolute;right:32px;top:30%;background:rgba(26,20,16,0.92);border-radius:4px;padding:24px 28px;max-width:240px;box-shadow:0 24px 48px rgba(26,20,16,0.3);animation:fl2 5s ease-in-out infinite 1s;}
+@keyframes fl{0%,100%{transform:translateY(-50%);}50%{transform:translateY(calc(-50% - 10px));}}
+@keyframes fl2{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.cb{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;font-weight:500;}
+.cb2{color:var(--blush);}
+.cst{color:var(--gold);font-size:0.8rem;margin-top:12px;letter-spacing:2px;}
+.cm{font-size:0.7rem;color:var(--muted);margin-top:8px;}
+.cm2{color:rgba(232,196,176,0.6);}
+.trust{background:var(--night);padding:24px 80px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.ti{display:flex;align-items:center;gap:10px;}
+.tic{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--gold);}
+.tic svg{width:100%;height:100%;display:block;}
+.tit{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.6);}
+.s{padding:100px 80px;}
+.s-mid{background:#F0EAE3;}
+.s-slate{background:#1E1610;}
+.sl{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;}
+.sl-w{color:rgba(201,169,110,0.65);}
+.st{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:300;line-height:1.1;margin-bottom:20px;color:var(--night);}
+.st em{font-style:italic;color:var(--terra);}
+.st-w{color:var(--cream);}
+.ss{font-size:0.95rem;line-height:1.75;color:var(--muted);max-width:560px;font-weight:300;}
+.ss-w{color:rgba(247,243,238,0.48);}
+.sh{margin-bottom:64px;}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--blush);}
+.step{background:var(--cream);padding:56px 40px;position:relative;overflow:hidden;transition:background 0.3s;}
+.step:hover{background:#EDE7DF;}
+.sn{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:rgba(196,122,90,0.12);position:absolute;top:20px;right:24px;line-height:1;}
+.si{font-size:1.8rem;margin-bottom:20px;display:flex;align-items:center;}
+.si svg{display:block;}
+.sti{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:14px;color:var(--night);}
+.sd{font-size:0.88rem;line-height:1.7;color:var(--slate);font-weight:300;}
+.dual{display:grid;grid-template-columns:1fr 1fr;min-height:580px;}
+.dhim{background:var(--night);padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
+.dher{background:var(--terra);padding:100px 72px;display:flex;flex-direction:column;justify-content:center;}
+.dtit{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:300;line-height:1.1;margin-bottom:24px;color:var(--cream);}
+.dhim .dtit em{color:var(--gold);font-style:italic;}
+.dher .dtit em{color:var(--night);font-style:italic;}
+.ddes{font-size:0.95rem;line-height:1.75;font-weight:300;max-width:380px;}
+.dhim .ddes{color:rgba(247,243,238,0.62);}
+.dher .ddes{color:rgba(247,243,238,0.88);}
+.dls{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.dit{display:flex;align-items:flex-start;gap:12px;}
+.ddt{width:5px;height:5px;border-radius:50%;margin-top:8px;flex-shrink:0;}
+.dhim .ddt{background:var(--gold);}
+.dher .ddt{background:var(--night);}
+.dtx{font-size:0.86rem;line-height:1.6;font-weight:300;}
+.dhim .dtx{color:rgba(247,243,238,0.7);}
+.dher .dtx{color:rgba(247,243,238,0.92);}
+.dual-close{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;margin-top:24px;line-height:1.5;}
+.dhim .dual-close{color:var(--gold);}
+.dher .dual-close{color:var(--night);}
+.areas{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(196,122,90,0.12);}
+.area{background:var(--cream);padding:36px 28px;transition:all 0.3s;position:relative;overflow:hidden;}
+.area::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--terra);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
+.area:hover{background:var(--night);}
+.area:hover::after{transform:scaleX(1);}
+.area:hover .anm{color:var(--cream);}
+.area:hover .ades{color:rgba(247,243,238,0.5);}
+.aico{font-size:1.8rem;margin-bottom:16px;display:block;transition:transform 0.3s;}
+.area:hover .aico{transform:scale(1.1);}
+.anm{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--night);margin-bottom:8px;transition:color 0.3s;}
+.ades{font-size:0.76rem;line-height:1.6;color:var(--muted);font-weight:300;transition:color 0.3s;}
+.howpay{max-width:860px;margin:0 auto;background:var(--cream);border:1px solid rgba(196,122,90,0.18);border-radius:4px;padding:56px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.howpay-l .hpe{font-size:0.66rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;}
+.howpay-l .hpt{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;line-height:1.1;color:var(--night);margin-bottom:16px;}
+.howpay-l .hpt em{font-style:italic;color:var(--terra);}
+.howpay-l .hps{font-size:0.95rem;line-height:1.7;color:var(--slate);font-weight:300;}
+.howpay-r{display:flex;flex-direction:column;gap:18px;}
+.hpf{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:#F0EAE3;border-radius:3px;}
+.hpfi{color:var(--terra);font-size:1.1rem;flex-shrink:0;margin-top:2px;font-weight:600;}
+.hpfc{flex:1;}
+.hpfh{font-size:0.85rem;color:var(--night);font-weight:600;margin-bottom:3px;}
+.hpfd{font-size:0.78rem;color:var(--muted);font-weight:300;line-height:1.5;}
+.howpay-cta{margin-top:32px;display:flex;justify-content:center;}
+.rqg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,169,110,0.06);margin-bottom:64px;}
+.rq{background:rgba(255,255,255,0.03);padding:40px 32px;border-left:2px solid rgba(196,122,90,0.25);}
+.rqi{font-size:1.6rem;margin-bottom:14px;display:flex;align-items:center;}
+.rqi svg{display:block;}
+.rqt{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--cream);margin-bottom:10px;}
+.rqd{font-size:0.8rem;color:rgba(247,243,238,0.48);line-height:1.65;font-weight:300;}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(201,169,110,0.1);max-width:860px;margin:0 auto;}
+.ac{background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.12);padding:48px 40px;position:relative;}
+.ac.feat{background:rgba(196,122,90,0.1);border-color:rgba(196,122,90,0.35);}
+.asv{position:absolute;top:18px;right:18px;background:var(--terra);color:var(--cream);font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:700;}
+.apl{font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:rgba(201,169,110,0.6);margin-bottom:14px;font-weight:600;}
+.anm2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--cream);margin-bottom:4px;}
+.abl{font-size:0.7rem;color:rgba(247,243,238,0.35);margin-bottom:18px;}
+.aam{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--terra);line-height:1;margin-bottom:4px;}
+.amx{font-size:0.7rem;color:rgba(247,243,238,0.32);margin-bottom:22px;}
+.adv{width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-bottom:18px;}
+.afs{display:flex;flex-direction:column;gap:9px;margin-bottom:30px;}
+.af{font-size:0.78rem;color:rgba(247,243,238,0.62);display:flex;gap:8px;align-items:flex-start;line-height:1.5;font-weight:300;}
+.ack{color:var(--gold);font-size:0.78rem;flex-shrink:0;margin-top:2px;}
+.bad{width:100%;padding:13px;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:2px;transition:all 0.25s;border:1px solid rgba(196,122,90,0.35);background:transparent;color:var(--terra);}
+.bad:hover,.ac.feat .bad{background:var(--terra);color:var(--cream);border-color:var(--terra);}
+.ac.feat .bad:hover{background:var(--gold);border-color:var(--gold);color:var(--night);}
+.anote{text-align:center;margin-top:24px;font-size:0.76rem;color:rgba(247,243,238,0.35);font-weight:300;}
+.anote strong{color:var(--gold);}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(196,122,90,0.1);}
+.tsti{background:var(--cream);padding:48px 36px;}
+.qm{font-family:'Cormorant Garamond',serif;font-size:4rem;color:rgba(196,122,90,0.18);line-height:0.8;display:block;margin-bottom:16px;}
+.ttx{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;line-height:1.65;color:var(--slate);margin-bottom:24px;}
+.tau{display:flex;align-items:center;gap:12px;}
+.tav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:var(--cream);flex-shrink:0;}
+.tavf{background:var(--terra);}
+.tavm{background:var(--night);}
+.tan{font-size:0.76rem;font-weight:600;color:var(--night);}
+.tam{font-size:0.63rem;color:var(--muted);margin-top:2px;}
+.tas{color:var(--gold);font-size:0.63rem;margin-top:3px;letter-spacing:1px;}
+.fcta{background:var(--night);padding:120px 80px;text-align:center;position:relative;overflow:hidden;}
+.fcta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(196,122,90,0.1),transparent 65%);}
+.fcl{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:600;position:relative;z-index:2;}
+.fct{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:20px;position:relative;z-index:2;}
+.fct em{font-style:italic;color:var(--terra);}
+.fcs{font-size:1rem;color:rgba(247,243,238,0.48);max-width:480px;margin:0 auto 48px;line-height:1.7;font-weight:300;position:relative;z-index:2;}
+.fca{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.fl{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:rgba(247,243,238,0.45);}
+.fl span{color:var(--terra);font-style:italic;}
+.flk{display:flex;gap:24px;}
+.flk a{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,243,238,0.3);text-decoration:none;transition:color 0.2s;}
+.flk a:hover{color:var(--terra);}
+.fc2{font-size:0.63rem;color:rgba(247,243,238,0.22);}
+.mov{display:none;position:fixed;inset:0;background:rgba(26,20,16,0.85);z-index:200;backdrop-filter:blur(6px);overflow-y:auto;padding:40px 20px;}
+.mov.active{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:var(--cream);border-radius:4px;max-width:600px;width:100%;padding:56px 52px;position:relative;margin:auto;}
+.mdark{background:#1E1610;color:var(--cream);}
+.mcl{position:absolute;top:20px;right:24px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);transition:color 0.2s;}
+.mcl:hover{color:var(--terra);}
+.mdark .mcl{color:rgba(247,243,238,0.4);}
+.mlb{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);margin-bottom:12px;font-weight:600;}
+.mtt{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;margin-bottom:8px;color:var(--night);}
+.mdark .mtt{color:var(--cream);}
+.mtt em{font-style:italic;color:var(--terra);}
+.msb{font-size:0.88rem;line-height:1.65;color:var(--muted);margin-bottom:36px;font-weight:300;}
+.mdark .msb{color:rgba(247,243,238,0.45);}
+.fg{margin-bottom:20px;}
+.flbl{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;color:var(--slate);margin-bottom:8px;display:block;}
+.mdark .flbl{color:rgba(247,243,238,0.55);}
+.finp{width:100%;padding:12px 16px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;transition:border-color 0.2s;outline:none;}
+.finp:focus{border-color:var(--terra);}
+.mdark .finp{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
+.mdark .finp::placeholder{color:rgba(247,243,238,0.25);}
+.frw{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fsel{width:100%;padding:12px 16px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;cursor:pointer;}
+.mdark .fsel{background:rgba(255,255,255,0.06);border-color:rgba(201,169,110,0.2);color:var(--cream);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.chip{padding:7px 14px;border-radius:20px;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1.5px solid rgba(61,53,48,0.2);background:transparent;color:var(--slate);font-family:'DM Sans',sans-serif;}
+.chip:hover,.chip.active{background:var(--terra);border-color:var(--terra);color:white;}
+.mdark .chip{border-color:rgba(201,169,110,0.2);color:rgba(247,243,238,0.6);}
+.mdark .chip:hover,.mdark .chip.active{background:var(--terra);border-color:var(--terra);color:white;}
+.fsteps{display:flex;gap:8px;margin-bottom:32px;}
+.fsd{width:8px;height:8px;border-radius:50%;background:rgba(196,122,90,0.2);transition:background 0.3s;}
+.fsd.on{background:var(--terra);}
+.plno{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.plop{border:2px solid rgba(201,169,110,0.2);border-radius:3px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;}
+.plop:hover,.plop.sel{border-color:var(--terra);background:rgba(196,122,90,0.08);}
+.plsv{position:absolute;top:-8px;right:10px;background:var(--terra);color:white;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;padding:3px 10px;border-radius:10px;font-weight:700;}
+.plnm{font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,243,238,0.5);margin-bottom:6px;font-weight:600;}
+.plpr{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--terra);line-height:1;}
+.plpe{font-size:0.65rem;color:rgba(247,243,238,0.35);margin-top:3px;}
+.plfs{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+.plf{font-size:0.68rem;color:rgba(247,243,238,0.55);display:flex;gap:6px;}
+.plf::before{content:'✓';color:var(--gold);flex-shrink:0;}
+.bfl{width:100%;padding:15px;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:2px;transition:all 0.25s;border:none;background:var(--terra);color:white;margin-top:8px;}
+.bfl:hover{background:var(--night);}
+.bflo{background:transparent;border:1.5px solid rgba(201,169,110,0.3);color:rgba(247,243,238,0.6);}
+.bflo:hover{border-color:var(--terra);color:var(--terra);background:transparent;}
+.fdv{height:1px;background:rgba(201,169,110,0.12);margin:24px 0;}
+.fnote{font-size:0.72rem;color:rgba(247,243,238,0.32);text-align:center;margin-top:16px;line-height:1.6;}
+.fnote strong{color:var(--gold);}
+.sucs{text-align:center;padding:20px 0;}
+.suci{font-size:3rem;margin-bottom:20px;}
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;margin-right:8px;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:6px 10px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
-
-.loading {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px; color: var(--muted); font-size: 14px;
+@media(max-width:768px){
+nav{padding:16px 20px;}
+.nav-links{display:none;}
+.hamburger{display:flex;}
+.mobile-menu{display:block;}
+.hero{grid-template-columns:1fr;} .hero-r{display:none;} .hero-left{padding:60px 24px;}
+.s{padding:72px 24px;} .steps,.areas,.tgrid{grid-template-columns:1fr;}
+.howpay{grid-template-columns:1fr;padding:36px 24px;gap:28px;}
+.agrid,.rqg{grid-template-columns:1fr;}
+.dual{grid-template-columns:1fr;} .dhim,.dher{padding:64px 28px;}
+footer{flex-direction:column;text-align:center;padding:36px 24px;}
+.trust{padding:24px;gap:20px;}
+.fcta{padding:80px 24px;}
+.modal{padding:36px 24px;} .frw{grid-template-columns:1fr;} .plno{grid-template-columns:1fr;}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 </head>
 <body>
-
 <nav>
-  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
+  <div class="nav-logo">He Knows · <span>She Knows</span></div>
   <div class="nav-links">
-    <a href="dashboard.html">Home</a>
-    <a href="buscar-advisors.html">Advisors</a>
-    <a href="the-real.html">The Real</a>
-    <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
-    <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
-    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+    <a href="#cf"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
+    <a href="#areas"><span class="es">Áreas</span><span class="en">Areas</span></a>
+    <a href="#precios"><span class="es">Precios</span><span class="en">Pricing</span></a>
+    <a href="about.html">About</a>
+    <div class="lang-toggle"><button class="lang-btn active" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+    <a href="/login.html" id="login-btn" class="nav-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
+    <a href="/dashboard.html" id="profile-btn" class="nav-cta" style="display:none;background:var(--terra);"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
+<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
-  <a href="buscar-advisors.html" onclick="closeMobileMenu()">Advisors</a>
-  <a href="the-real.html" onclick="closeMobileMenu()">The Real</a>
-  <a href="mensajes.html" onclick="closeMobileMenu()"><span class="es">Mensajes</span><span class="en">Messages</span></a>
-  <a href="perfil.html" onclick="closeMobileMenu()" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+  <a href="#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
+  <a href="#areas" onclick="closeMobileMenu()"><span class="es">Áreas</span><span class="en">Areas</span></a>
+  <a href="#precios" onclick="closeMobileMenu()"><span class="es">Precios</span><span class="en">Pricing</span></a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="/login.html" id="mm-login" class="mm-cta"><span class="es">Iniciar sesión</span><span class="en">Log In</span></a>
+  <a href="/dashboard.html" id="mm-profile" class="mm-cta" style="display:none;"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
   <div class="mm-lang">
-    <button onclick="setLang('es')">ES</button>
+    <button class="active" onclick="setLang('es')">ES</button>
     <button onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<div id="loading" class="loading">Cargando perfil…</div>
-
-<main id="main-content" style="display:none">
-
-  <aside>
-    <div class="preview-card">
-      <div class="preview-header">
-        <span class="preview-label"><span class="es">Así te ven los demás</span><span class="en">How others see you</span></span>
-        <div class="preview-avatar-wrap">
-          <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
-          <div id="preview-avatar-ph" class="preview-avatar-placeholder">
-            <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
-              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
-              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
-            </svg>
-          </div>
-        </div>
-        <div id="preview-name" class="preview-name">Tu nombre</div>
-        <div id="preview-city" class="preview-city" style="display:none">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1C5.2 1 3 3.2 3 6C3 10 8 15 8 15C8 15 13 10 13 6C13 3.2 10.8 1 8 1ZM8 8C6.9 8 6 7.1 6 6C6 4.9 6.9 4 8 4C9.1 4 10 4.9 10 6C10 7.1 9.1 8 8 8Z" fill="var(--muted)"/>
-          </svg>
-          <span id="preview-city-text"></span>
-        </div>
-      </div>
-      <div class="preview-body">
-        <p id="preview-bio" class="preview-bio empty">Aquí aparecerá tu bio…</p>
-        <div class="preview-divider"></div>
-        <div id="preview-specialties" class="preview-specialties" style="display:none"></div>
-        <div id="preview-advisor-meta" class="preview-meta" style="display:none">
-          <div class="preview-meta-row">
-            <span>Estado civil</span>
-            <span id="pm-civil">—</span>
-          </div>
-          <div class="preview-meta-row">
-            <span>Experiencia</span>
-            <span id="pm-exp">—</span>
-          </div>
-        </div>
-        <div id="preview-price" class="preview-price" style="display:none">
-          <div>
-            <div class="preview-price-label"><span class="es">Consulta</span><span class="en">Session</span></div>
-            <div class="preview-price-amount" id="pm-price">$0</div>
-            <div class="preview-price-unit"><span class="es">MXN / sesión</span><span class="en">MXN / session</span></div>
-          </div>
-          <div id="preview-icon-desahogo"></div>
-        </div>
-        <div id="preview-anon" class="anon-badge" style="display:none">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="7" stroke="var(--muted)" stroke-width="1.2"/>
-            <path d="M5 8C5 6.3 6.3 5 8 5C9.7 5 11 6.3 11 8C11 9.7 9.7 11 8 11C6.3 11 5 9.7 5 8Z" stroke="var(--muted)" stroke-width="1.2"/>
-          </svg>
-          <span class="es">Modo anónimo activo</span><span class="en">Anonymous mode on</span>
-        </div>
-      </div>
+<section class="hero">
+  <div class="hero-left">
+    <p class="ey"><span class="es">México · 2026 · 100% Anónimo</span><span class="en">Mexico · 2026 · 100% Anonymous</span></p>
+    <h1 class="hero-t"><span class="es">Lo que cambia cuando<br>escuchas la <em>otra versión.</em></span><span class="en">What changes when you<br>hear the <em>other side.</em></span></h1>
+    <div class="hdv"></div>
+    <p class="hero-s"><span class="es">Perspectivas reales sobre relaciones, emociones y el otro lado de la historia.</span><span class="en">Real perspectives on relationships, emotions and the other side of the story.</span></p>
+    <div class="hero-a">
+      <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
     </div>
-  </aside>
-
-  <div class="settings-col">
-
-    <div class="settings-bar">
-      <div class="bar-plan">
-        <span id="plan-badge" class="plan-badge plan-free">Free</span>
-        <div>
-          <div id="bar-plan-name" class="bar-plan-name">Explorador <span>· plan actual</span></div>
-        </div>
-      </div>
-      <div class="bar-actions" id="bar-actions"></div>
-      <div class="privacy-toggle">
-        <button id="anon-toggle" class="toggle" title="Modo anónimo" onclick="toggleAnon()"></button>
-        <span><span class="es">Anónimo</span><span class="en">Anonymous</span></span>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="section-head">
-        <span class="section-title"><span class="es">Datos personales</span><span class="en">Personal info</span></span>
-      </div>
-      <div class="section-body">
-
-        <div class="avatar-area">
-          <img id="edit-avatar-img" class="avatar-preview" style="display:none"/>
-          <div id="edit-avatar-ph" class="avatar-preview-placeholder">
-            <svg width="28" height="28" viewBox="0 0 44 44" fill="none">
-              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
-              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
-            </svg>
-          </div>
-          <div class="avatar-info">
-            <label class="btn-avatar" for="avatar-file"><span class="es">Cambiar foto</span><span class="en">Change photo</span></label>
-            <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
-            <span class="avatar-hint"><span class="es">JPG o PNG, máx. 2MB</span><span class="en">JPG or PNG, max. 2MB</span></span>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label"><span class="es">Nombre completo</span><span class="en">Full name</span></label>
-            <input type="text" id="full-name" class="form-input" placeholder="Tu nombre"
-              oninput="syncPreview()"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Ciudad</label>
-            <input type="text" id="city" class="form-input" placeholder="Ciudad, País"
-              oninput="syncPreview()"/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Género</label>
-          <select id="gender" class="form-select">
-            <option value="">Prefiero no decir</option>
-            <option value="hombre">Hombre</option>
-            <option value="mujer">Mujer</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Bio</label>
-          <textarea id="bio" class="form-textarea"
-            placeholder="Cuéntanos un poco sobre ti…"
-            oninput="syncPreview()"></textarea>
-        </div>
-
-        <button class="btn-save" onclick="saveProfile()"><span class="es">Guardar cambios</span><span class="en">Save changes</span></button>
-      </div>
-    </div>
-
-    <div class="advisor-collapsed" id="advisor-section">
-      <div class="advisor-collapsed-header" onclick="toggleAdvisorPanel()">
-        <div class="advisor-status">
-          <div class="advisor-dot inactive" id="advisor-dot"></div>
-          <div>
-            <div class="section-title" id="advisor-section-title">Ser advisor</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px" id="advisor-section-sub">
-              Ayuda a otros y gana dinero
-            </div>
-          </div>
-        </div>
-        <button class="advisor-collapsed-expand" id="advisor-expand-btn">Configurar →</button>
-      </div>
-      <div class="advisor-collapsed-body" id="advisor-panel">
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Activo como advisor</span><span class="en">Active as advisor</span></label>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
-            <button id="advisor-available-toggle" class="toggle" onclick="toggleAdvisorAvailable()"></button>
-            <span id="advisor-available-label" style="font-size:13px;color:var(--muted)">Disponible</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Bio de advisor</span><span class="en">Advisor bio</span></label>
-          <textarea id="advisor-bio" class="form-textarea"
-            placeholder="Cuéntales qué los hace especial…"
-            oninput="syncPreview()"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Especialidades</label>
-          <div class="specialties-grid" id="specialties-grid"></div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Estado civil</label>
-            <select id="civil-status" class="form-select" onchange="syncPreview()">
-              <option value="">Selecciona</option>
-              <option value="Soltero/a">Soltero/a</option>
-              <option value="En relación">En relación</option>
-              <option value="Casado/a">Casado/a</option>
-              <option value="Divorciado/a">Divorciado/a</option>
-              <option value="Viudo/a">Viudo/a</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="es">Años en relación/matrimonio</span><span class="en">Years in relationship</span></label>
-            <input type="number" id="years-together" class="form-input"
-              min="0" max="60" placeholder="0" onchange="syncPreview()"/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Precio por sesión (MXN)</span><span class="en">Price per session (MXN)</span></label>
-          <input type="number" id="price" class="form-input"
-            min="0" step="50" placeholder="500" onchange="syncPreview()"/>
-        </div>
-
-        <button class="btn-save" onclick="saveAdvisor()"><span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span></button>
-      </div>
-    </div>
-
   </div>
-</main>
+  <div class="hero-r">
+    <div class="hv"></div>
+    <div class="hcf">
+      <div class="cb"><span class="es">Advisor · Hombre real ⭐ 4.9</span><span class="en">Advisor · Real man ⭐ 4.9</span></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;">"Cuando desaparece no es que perdió el interés. Es que no sabe cómo manejar lo que siente."</p>
+      <div class="cst">★★★★★</div>
+      <div class="cm"><span class="es">Respondido hace 12 min · CDMX</span><span class="en">Replied 12 min ago · CDMX</span></div>
+    </div>
+    <div class="hcf2">
+      <div class="cb cb2"><span class="es">Advisor · Mujer real ⭐ 5.0</span><span class="en">Advisor · Real woman ⭐ 5.0</span></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.5;color:var(--cream);font-style:italic;">"Lo que hace sentir valorado a un hombre no es lo que crees."</p>
+      <div class="cst">★★★★★</div>
+      <div class="cm cm2"><span class="es">Respondido hace 3 min</span><span class="en">Replied 3 min ago</span></div>
+    </div>
+  </div>
+</section>
 
-<div id="toast" class="toast"></div>
+<div class="trust">
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="tit">100% Anónimo</span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><span class="tit"><span class="es">Advisors verificados con ID</span><span class="en">ID-Verified Advisors</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="12,3 14.5,9 21,9.5 16,13.5 17.5,20 12,16.5 6.5,20 8,13.5 3,9.5 9.5,9"/></svg></span><span class="tit"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="8" r="3.5"/><path d="M3 19c0-3 2.5-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M14 19c0-2 1.5-3.5 3-3.5s4 1.5 4 3.5"/></svg></span><span class="tit"><span class="es">Personas reales</span><span class="en">Real People</span></span></div>
+  <div class="ti"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="tit"><span class="es">Hecho en México · Todo en MXN</span><span class="en">Made in Mexico · All in MXN</span></span></div>
+</div>
+
+<section class="s" id="cf">
+  <div class="sh"><p class="sl"><span class="es">Así funciona</span><span class="en">How it works</span></p><h2 class="st"><span class="es">Así funciona<br><em>He Knows · She Knows.</em></span><span class="en">This is how<br><em>He Knows · She Knows</em> works.</span></h2></div>
+  <div class="steps">
+    <div class="step"><span class="sn">01</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="20" width="24" height="18" rx="2"/><path d="M16 20v-6a6 6 0 0 1 12 0v6"/><circle cx="22" cy="29" r="2" fill="#C47A5A"/></svg></div><h3 class="sti"><span class="es">Crea tu perfil anónimo</span><span class="en">Create your anonymous profile</span></h3><p class="sd"><span class="es">Regístrate con tu correo. Nadie sabrá quién eres. Tu identidad está protegida en todo momento.</span><span class="en">Sign up with your email. No one will know who you are. Your identity is protected at all times.</span></p></div>
+    <div class="step"><span class="sn">02</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h32a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2H18l-8 6v-6H6a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2z"/><circle cx="16" cy="21" r="1.5" fill="#C47A5A"/><circle cx="22" cy="21" r="1.5" fill="#C47A5A"/><circle cx="28" cy="21" r="1.5" fill="#C47A5A"/></svg></div><h3 class="sti"><span class="es">Haz tu pregunta</span><span class="en">Ask your question</span></h3><p class="sd"><span class="es">Escribe lo que realmente quieres saber. Elige si quieres que sea pública o privada y selecciona tu advisor.</span><span class="en">Write what you really want to know. Choose if it's public or private and select your advisor.</span></p></div>
+    <div class="step"><span class="sn">03</span><div class="si"><svg width="40" height="40" viewBox="0 0 44 44" fill="none" stroke="#C47A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6c-6 0-10 4-10 10 0 4 2 6 4 9v4h12v-4c2-3 4-5 4-9 0-6-4-10-10-10z"/><line x1="18" y1="35" x2="26" y2="35"/><line x1="19" y1="38" x2="25" y2="38"/></svg></div><h3 class="sti"><span class="es">Recibe perspectiva real</span><span class="en">Get real perspective</span></h3><p class="sd"><span class="es">Escucha una perspectiva humana, honesta y completamente ajena a tu historia personal.</span><span class="en">Hear a human, honest perspective from someone completely outside your personal story.</span></p></div>
+  </div>
+</section>
+
+<section class="dual">
+  <div class="dhim">
+    <h2 class="dtit"><span class="es">Para él,<br>la perspectiva <em>femenina.</em></span><span class="en">For him,<br>the <em>female</em> perspective.</span></h2>
+    <p class="ddes"><span class="es">La perspectiva femenina, sin filtros.</span><span class="en">The female perspective, unfiltered.</span></p>
+    <div class="dls">
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Por qué me dejó de hablar sin explicación?</span><span class="en">Why did he stop talking to me without explanation?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Qué significa que me diga "estoy bien"?</span><span class="en">What does it mean when he says "I'm fine"?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo sé si realmente le intereso?</span><span class="en">How do I know if he's genuinely interested?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo reconquisto sin quedar desesperado?</span><span class="en">How do I win her back without seeming desperate?</span></span></div>
+    </div>
+    <p class="dual-close"><span class="es">No para darte la razón.<br>Para ayudarte a entender.</span><span class="en">Not to take your side.<br>To help you understand.</span></p>
+  </div>
+  <div class="dher">
+    <h2 class="dtit"><span class="es">Para ella,<br>la perspectiva <em>masculina.</em></span><span class="en">For her,<br>the <em>male</em> perspective.</span></h2>
+    <p class="ddes"><span class="es">La perspectiva masculina, sin filtros.</span><span class="en">The male perspective, unfiltered.</span></p>
+    <div class="dls">
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Por qué desapareció si todo iba bien?</span><span class="en">Why did he disappear when everything was going well?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Un hombre que no da el paso realmente me quiere?</span><span class="en">Does a man who doesn't make a move really like me?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo sé si solo quiere algo casual?</span><span class="en">How do I know if he just wants something casual?</span></span></div>
+      <div class="dit"><span class="ddt"></span><span class="dtx"><span class="es">¿Cómo actuar después de una pelea fuerte?</span><span class="en">How should I act after a big fight?</span></span></div>
+    </div>
+    <p class="dual-close"><span class="es">No para darte la razón.<br>Para ayudarte a entender.</span><span class="en">Not to take your side.<br>To help you understand.</span></p>
+  </div>
+</section>
+
+<section class="s s-mid" id="areas">
+  <div class="sh"><p class="sl"><span class="es">Áreas de consejo</span><span class="en">Advice Areas</span></p><h2 class="st"><span class="es">En lo que nuestros<br><em>Advisors</em> te ayudan.</span><span class="en">What our <em>Advisors</em><br>help you with.</span></h2><p class="ss"><span class="es">Cada advisor elige su especialidad. Tú eliges al que más se alinea con lo que necesitas.</span><span class="en">Each advisor picks their specialty. You choose the one that best fits what you need.</span></p></div>
+  <div class="areas">
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M22 38C22 38 6 28 6 16.5C6 11.5 9.5 8 14 8C17.2 8 20 10 22 12.5C24 10 26.8 8 30 8C34.5 8 38 11.5 38 16.5C38 28 22 38 22 38Z" fill="#C47A5A"/></svg></span><div class="anm"><span class="es">Relaciones y pareja</span><span class="en">Relationships & Couples</span></div><p class="ades"><span class="es">Conflictos, comunicación y cómo mejorar tu relación actual.</span><span class="en">Conflicts, communication and how to improve your current relationship.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><ellipse cx="22" cy="20" rx="10" ry="13" fill="#9A8880"/><circle cx="18.5" cy="17" r="1.5" fill="#1A1410"/><circle cx="25.5" cy="17" r="1.5" fill="#1A1410"/><path d="M18.5 22.5C19.5 21.5 24.5 21.5 25.5 22.5" stroke="#C47A5A" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M22 33L20 38L22 36L24 38Z" fill="#9A8880"/></svg></span><div class="anm"><span class="es">Ghosting e infidelidad</span><span class="en">Ghosting & Infidelity</span></div><p class="ades"><span class="es">Por qué desaparecen y qué hacer después de una traición.</span><span class="en">Why they disappear and what to do after a betrayal.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="14" cy="16" r="6" fill="#C47A5A" opacity="0.85"/><circle cx="30" cy="16" r="6" fill="#C9A96E" opacity="0.85"/><rect x="10" y="22" width="8" height="11" rx="4" fill="#C47A5A" opacity="0.85"/><rect x="26" y="22" width="8" height="11" rx="4" fill="#C9A96E" opacity="0.85"/></svg></span><div class="anm"><span class="es">Cómo piensa el sexo opuesto</span><span class="en">How the Opposite Sex Thinks</span></div><p class="ades"><span class="es">Entiende la lógica y las motivaciones del otro lado.</span><span class="en">Understand the logic and motivations of the other side.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="20" cy="18" r="7" fill="#C47A5A" opacity="0.9"/><rect x="16" y="25" width="8" height="12" rx="4" fill="#C47A5A" opacity="0.9"/><polygon points="34,6 36,11 41,11 37,14 38.5,19 34,16 29.5,19 31,14 27,11 32,11" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Confianza y autoestima</span><span class="en">Confidence & Self-Esteem</span></div><p class="ades"><span class="es">Cómo proyectarte mejor y atraer lo que buscas.</span><span class="en">How to project yourself better and attract what you're looking for.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M16 8L22 12L28 8L32 16L26 20V38H18V20L12 16Z" fill="#C47A5A" opacity="0.9"/><circle cx="22" cy="11" r="1.5" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Styling y presencia</span><span class="en">Styling & Presence</span></div><p class="ades"><span class="es">Qué imagen das al sexo opuesto y cómo mejorarla.</span><span class="en">What image you project and how to improve it.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><rect x="6" y="10" width="28" height="20" rx="6" fill="#C47A5A" opacity="0.9"/><path d="M6 28L2 36L14 30" fill="#C47A5A" opacity="0.9"/><circle cx="14" cy="20" r="2" fill="#F7F3EE"/><circle cx="20" cy="20" r="2" fill="#F7F3EE"/><circle cx="26" cy="20" r="2" fill="#F7F3EE"/></svg></span><div class="anm"><span class="es">Texting y comunicación</span><span class="en">Texting & Communication</span></div><p class="ades"><span class="es">Qué decir, cuándo escribir e interpretar mensajes.</span><span class="en">What to say, when to text and how to interpret messages.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><rect x="6" y="10" width="32" height="28" rx="4" fill="none" stroke="#C47A5A" stroke-width="2"/><rect x="6" y="10" width="32" height="8" rx="4" fill="#C47A5A"/><rect x="6" y="14" width="32" height="4" fill="#C47A5A"/><line x1="14" y1="6" x2="14" y2="14" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/><line x1="30" y1="6" x2="30" y2="14" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/><path d="M22 32C22 32 16 28 16 24C16 22 17.5 21 19 21C20 21 21 21.5 22 22.5C23 21.5 24 21 25 21C26.5 21 28 22 28 24C28 28 22 32 22 32Z" fill="#C9A96E"/></svg></span><div class="anm"><span class="es">Citas y conquista</span><span class="en">Dating & Attraction</span></div><p class="ades"><span class="es">Primera cita, flirteo y señales de interés real.</span><span class="en">First dates, flirting and real signs of interest.</span></p></div>
+    <div class="area"><span class="aico"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><path d="M6 14C6 11 8 9 11 9H22C25 9 27 11 27 14V22C27 25 25 27 22 27H14L8 32V27C7 27 6 24.5 6 22Z" fill="#C47A5A" opacity="0.9"/><path d="M38 20C38 17 36 15 33 15H28V22C28 26 25.5 29 22 29H20C20 31 22 33 25 33H32L37 37V33C38 33 38 30.5 38 28Z" fill="#C9A96E" opacity="0.9"/></svg></span><div class="anm"><span class="es">Perspectiva emocional</span><span class="en">Emotional Perspective</span></div><p class="ades"><span class="es">Que alguien del sexo opuesto te escuche sin juzgarte.</span><span class="en">Have someone of the opposite sex listen without judging you.</span></p></div>
+  </div>
+</section>
+
+<section class="s" id="precios">
+  <div class="sh"><p class="sl"><span class="es">Cómo se cobra · Todo en MXN</span><span class="en">How It's Billed · All in MXN</span></p><h2 class="st"><span class="es">Empieza <em>gratis.</em><br>Paga solo si consultas.</span><span class="en">Start <em>free.</em><br>Pay only if you consult.</span></h2><p class="ss"><span class="es">Sin suscripciones. Sin pagos mensuales. Cada advisor pone su precio y tú pagas únicamente la consulta que tomas.</span><span class="en">No subscriptions. No monthly fees. Each advisor sets their price and you only pay for the consultation you take.</span></p></div>
+
+  <div class="howpay">
+    <div class="howpay-l">
+      <p class="hpe"><span class="es">Para usuarios</span><span class="en">For users</span></p>
+      <h3 class="hpt"><span class="es">Gratis para registrarte. Pagas <em>solo cuando consultas.</em></span><span class="en">Free to sign up. Pay <em>only when you consult.</em></span></h3>
+      <p class="hps"><span class="es">Crea tu cuenta sin costo y explora la comunidad. Cuando quieras una consulta privada, pagas el precio del advisor que elijas — directo a él/ella.</span><span class="en">Create your account for free and explore the community. When you want a private consultation, you pay the price set by the advisor you choose — directly to them.</span></p>
+    </div>
+    <div class="howpay-r">
+      <div class="hpf"><span class="hpfi">✓</span><div class="hpfc"><div class="hpfh"><span class="es">Registro gratis</span><span class="en">Free registration</span></div><div class="hpfd"><span class="es">Perfil anónimo · sin tarjeta</span><span class="en">Anonymous profile · no card</span></div></div></div>
+      <div class="hpf"><span class="hpfi">✓</span><div class="hpfc"><div class="hpfh"><span class="es">1 pregunta gratis al día en The Real</span><span class="en">1 free question per day on The Real</span></div><div class="hpfd"><span class="es">Acceso completo a la comunidad</span><span class="en">Full community access</span></div></div></div>
+      <div class="hpf"><span class="hpfi">✓</span><div class="hpfc"><div class="hpfh"><span class="es">Pagas por consulta privada</span><span class="en">Pay per private consultation</span></div><div class="hpfd"><span class="es">El precio lo pone cada advisor (típicamente $80–$300 MXN)</span><span class="en">Each advisor sets their price (typically $80–$300 MXN)</span></div></div></div>
+      <div class="hpf"><span class="hpfi">✓</span><div class="hpfc"><div class="hpfh"><span class="es">Sin compromisos</span><span class="en">No commitments</span></div><div class="hpfd"><span class="es">Sin suscripciones ni cobros recurrentes</span><span class="en">No subscriptions or recurring charges</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="howpay-cta">
+    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Crear mi cuenta gratis →</span><span class="en">Create my free account →</span></a>
+  </div>
+</section>
+
+<section class="s s-slate" id="advsec">
+  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w"><span class="es">Si has vivido, amado, perdido y aprendido… ya tienes una perspectiva que puede ayudar a alguien más.</span><span class="en">If you've lived, loved, lost and learned… you already have a perspective that can help someone else.</span></p></div>
+  <div class="rqg">
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="32" height="24" rx="2"/><circle cx="16" cy="20" r="4" fill="#C9A96E" fill-opacity="0.3"/><line x1="24" y1="18" x2="32" y2="18"/><line x1="24" y1="22" x2="30" y2="22"/><line x1="12" y1="28" x2="32" y2="28"/></svg></div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">Verificamos tu identidad con ID oficial. Tu nombre real nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.2" stroke-linejoin="round"><polygon points="22,5 27,16 39,17 30,25 33,37 22,30 11,37 14,25 5,17 17,16" fill="#C9A96E" fill-opacity="0.15"/></svg></div><div class="rqt"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></div><p class="rqd"><span class="es">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</span><span class="en">Each advice gets a rating. Better rating = more visibility and more earnings.</span></p></div>
+    <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="5" width="18" height="34" rx="3"/><line x1="20" y1="34" x2="24" y2="34"/><line x1="13" y1="10" x2="31" y2="10"/></svg></div><div class="rqt"><span class="es">Desde tu celular</span><span class="en">From Your Phone</span></div><p class="rqd"><span class="es">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</span><span class="en">No fixed schedule. No boss. You decide when and how much you work.</span></p></div>
+  </div>
+  <div class="sh" style="margin-bottom:40px;"><p class="sl sl-w"><span class="es">Membresía Advisor · Pesos Mexicanos</span><span class="en">Advisor Membership · Mexican Pesos</span></p><h3 class="st st-w" style="font-size:clamp(1.8rem,3vw,2.6rem);"><span class="es">Elige tu plan<br>de <em>Advisor.</em></span><span class="en">Choose your<br><em>Advisor</em> plan.</span></h3></div>
+  <div class="agrid">
+    <div class="ac">
+      <div class="apl"><span class="es">Mensual</span><span class="en">Monthly</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro mensual · MXN</span><span class="en">Monthly billing · MXN</span></div>
+      <div class="aam">$99</div><div class="amx"><span class="es">MXN por mes</span><span class="en">MXN per month</span></div><div class="adv"></div>
+      <div class="afs">
+        <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--terra);">70%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--terra);">70%</strong> earnings per consultation</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Tú pones tu precio por consulta</span><span class="en">You set your own consultation price</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Chat de 24hrs con cada cliente</span><span class="en">24hr chat with each client</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Perfil en el directorio público</span><span class="en">Profile in public directory</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
+      </div>
+      <button class="bad" onclick="openM('ma')"><span class="es">Registrarme como Advisor</span><span class="en">Register as Advisor</span></button>
+    </div>
+    <div class="ac feat">
+      <div class="asv"><span class="es">GANA 20% MÁS</span><span class="en">EARN 20% MORE</span></div>
+      <div class="apl"><span class="es">Anual</span><span class="en">Annual</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro anual · MXN</span><span class="en">Annual billing · MXN</span></div>
+      <div class="aam">$999</div><div class="amx"><span class="es">MXN por año · (~$83/mes)</span><span class="en">MXN per year · (~$83/mo)</span></div><div class="adv"></div>
+      <div class="afs">
+        <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--gold);">90%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--gold);">90%</strong> earnings per consultation</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">20% más que el plan mensual</span><span class="en">20% more than monthly plan</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Prioridad #1 en búsquedas</span><span class="en">Priority #1 in search results</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Badge "Verificado Premium" en perfil</span><span class="en">"Premium Verified" badge on profile</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Múltiples fotos de perfil</span><span class="en">Multiple profile photos</span></div>
+        <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
+      </div>
+      <button class="bad" onclick="openM('ma')"><span class="es">Quiero el plan anual →</span><span class="en">Get annual plan →</span></button>
+    </div>
+  </div>
+  <p class="anote"><span class="es">Ganas entre <strong>70% y 90%</strong> de cada consulta · Pagos quincenales en MXN · Sin mínimos</span><span class="en">Earn between <strong>70% and 90%</strong> per consultation · Bi-weekly payments in MXN · No minimums</span></p>
+</section>
+
+<section class="s s-mid">
+  <div class="sh"><p class="sl"><span class="es">Lo que dicen</span><span class="en">What They Say</span></p><h2 class="st"><span class="es">Perspectivas que<br><em>cambian todo.</em></span><span class="en">Perspectives that<br><em>change everything.</em></span></h2></div>
+  <div class="tgrid">
+    <div class="tsti"><span class="qm">"</span><p class="ttx">En una conversación entendí algo que llevaba meses intentando procesar sola.</p><div class="tau"><div class="tav tavf">A</div><div><div class="tan">@ale_mx</div><div class="tam">Ciudad de México</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Lo que más me gustó fue la honestidad. No me dijeron lo que quería oír, me dijeron lo que necesitaba escuchar. Y funcionó.</p><div class="tau"><div class="tav tavm">R</div><div><div class="tan">@rod_gtz</div><div class="tam">Monterrey</div><div class="tas">★★★★★</div></div></div></div>
+    <div class="tsti"><span class="qm">"</span><p class="ttx">Me da mucha pena hablar de estas cosas con mis amigas porque todas conocen a mi ex. Aquí puedo ser completamente honesta.</p><div class="tau"><div class="tav tavf">V</div><div><div class="tan">@vale_gdl</div><div class="tam">Guadalajara</div><div class="tas">★★★★★</div></div></div></div>
+  </div>
+</section>
+
+<section class="fcta">
+  <p class="fcl"><span class="es">Únete · Coming Soon</span><span class="en">Join · Coming Soon</span></p>
+  <h2 class="fct"><span class="es">¿Listo para entender<br>al <em>sexo opuesto?</em></span><span class="en">Ready to understand<br>the <em>opposite sex?</em></span></h2>
+  <p class="fcs"><span class="es">Primera pregunta completamente gratis. Sin tarjeta. Sin compromisos.</span><span class="en">First question completely free. No card. No commitment.</span></p>
+  <div class="fca">
+    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
+  </div>
+</section>
+
+<section style="background:#F0EAE3;padding:80px 80px;text-align:center;">
+  <p style="font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;">Newsletter</p>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:var(--night);margin-bottom:12px;line-height:1.1;"><span class="es">Consejos que <em style="color:var(--terra);font-style:italic;">te cambian.</em></span><span class="en">Advice that <em style="color:var(--terra);font-style:italic;">changes you.</em></span></h2>
+  <p style="font-size:0.95rem;color:var(--muted);max-width:420px;margin:0 auto 40px;line-height:1.7;font-weight:300;"><span class="es">Perspectivas reales del sexo opuesto, directo a tu correo.</span><span class="en">Real perspectives from the opposite sex, straight to your inbox.</span></p>
+  <div id="nl-form" style="display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;">
+    <input id="nl-nombre" type="text" placeholder="Tu nombre (opcional)" style="flex:1;min-width:160px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
+    <input id="nl-email" type="email" placeholder="tu@correo.com" style="flex:2;min-width:200px;padding:14px 18px;border:1.5px solid rgba(61,53,48,0.2);border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--night);background:white;outline:none;">
+    <button onclick="subscribeNewsletter()" style="padding:14px 28px;background:var(--night);color:var(--cream);border:none;border-radius:2px;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap;" onmouseover="this.style.background='var(--terra)'" onmouseout="this.style.background='var(--night)'"><span class="es">Suscribirme →</span><span class="en">Subscribe →</span></button>
+  </div>
+  <div id="nl-success" style="display:none;margin-top:24px;"><p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--terra);"><span class="es">¡Listo! Bienvenido/a al newsletter.</span><span class="en">Done! Welcome to the newsletter.</span></p></div>
+  <div id="nl-error" style="display:none;margin-top:16px;"><p style="font-size:0.82rem;color:#c0392b;"><span class="es">Algo salió mal, intenta de nuevo.</span><span class="en">Something went wrong, please try again.</span></p></div>
+</section>
+
+<script>
+async function subscribeNewsletter() {
+  const email = document.getElementById('nl-email').value.trim();
+  const nombre = document.getElementById('nl-nombre').value.trim();
+  if (!email) { alert('Por favor ingresa tu correo.'); return; }
+  try {
+    const res = await fetch('/.netlify/functions/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, nombre }) });
+    if (res.ok) { document.getElementById('nl-form').style.display = 'none'; document.getElementById('nl-success').style.display = 'block'; }
+    else { document.getElementById('nl-error').style.display = 'block'; }
+  } catch(e) { document.getElementById('nl-error').style.display = 'block'; }
+}
+</script>
+
+<footer>
+  <div class="fl">He Knows · <span>She Knows</span></div>
+  <div class="flk"><a href="about.html">About</a><a href="terminos-condiciones.html">Privacidad</a><a href="terminos-condiciones.html">Términos</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Contacto</a><a href="https://instagram.com/heknows.sheknows" target="_blank">Instagram</a></div>
+  <div class="fc2"><span class="es">© 2026 He Knows She Knows · México · Todo en MXN</span><span class="en">© 2026 He Knows She Knows · Mexico · All in MXN</span></div>
+</footer>
+
+<!-- MODAL USUARIO -->
+<div class="mov" id="mu">
+  <div class="modal">
+    <button class="mcl" onclick="closeM('mu')">✕</button>
+    <div id="mu-form">
+      <p class="mlb">Crear cuenta gratuita</p>
+      <h2 class="mtt">Bienvenido/a a<br><em>He Knows She Knows</em></h2>
+      <p class="msb">Anónimo desde el primer momento. Nadie sabrá quién eres.</p>
+      <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ug')">Hombre</button><button class="chip" onclick="togCS(this,'ug')">Mujer</button><button class="chip" onclick="togCS(this,'ug')">Prefiero no decir</button></div></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="frw">
+        <div class="fg"><label class="flbl">Usuario anónimo</label><input class="finp" type="text" placeholder="@usuario_secreto"></div>
+        <div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Tijuana</option><option>Otra</option></select></div>
+      </div>
+      <div class="fg"><label class="flbl">Contraseña</label><input class="finp" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <div class="fg"><label class="flbl">¿Qué te trae por aquí?</label><div class="chips"><button class="chip" onclick="togC(this)">Entender a mi pareja</button><button class="chip" onclick="togC(this)">Superar una ruptura</button><button class="chip" onclick="togC(this)">Reconquistar a alguien</button><button class="chip" onclick="togC(this)">Entender el ghosting</button><button class="chip" onclick="togC(this)">Mejorar mi vida amorosa</button><button class="chip" onclick="togC(this)">Solo explorar</button></div></div>
+      <button class="bfl" onclick="showSuc('mu')">Crear mi cuenta gratuita →</button>
+      <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;">Al registrarte aceptas nuestros <a href="terminos-condiciones.html" style="color:var(--terra);">Términos</a> y <a href="terminos-condiciones.html" style="color:var(--terra);">Privacidad</a></p>
+    </div>
+    <div class="sucs" id="mu-suc" style="display:none;">
+      <div class="suci">✦</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px;">¡Ya eres parte de<br>He Knows She Knows!</h3>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:28px;">Te enviamos un correo de confirmación. Pronto podrás hacer tu primera pregunta gratis.</p>
+      <button class="bfl" onclick="closeM('mu')">Perfecto, ¡gracias!</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADVISOR -->
+<div class="mov" id="ma">
+  <div class="modal mdark">
+    <button class="mcl" onclick="closeM('ma')">✕</button>
+    <div id="as1">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd"></div><div class="fsd"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 1 de 4 · Tus datos</p>
+      <h2 class="mtt">Regístrate como<br><em>Advisor</em></h2>
+      <p class="msb">Tu identidad queda verificada pero nunca visible para los usuarios.</p>
+      <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ag')">Hombre</button><button class="chip" onclick="togCS(this,'ag')">Mujer</button></div></div>
+      <div class="frw"><div class="fg"><label class="flbl">Nombre completo</label><input class="finp" type="text" placeholder="Solo para verificación"></div><div class="fg"><label class="flbl">Edad</label><input class="finp" type="number" placeholder="18+" min="18"></div></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="frw"><div class="fg"><label class="flbl">Teléfono</label><input class="finp" type="tel" placeholder="+52 55 0000 0000"></div><div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Otra</option></select></div></div>
+      <div class="fg"><label class="flbl">Contraseña</label><input class="finp" type="password" placeholder="Mínimo 8 caracteres"></div>
+      <button class="bfl" onclick="aN(1)">Continuar →</button>
+    </div>
+    <div id="as2" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 2 de 4 · Tu especialidad</p>
+      <h2 class="mtt">¿En qué eres<br><em>bueno/a?</em></h2>
+      <p class="msb">Selecciona todas las áreas en las que quieres dar consejos.</p>
+      <div class="fg"><label class="flbl">Áreas de expertise</label><div class="chips"><button class="chip" onclick="togC(this)">💔 Relaciones y pareja</button><button class="chip" onclick="togC(this)">👻 Ghosting e infidelidad</button><button class="chip" onclick="togC(this)">🧠 Cómo piensa el sexo opuesto</button><button class="chip" onclick="togC(this)">💪 Confianza y autoestima</button><button class="chip" onclick="togC(this)">👗 Styling y presencia</button><button class="chip" onclick="togC(this)">💬 Texting y comunicación</button><button class="chip" onclick="togC(this)">❤️‍🔥 Citas y conquista</button><button class="chip" onclick="togC(this)">🗣️ Perspectiva emocional</button></div></div>
+      <div class="fg" style="margin-top:20px;"><label class="flbl">Bio profesional</label><textarea class="finp" rows="4" placeholder="Cuéntanos tu experiencia..." style="resize:vertical;"></textarea></div>
+      <div style="display:flex;gap:12px;"><button class="bfl bflo" onclick="aB(2)" style="flex:1;">← Atrás</button><button class="bfl" onclick="aN(2)" style="flex:2;">Continuar →</button></div>
+    </div>
+    <div id="as3" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd"></div></div>
+      <p class="mlb">Paso 3 de 4 · Tu disponibilidad</p>
+      <h2 class="mtt">¿Cuándo estás<br><em>disponible?</em></h2>
+      <p class="msb">Define tus horarios. Puedes cambiarlos cuando quieras.</p>
+      <div class="fg" style="margin-top:16px;"><label class="flbl">Precio por consulta (MXN)</label><input class="finp" type="number" placeholder="Ej. 150" min="50" step="10"><p style="font-size:0.68rem;color:rgba(247,243,238,0.35);margin-top:6px;">Mínimo $50 MXN · Tú decides cuánto cobrar</p></div>
+      <div style="display:flex;gap:12px;"><button class="bfl bflo" onclick="aB(3)" style="flex:1;">← Atrás</button><button class="bfl" onclick="aN(3)" style="flex:2;">Continuar →</button></div>
+    </div>
+    <div id="as4" style="display:none;">
+      <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div></div>
+      <p class="mlb">Paso 4 de 4 · Tu plan · Todo en MXN</p>
+      <h2 class="mtt">Elige tu<br><em>membresía.</em></h2>
+      <p class="msb">Cancela cuando quieras. Todo en pesos mexicanos.</p>
+      <div class="fg"><div class="plno">
+        <div class="plop" onclick="selP(this)"><div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div><div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Sin compromiso anual</div></div></div>
+        <div class="plop sel" onclick="selP(this)"><div class="plsv">GANA 20% MÁS</div><div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div><div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Prioridad en búsquedas</div></div></div>
+      </div></div>
+      <div class="fdv"></div>
+      <button class="bfl" onclick="showSuc('ma')">Completar registro →</button>
+      <div style="display:flex;justify-content:center;margin-top:12px;"><button class="bfl bflo" onclick="aB(4)" style="width:auto;padding:10px 24px;font-size:0.65rem;">← Atrás</button></div>
+      <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br>Pagos seguros en MXN · <strong>70-90% de ganancias</strong></p>
+    </div>
+    <div class="sucs" id="ma-suc" style="display:none;">
+      <div class="suci">✦</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--cream);margin-bottom:12px;">¡Ya eres Advisor!</h3>
+      <p style="font-size:0.88rem;color:rgba(247,243,238,0.5);line-height:1.7;margin-bottom:28px;">Revisaremos tu perfil en las próximas 24 horas. Te avisamos por correo cuando estés activo/a.</p>
+      <button class="bfl" onclick="closeM('ma')">¡Perfecto, gracias!</button>
+    </div>
+  </div>
+</div>
 
 <script>
 function toggleMobileMenu(){
@@ -609,395 +581,105 @@ function closeMobileMenu(){
   document.body.classList.remove('menu-open');
 }
 
-const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function openM(id){closeMobileMenu();document.getElementById(id).classList.add('active');document.body.style.overflow='hidden';}
+function closeM(id){document.getElementById(id).classList.remove('active');document.body.style.overflow='';}
+document.querySelectorAll('.mov').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this)closeM(this.id);});});
+function togC(b){b.classList.toggle('active');}
+function togCS(b,g){document.querySelectorAll('[onclick*="\''+g+'\'"]').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
+function aN(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s+1)).style.display='block';}
+function aB(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s-1)).style.display='block';}
+function selP(el){document.querySelectorAll('.plop').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
 
-const SPECIALTIES = [
-  'Relaciones', 'Ghosting', 'Infidelidad', 'Texting',
-  'Citas', 'Confianza', 'Desahogo', 'Cómo piensa el sexo opuesto',
-  'Styling', 'Sexualidad', 'Divorcio', 'Autoestima'
-];
-
-let session = null;
-let profile = null;
-let advisorProfile = null;
-let selectedSpecs = [];
-let isAdvisorAvailable = true;
-let isAnon = false;
-
-async function init() {
-  const raw = localStorage.getItem('hksk-session');
-  if (!raw) return window.location.href = 'login.html';
-  session = JSON.parse(raw);
-  const { data: refreshed } = await sb.auth.setSession({
-    access_token: session.access_token,
-    refresh_token: session.refresh_token
-  });
-  if (refreshed?.session) {
-    session.access_token = refreshed.session.access_token;
-    session.refresh_token = refreshed.session.refresh_token;
-    localStorage.setItem('hksk-session', JSON.stringify(session));
+async function showSuc(id){
+  if(id==='mu'){
+    const email=document.querySelector('#mu-form input[type="email"]').value.trim();
+    const password=document.querySelector('#mu-form input[type="password"]').value.trim();
+    const gender=document.querySelector('#mu-form .chip.active')?.textContent.trim()||'';
+    if(!email||!password){alert('Por favor ingresa tu correo y contraseña.');return;}
+    try{
+      const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,gender})});
+      const data=await res.json();
+      if(data.error){alert('Error: '+data.error);return;}
+      if(data.access_token){
+        const sessionData={access_token:data.access_token,refresh_token:data.refresh_token,user:data.user};
+        localStorage.setItem('hksk-session',JSON.stringify(sessionData));
+        window.location.href='onboarding.html';
+        return;
+      }
+      document.getElementById('mu-form').style.display='none';
+      document.getElementById('mu-suc').style.display='block';
+    }catch(e){alert('Error de conexión.');}
+    return;
   }
-
-  await loadProfile();
-  buildSpecialtyGrid();
-
-  if (typeof HKSK !== 'undefined' && HKSK.icons) {
-    const desEl = document.getElementById('preview-icon-desahogo');
-    if (desEl) {
-      desEl.innerHTML = HKSK.icons.desahogo
-        .replace('width="44"', 'width="32"').replace('height="44"', 'height="32"');
+  
+  const email=document.querySelector('#as1 input[type="email"]').value.trim();
+  const password=document.querySelector('#as1 input[type="password"]').value.trim();
+  const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
+  const gender=document.querySelector('#as1 .chip.active')?.textContent.trim()||'';
+  const bio=document.querySelector('#as2 textarea').value.trim();
+  const price=document.querySelector('#as3 input[type="number"]').value;
+  const selectedPlan=document.querySelector('.plop.sel .plnm')?.textContent.trim()||'Mensual';
+  const specialties=Array.from(document.querySelectorAll('#as2 .chips .chip.active')).map(c=>c.textContent.trim()).join(', ');
+  
+  if(!email||!password){alert('Por favor completa el correo y contraseña en el paso 1.');return;}
+  
+  try{
+    console.log('Registrando advisor:', {email, full_name, specialties, price});
+    
+    const res=await fetch('/.netlify/functions/auth-register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email,
+        password,
+        full_name,
+        gender,
+        role:'advisor',
+        bio,
+        specialty: specialties,
+        price_per_session: parseFloat(price) || 100,
+        civil_status: '',
+        years_together: 0
+      })
+    });
+    const data=await res.json();
+    console.log('auth-register response:', data);
+    
+    if(data.error){
+      alert('Error: '+data.error);
+      return;
     }
-  }
-
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('main-content').style.display = '';
-}
-
-async function loadProfile() {
-  try {
-    const res = await fetch('/.netlify/functions/get-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: session.access_token })
-    });
-    const data = await res.json();
-    profile = data.profile || {};
-    advisorProfile = data.advisor_profile || null;
-  } catch(e) {
-    console.error('Error cargando perfil:', e);
-    profile = {};
-  }
-
-  document.getElementById('full-name').value = profile.full_name || '';
-  document.getElementById('bio').value = profile.bio || '';
-  document.getElementById('city').value = profile.city || '';
-  document.getElementById('gender').value = profile.gender || '';
-  isAnon = !!profile.is_anonymous;
-
-  if (profile.avatar_url) setAvatarUI(profile.avatar_url);
-  setPlanUI(profile.plan || 'free');
-  setAnonUI(isAnon);
-  syncPreview();
-
-  if (profile.role === 'advisor' && advisorProfile) {
-    loadAdvisorProfileData();
-  }
-}
-
-function loadAdvisorProfileData() {
-  document.getElementById('advisor-bio').value = advisorProfile.bio || '';
-  document.getElementById('civil-status').value = advisorProfile.civil_status || '';
-  document.getElementById('years-together').value = advisorProfile.years_together || '';
-  document.getElementById('price').value = advisorProfile.price_per_session || '';
-  isAdvisorAvailable = advisorProfile.available !== false;
-
-  if (advisorProfile.specialty) {
-    selectedSpecs = advisorProfile.specialty.split(',').map(s => s.trim()).filter(Boolean);
-  }
-
-  updateAdvisorSectionHeader(true);
-  setAdvisorAvailableUI(isAdvisorAvailable);
-  refreshSpecialtyGrid();
-  syncPreview();
-}
-
-function setPlanUI(plan) {
-  const badge = document.getElementById('plan-badge');
-  const name = document.getElementById('bar-plan-name');
-  const actions = document.getElementById('bar-actions');
-
-  const plans = {
-    free:            { label: 'Free',    cls: 'plan-free',    display: 'Explorador' },
-    premium:         { label: 'Premium', cls: 'plan-premium', display: 'Premium' },
-    elite:           { label: 'Elite',   cls: 'plan-elite',   display: 'Elite' },
-    advisor_mensual: { label: 'Advisor', cls: 'plan-premium', display: 'Advisor Mensual' },
-    advisor_anual:   { label: 'Advisor', cls: 'plan-elite',   display: 'Advisor Anual' },
-  };
-  const p = plans[plan] || plans.free;
-  badge.textContent = p.label;
-  badge.className = `plan-badge ${p.cls}`;
-  name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
-
-  // ✨ CAMBIO: ya no muestra botón "Ser Advisor →" para plan free
-  if (plan === 'free') {
-    actions.innerHTML = '';
-  } else if (plan === 'advisor_mensual') {
-    actions.innerHTML = `
-      <a href="https://buy.stripe.com/6oU5kw7FQagVftscIccQU03" class="btn-sm btn-outline" target="_blank">Subir a Anual</a>
-      <button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar</button>`;
-  } else {
-    actions.innerHTML = `<button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar plan</button>`;
-  }
-}
-
-function syncPreview() {
-  const name = document.getElementById('full-name').value.trim();
-  const bio = document.getElementById('bio').value.trim() || document.getElementById('advisor-bio').value.trim();
-  const city = document.getElementById('city').value.trim();
-  const price = document.getElementById('price').value;
-  const civil = document.getElementById('civil-status').value;
-  const years = document.getElementById('years-together').value;
-
-  document.getElementById('preview-name').textContent = name || (localStorage.getItem('hksk-lang')==='en'?'Your name':'Tu nombre');
-
-  const bioEl = document.getElementById('preview-bio');
-  if (bio) { bioEl.textContent = bio; bioEl.classList.remove('empty'); }
-  else { bioEl.textContent = localStorage.getItem('hksk-lang')==='en'?'Your bio will appear here…':'Aquí aparecerá tu bio…'; bioEl.classList.add('empty'); }
-
-  const cityEl = document.getElementById('preview-city');
-  if (city) {
-    cityEl.style.display = 'flex';
-    document.getElementById('preview-city-text').textContent = city;
-  } else { cityEl.style.display = 'none'; }
-
-  const specContainer = document.getElementById('preview-specialties');
-  if (selectedSpecs.length) {
-    specContainer.style.display = 'flex';
-    const iconMap = {
-      'Relaciones': 'relaciones', 'Relaciones y pareja': 'relaciones',
-      'Ghosting': 'ghosting', 'Ghosting e infidelidad': 'ghosting',
-      'Infidelidad': 'ghosting',
-      'Cómo piensa el sexo opuesto': 'sexoOpuesto',
-      'Como piensa el sexo opuesto': 'sexoOpuesto',
-      'Confianza': 'confianza', 'Confianza y autoestima': 'confianza',
-      'Autoestima': 'confianza',
-      'Styling': 'styling', 'Styling y presencia': 'styling',
-      'Texting': 'texting', 'Texting y comunicación': 'texting',
-      'Texting y comunicacion': 'texting',
-      'Citas': 'citas', 'Citas y conquista': 'citas',
-      'Desahogo': 'desahogo',
-      'Sexualidad': 'relaciones',
-      'Divorcio': 'ghosting'
-    };
-    specContainer.innerHTML = selectedSpecs.map(s => {
-      const clean = s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
-      const iconKey = iconMap[clean] || iconMap[s] ||
-        Object.keys(iconMap).find(k => clean.includes(k) || s.includes(k));
-      const iconHtml = (typeof HKSK !== 'undefined' && iconKey && HKSK.icons[iconKey])
-        ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
-        : '';
-      const label = iconHtml ? clean : s;
-      return `<span class="specialty-pill">${iconHtml}${label}</span>`;
-    }).join('');
-  } else { specContainer.style.display = 'none'; }
-
-  const metaEl = document.getElementById('preview-advisor-meta');
-  const priceEl = document.getElementById('preview-price');
-  if (profile && profile.role === 'advisor') {
-    metaEl.style.display = 'flex';
-    priceEl.style.display = 'flex';
-    document.getElementById('pm-civil').textContent = civil || '—';
-    const lang=localStorage.getItem('hksk-lang')||'es';
-    document.getElementById('pm-exp').textContent = years ? `${years} ${lang==='en'?'year':'año'}${years==1?'':'s'}` : '—';
-    document.getElementById('pm-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : '$0';
-  } else {
-    metaEl.style.display = 'none';
-    priceEl.style.display = 'none';
-  }
-
-  document.getElementById('preview-anon').style.display = isAnon ? 'flex' : 'none';
-}
-
-function setAvatarUI(url) {
-  ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-    const img = document.getElementById(id);
-    img.src = url; img.style.display = '';
-  });
-  document.getElementById('edit-avatar-ph').style.display = 'none';
-  document.getElementById('preview-avatar-ph').style.display = 'none';
-}
-
-async function uploadAvatar(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) return showToast('La imagen debe ser menor a 2MB', true);
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-      const img = document.getElementById(id);
-      img.src = e.target.result; img.style.display = '';
-    });
-    document.getElementById('edit-avatar-ph').style.display = 'none';
-    document.getElementById('preview-avatar-ph').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-
-  showToast(localStorage.getItem('hksk-lang')==='en'?'Uploading photo…':'Subiendo foto…');
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('userId', session.user.id);
-  formData.append('token', session.access_token);
-
-  try {
-    const res = await fetch('/.netlify/functions/avatar-upload', { method: 'POST', body: formData });
-    const data = await res.json();
-    if (data.url) showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
-    else showToast(data.error || 'Error al subir', true);
-  } catch { showToast('Error de conexión', true); }
-}
-
-function setAnonUI(val) {
-  const btn = document.getElementById('anon-toggle');
-  btn.classList.toggle('on', val);
-}
-
-async function toggleAnon() {
-  isAnon = !isAnon;
-  setAnonUI(isAnon);
-  syncPreview();
-  await fetch('/.netlify/functions/update-profile', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: session.access_token, is_anonymous: isAnon })
-  });
-}
-
-function toggleAdvisorPanel() {
-  const panel = document.getElementById('advisor-panel');
-  panel.classList.toggle('open');
-  document.getElementById('advisor-expand-btn').textContent =
-    panel.classList.contains('open') ? (localStorage.getItem('hksk-lang')==='en'?'Close ↑':'Cerrar ↑') : (localStorage.getItem('hksk-lang')==='en'?'Set up →':'Configurar →');
-}
-
-function updateAdvisorSectionHeader(isAdvisor) {
-  document.getElementById('advisor-dot').classList.toggle('inactive', !isAdvisor);
-  const lang=localStorage.getItem('hksk-lang')||'es';
-  document.getElementById('advisor-section-title').textContent = isAdvisor ? (lang==='en'?'Advisor profile':'Perfil de advisor') : (lang==='en'?'Become an advisor':'Ser advisor');
-  document.getElementById('advisor-section-sub').textContent = isAdvisor
-    ? `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`
-    : (lang==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
-  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (lang==='en'?'Edit →':'Editar →') : (lang==='en'?'Set up →':'Configurar →');
-}
-
-function setAdvisorAvailableUI(val) {
-  const btn = document.getElementById('advisor-available-toggle');
-  btn.classList.toggle('on', val);
-  document.getElementById('advisor-available-label').textContent = val ? (localStorage.getItem('hksk-lang')==='en'?'Available':'Disponible') : (localStorage.getItem('hksk-lang')==='en'?'Unavailable':'No disponible');
-}
-
-function toggleAdvisorAvailable() {
-  isAdvisorAvailable = !isAdvisorAvailable;
-  setAdvisorAvailableUI(isAdvisorAvailable);
-}
-
-function buildSpecialtyGrid() {
-  const grid = document.getElementById('specialties-grid');
-  grid.innerHTML = SPECIALTIES.map(s => `
-    <div class="spec-chip ${selectedSpecs.includes(s) ? 'selected' : ''}"
-      onclick="toggleSpec('${s}', this)">${s}</div>
-  `).join('');
-}
-
-function refreshSpecialtyGrid() {
-  document.querySelectorAll('.spec-chip').forEach(chip => {
-    chip.classList.toggle('selected', selectedSpecs.includes(chip.textContent));
-  });
-}
-
-function toggleSpec(name, el) {
-  if (selectedSpecs.includes(name)) {
-    selectedSpecs = selectedSpecs.filter(s => s !== name);
-    el.classList.remove('selected');
-  } else {
-    selectedSpecs.push(name);
-    el.classList.add('selected');
-  }
-  syncPreview();
-  const lang=localStorage.getItem('hksk-lang')||'es';
-  document.getElementById('advisor-section-sub').textContent =
-    `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`;
-}
-
-async function saveProfile() {
-  const btn = document.querySelector('.settings-section .btn-save');
-  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
-
-  const body = {
-    token: session.access_token,
-    full_name: document.getElementById('full-name').value.trim(),
-    bio: document.getElementById('bio').value.trim(),
-    city: document.getElementById('city').value.trim(),
-    gender: document.getElementById('gender').value,
-    is_anonymous: isAnon
-  };
-
-  try {
-    const res = await fetch('/.netlify/functions/update-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) {
-      showToast(data.error || 'Error al guardar', true);
-    } else {
-      showToast(localStorage.getItem('hksk-lang')==='en'?'Profile updated':'Perfil actualizado');
+    
+    if(data.access_token && data.user){
+      const sessionData={access_token:data.access_token, refresh_token:data.refresh_token, user:data.user};
+      localStorage.setItem('hksk-session', JSON.stringify(sessionData));
     }
-  } catch(e) {
-    console.error(e);
-    showToast('Error de conexión', true);
+    
+    ['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
+    document.getElementById('ma-suc').style.display='block';
+    
+    const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
+    setTimeout(()=>window.open(stripeUrl,'_blank'),2000);
+  }catch(e){
+    console.error('Error en registro advisor:', e);
+    alert('Error de conexión: '+e.message);
   }
-
-  btn.disabled = false;
-  btn.innerHTML = '<span class="es">Guardar cambios</span><span class="en">Save changes</span>';
 }
-
-async function saveAdvisor() {
-  const btn = document.querySelectorAll('.btn-save')[1];
-  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
-
-  const body = {
-    token: session.access_token,
-    bio: document.getElementById('advisor-bio').value.trim(),
-    specialty: selectedSpecs.join(', '),
-    civil_status: document.getElementById('civil-status').value,
-    years_together: parseInt(document.getElementById('years-together').value) || 0,
-    price_per_session: parseFloat(document.getElementById('price').value) || 0,
-    available: isAdvisorAvailable
-  };
-
-  try {
-    const res = await fetch('/.netlify/functions/save-advisor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) {
-      showToast(data.error || 'Error al guardar', true);
-    } else {
-      showToast(localStorage.getItem('hksk-lang')==='en'?'Advisor profile saved':'Perfil de advisor guardado');
-      profile.role = 'advisor';
-      updateAdvisorSectionHeader(true);
-      syncPreview();
-    }
-  } catch(e) {
-    console.error(e);
-    showToast('Error de conexión', true);
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span>';
-}
-
-function cancelPlan() {
-  if (!confirm(localStorage.getItem('hksk-lang')==='en'?'Are you sure?':'¿Seguro que quieres cancelar tu plan?')) return;
-  showToast(localStorage.getItem('hksk-lang')==='en'?'Contact support to cancel':'Escríbenos a soporte para cancelar');
-}
-
-function showToast(msg, error = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast${error ? ' error' : ''} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-init();
 </script>
 
+<script>
+(function(){
+  try{
+    const session=JSON.parse(localStorage.getItem('hksk-session'));
+    if(session?.access_token){
+      document.getElementById('login-btn').style.display='none';
+      document.getElementById('profile-btn').style.display='inline-block';
+      document.getElementById('mm-login').style.display='none';
+      document.getElementById('mm-profile').style.display='inline-block';
+    }
+  }catch(e){}
+})();
+</script>
 <script>
 function setLang(lang){
   document.body.setAttribute('data-lang',lang);
