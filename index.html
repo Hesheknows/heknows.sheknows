@@ -535,21 +535,15 @@ async function subscribeNewsletter() {
       <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div></div>
       <p class="mlb">Paso 4 de 4 · Tu plan · Todo en MXN</p>
       <h2 class="mtt">Elige tu<br><em>membresía.</em></h2>
-      <p class="msb">Cancela cuando quieras. Todo en pesos mexicanos.</p>
+      <p class="msb">Al continuar serás redirigido/a a Stripe para completar tu pago. Tu perfil se activa cuando se confirma el pago.</p>
       <div class="fg"><div class="plno">
         <div class="plop" onclick="selP(this)"><div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div><div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Sin compromiso anual</div></div></div>
         <div class="plop sel" onclick="selP(this)"><div class="plsv">GANA 20% MÁS</div><div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div><div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Prioridad en búsquedas</div></div></div>
       </div></div>
       <div class="fdv"></div>
-      <button class="bfl" onclick="showSuc('ma')">Completar registro →</button>
+      <button class="bfl" onclick="showSuc('ma')">Continuar a pago →</button>
       <div style="display:flex;justify-content:center;margin-top:12px;"><button class="bfl bflo" onclick="aB(4)" style="width:auto;padding:10px 24px;font-size:0.65rem;">← Atrás</button></div>
       <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br>Pagos seguros en MXN · <strong>70-90% de ganancias</strong></p>
-    </div>
-    <div class="sucs" id="ma-suc" style="display:none;">
-      <div class="suci">✦</div>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--cream);margin-bottom:12px;">¡Ya eres Advisor!</h3>
-      <p style="font-size:0.88rem;color:rgba(247,243,238,0.5);line-height:1.7;margin-bottom:28px;">Revisaremos tu perfil en las próximas 24 horas. Te avisamos por correo cuando estés activo/a.</p>
-      <button class="bfl" onclick="closeM('ma')">¡Perfecto, gracias!</button>
     </div>
   </div>
 </div>
@@ -583,6 +577,7 @@ function selP(el){document.querySelectorAll('.plop').forEach(p=>p.classList.remo
 
 async function showSuc(id){
   if(id==='mu'){
+    // ===== FLUJO USUARIO (sin cambios) =====
     const email=document.querySelector('#mu-form input[type="email"]').value.trim();
     const password=document.querySelector('#mu-form input[type="password"]').value.trim();
     const gender=document.querySelector('#mu-form .chip.active')?.textContent.trim()||'';
@@ -602,7 +597,8 @@ async function showSuc(id){
     }catch(e){alert('Error de conexión.');}
     return;
   }
-  
+
+  // ===== FLUJO ADVISOR (NUEVO: redirige DIRECTO a Stripe) =====
   const email=document.querySelector('#as1 input[type="email"]').value.trim();
   const password=document.querySelector('#as1 input[type="password"]').value.trim();
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
@@ -611,12 +607,16 @@ async function showSuc(id){
   const price=document.querySelector('#as3 input[type="number"]').value;
   const selectedPlan=document.querySelector('.plop.sel .plnm')?.textContent.trim()||'Mensual';
   const specialties=Array.from(document.querySelectorAll('#as2 .chips .chip.active')).map(c=>c.textContent.trim()).join(', ');
-  
+
   if(!email||!password){alert('Por favor completa el correo y contraseña en el paso 1.');return;}
-  
+
+  // Deshabilitar botón mientras procesa
+  const btn = document.querySelector('#as4 .bfl');
+  if(btn){btn.disabled=true;btn.textContent='Procesando...';}
+
   try{
     console.log('Registrando advisor:', {email, full_name, specialties, price});
-    
+
     const res=await fetch('/.netlify/functions/auth-register',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -635,25 +635,37 @@ async function showSuc(id){
     });
     const data=await res.json();
     console.log('auth-register response:', data);
-    
+
     if(data.error){
       alert('Error: '+data.error);
+      if(btn){btn.disabled=false;btn.textContent='Continuar a pago →';}
       return;
     }
-    
+
+    // Guardar sesión si vino access_token
     if(data.access_token && data.user){
       const sessionData={access_token:data.access_token, refresh_token:data.refresh_token, user:data.user};
       localStorage.setItem('hksk-session', JSON.stringify(sessionData));
     }
-    
-    ['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
-    document.getElementById('ma-suc').style.display='block';
-    
-    const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
-    setTimeout(()=>window.open(stripeUrl,'_blank'),2000);
+
+    // Construir URL de Stripe con email pre-rellenado
+    const userId = data.user_id || data.user?.id || '';
+    const baseStripeUrl = selectedPlan==='Anual'
+      ? 'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03'
+      : 'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
+
+    const stripeUrl = baseStripeUrl
+      + '?prefilled_email=' + encodeURIComponent(email)
+      + (userId ? '&client_reference_id=' + userId : '');
+
+    // REDIRIGIR DIRECTO A STRIPE (misma pestaña, sin popup falso)
+    console.log('Redirigiendo a Stripe:', stripeUrl);
+    window.location.href = stripeUrl;
+
   }catch(e){
     console.error('Error en registro advisor:', e);
     alert('Error de conexión: '+e.message);
+    if(btn){btn.disabled=false;btn.textContent='Continuar a pago →';}
   }
 }
 </script>
