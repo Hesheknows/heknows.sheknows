@@ -1,6 +1,5 @@
 // netlify/functions/auth-register.js
-// v3: si signup no devuelve user.id (cuenta nueva con email_confirmation activo),
-// busca el user.id en auth.users por email y crea advisor_profile.
+// v4: ADVISOR se crea INACTIVO (available=false). Solo se activa cuando paga Stripe.
 
 exports.handler = async (event) => {
   const headers = {
@@ -70,11 +69,10 @@ exports.handler = async (event) => {
     };
   }
 
-  // 2. Obtener user.id — primero del response, si no buscar por email
+  // 2. Obtener user.id
   let userId = supabaseData.user?.id || supabaseData.id;
 
   if (!userId) {
-    // Buscar en auth.users por email usando admin endpoint
     try {
       const lookupRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`, {
         headers: {
@@ -84,7 +82,6 @@ exports.handler = async (event) => {
       });
       if (lookupRes.ok) {
         const lookupData = await lookupRes.json();
-        // Puede venir como {users:[...]} o como array directo
         const users = Array.isArray(lookupData) ? lookupData : (lookupData.users || []);
         const found = users.find(u => u.email === email);
         if (found) userId = found.id;
@@ -129,7 +126,7 @@ exports.handler = async (event) => {
     console.error('Error creando profile:', e.message);
   }
 
-  // 4. Si es advisor, crear row en advisor_profiles
+  // 4. Si es advisor, crear row en advisor_profiles INACTIVO
   let advisor_created = false;
   let advisor_error = null;
   if (role === 'advisor') {
@@ -138,7 +135,7 @@ exports.handler = async (event) => {
       bio: bio || null,
       specialty: specialty || null,
       price_per_session: parseFloat(price_per_session) || 100,
-      available: true,
+      available: false,        // ⚠️ INACTIVO hasta que pague Stripe
       civil_status: civil_status || null,
       years_together: parseInt(years_together) || 0,
       commission_rate: 0.70
@@ -177,7 +174,8 @@ exports.handler = async (event) => {
       user: supabaseData.user || { id: userId, email },
       email_confirmation_required: !supabaseData.session && !supabaseData.access_token,
       advisor_created,
-      advisor_error
+      advisor_error,
+      requires_payment: role === 'advisor'  // bandera para que frontend redirija a Stripe
     })
   };
 };
