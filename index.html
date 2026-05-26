@@ -50,8 +50,7 @@ body.menu-open{overflow:hidden;}
 .hero-t{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,5vw,5.2rem);font-weight:300;line-height:1.05;color:var(--night);margin-bottom:12px;}
 .hero-t em{font-style:italic;color:var(--terra);}
 .hdv{width:44px;height:1px;background:var(--gold);margin:28px 0;}
-.hero-s{font-size:1.05rem;line-height:1.75;color:var(--slate);max-width:440px;font-weight:300;margin-bottom:48px;}
-.hero-a{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.hero-s{font-size:1.05rem;line-height:1.75;color:var(--slate);max-width:440px;font-weight:300;}
 .hero-r{position:relative;overflow:hidden;}
 .hv{position:absolute;inset:0;background:linear-gradient(135deg,#E8C4B0 0%,#D4956F 40%,#1A1410 100%);}
 .hcf{position:absolute;left:40px;top:50%;transform:translateY(-50%);background:rgba(247,243,238,0.96);border-radius:4px;padding:28px 32px;max-width:280px;box-shadow:0 32px 64px rgba(26,20,16,0.2);animation:fl 4s ease-in-out infinite;}
@@ -170,8 +169,7 @@ body.menu-open{overflow:hidden;}
 .fcl{font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:600;position:relative;z-index:2;}
 .fct{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:20px;position:relative;z-index:2;}
 .fct em{font-style:italic;color:var(--terra);}
-.fcs{font-size:1rem;color:rgba(247,243,238,0.48);max-width:480px;margin:0 auto 48px;line-height:1.7;font-weight:300;position:relative;z-index:2;}
-.fca{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+.fcs{font-size:1rem;color:rgba(247,243,238,0.48);max-width:480px;margin:0 auto;line-height:1.7;font-weight:300;position:relative;z-index:2;}
 footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
 .fl{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:rgba(247,243,238,0.45);}
 .fl span{color:var(--terra);font-style:italic;}
@@ -270,7 +268,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   </button>
 </nav>
 
-<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
@@ -291,9 +288,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <h1 class="hero-t"><span class="es">Lo que cambia cuando<br>escuchas la <em>otra versión.</em></span><span class="en">What changes when you<br>hear the <em>other side.</em></span></h1>
     <div class="hdv"></div>
     <p class="hero-s"><span class="es">Perspectivas reales sobre relaciones, emociones y el otro lado de la historia.</span><span class="en">Real perspectives on relationships, emotions and the other side of the story.</span></p>
-    <div class="hero-a">
-      <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
-    </div>
   </div>
   <div class="hero-r">
     <div class="hv"></div>
@@ -442,9 +436,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   <p class="fcl"><span class="es">Únete · Coming Soon</span><span class="en">Join · Coming Soon</span></p>
   <h2 class="fct"><span class="es">¿Listo para entender<br>al <em>sexo opuesto?</em></span><span class="en">Ready to understand<br>the <em>opposite sex?</em></span></h2>
   <p class="fcs"><span class="es">Primera pregunta completamente gratis. Sin tarjeta. Sin compromisos.</span><span class="en">First question completely free. No card. No commitment.</span></p>
-  <div class="fca">
-    <a href="#" onclick="openM('mu');return false;" class="btn-p"><span class="es">Escuchar otra perspectiva →</span><span class="en">Hear another perspective →</span></a>
-  </div>
 </section>
 
 <section style="background:#F0EAE3;padding:80px 80px;text-align:center;">
