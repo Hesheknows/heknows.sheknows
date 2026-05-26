@@ -18,8 +18,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-links a:hover{color:var(--terra);}
 .nav-cta{background:var(--night)!important;color:var(--cream)!important;padding:10px 22px;border-radius:2px;}
 .nav-cta:hover{background:var(--terra)!important;}
-
-/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
 .hamburger span:nth-child(1){top:13px;}
@@ -41,7 +39,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;opacity:0;transition:opacity 0.3s;}
 .mobile-overlay.open{display:block;opacity:1;}
 body.menu-open{overflow:hidden;}
-
 .btn-p{background:var(--night);color:var(--cream);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
 .btn-p:hover{background:var(--terra);}
 .btn-g{background:transparent;color:var(--slate);padding:16px 36px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:1.5px solid rgba(61,53,48,0.3);cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.25s;text-decoration:none;display:inline-block;}
@@ -63,8 +60,6 @@ body.menu-open{overflow:hidden;}
 @keyframes fl2{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 .cb{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;font-weight:500;}
 .cb2{color:var(--blush);}
-.ctx{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;}
-.ctx2{font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.5;color:var(--cream);font-style:italic;}
 .cst{color:var(--gold);font-size:0.8rem;margin-top:12px;letter-spacing:2px;}
 .cm{font-size:0.7rem;color:var(--muted);margin-top:8px;}
 .cm2{color:rgba(232,196,176,0.6);}
@@ -123,8 +118,6 @@ body.menu-open{overflow:hidden;}
 .area:hover .aico{transform:scale(1.1);}
 .anm{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--night);margin-bottom:8px;transition:color 0.3s;}
 .ades{font-size:0.76rem;line-height:1.6;color:var(--muted);font-weight:300;transition:color 0.3s;}
-
-/* Caja simple de cómo se cobra a usuarios */
 .howpay{max-width:860px;margin:0 auto;background:var(--cream);border:1px solid rgba(196,122,90,0.18);border-radius:4px;padding:56px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
 .howpay-l .hpe{font-size:0.66rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--terra);margin-bottom:14px;font-weight:600;}
 .howpay-l .hpt{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;line-height:1.1;color:var(--night);margin-bottom:16px;}
@@ -137,7 +130,6 @@ body.menu-open{overflow:hidden;}
 .hpfh{font-size:0.85rem;color:var(--night);font-weight:600;margin-bottom:3px;}
 .hpfd{font-size:0.78rem;color:var(--muted);font-weight:300;line-height:1.5;}
 .howpay-cta{margin-top:32px;display:flex;justify-content:center;}
-
 .rqg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,169,110,0.06);margin-bottom:64px;}
 .rq{background:rgba(255,255,255,0.03);padding:40px 32px;border-left:2px solid rgba(196,122,90,0.25);}
 .rqi{font-size:1.6rem;margin-bottom:14px;display:flex;align-items:center;}
@@ -279,7 +271,6 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
   </button>
 </nav>
 
-<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="#cf" onclick="closeMobileMenu()"><span class="es">Cómo funciona</span><span class="en">How It Works</span></a>
@@ -310,7 +301,7 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
     <div class="hv"></div>
     <div class="hcf">
       <div class="cb"><span class="es">Advisor · Hombre real ⭐ 4.9</span><span class="en">Advisor · Real man ⭐ 4.9</span></div>
-      <p class="ctxc" style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;">"Cuando desaparece no es que perdió el interés. Es que no sabe cómo manejar lo que siente."</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--night);font-style:italic;">"Cuando desaparece no es que perdió el interés. Es que no sabe cómo manejar lo que siente."</p>
       <div class="cst">★★★★★</div>
       <div class="cm"><span class="es">Respondido hace 12 min · CDMX</span><span class="en">Replied 12 min ago · CDMX</span></div>
     </div>
@@ -576,7 +567,6 @@ async function subscribeNewsletter() {
 </div>
 
 <script>
-/* ===== MENÚ MÓVIL ===== */
 function toggleMobileMenu(){
   const ham=document.getElementById('hamburger');
   const menu=document.getElementById('mobile-menu');
@@ -602,6 +592,7 @@ function togCS(b,g){document.querySelectorAll('[onclick*="\''+g+'\'"]').forEach(
 function aN(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s+1)).style.display='block';}
 function aB(s){document.getElementById('as'+s).style.display='none';document.getElementById('as'+(s-1)).style.display='block';}
 function selP(el){document.querySelectorAll('.plop').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+
 async function showSuc(id){
   if(id==='mu'){
     const email=document.querySelector('#mu-form input[type="email"]').value.trim();
@@ -623,7 +614,8 @@ async function showSuc(id){
     }catch(e){alert('Error de conexión.');}
     return;
   }
-  // ✨ FLUJO ADVISOR ARREGLADO
+  
+  // ✨ FLUJO ADVISOR - todos los datos en UN solo request a auth-register
   const email=document.querySelector('#as1 input[type="email"]').value.trim();
   const password=document.querySelector('#as1 input[type="password"]').value.trim();
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
@@ -632,50 +624,52 @@ async function showSuc(id){
   const price=document.querySelector('#as3 input[type="number"]').value;
   const selectedPlan=document.querySelector('.plop.sel .plnm')?.textContent.trim()||'Mensual';
   const specialties=Array.from(document.querySelectorAll('#as2 .chips .chip.active')).map(c=>c.textContent.trim()).join(', ');
+  
   if(!email||!password){alert('Por favor completa el correo y contraseña en el paso 1.');return;}
+  
   try{
-    // 1. Registrar usuario
-    const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,full_name,gender,role:'advisor'})});
-    const data=await res.json();
-    if(data.error){alert('Error: '+data.error);return;}
+    console.log('Registrando advisor:', {email, full_name, specialties, price});
     
-    // ✨ CAMBIO: auth-register devuelve access_token al nivel raíz, NO dentro de data.session
+    const res=await fetch('/.netlify/functions/auth-register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email,
+        password,
+        full_name,
+        gender,
+        role:'advisor',
+        bio,
+        specialty: specialties,
+        price_per_session: parseFloat(price) || 100,
+        civil_status: '',
+        years_together: 0
+      })
+    });
+    const data=await res.json();
+    console.log('auth-register response:', data);
+    
+    if(data.error){
+      alert('Error: '+data.error);
+      return;
+    }
+    
+    if(data.advisor_created === false){
+      console.warn('Usuario creado pero advisor_profile NO');
+    }
+    
     if(data.access_token && data.user){
       const sessionData={access_token:data.access_token, refresh_token:data.refresh_token, user:data.user};
       localStorage.setItem('hksk-session', JSON.stringify(sessionData));
-      
-      // 2. Guardar perfil advisor — AHORA SÍ se ejecuta
-      const advisorRes = await fetch('/.netlify/functions/save-advisor',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          userId: data.user.id,
-          token: data.access_token,
-          bio,
-          specialty: specialties,
-          price_per_session: parseFloat(price) || 100,
-          available: true,
-          civil_status: '',
-          years_together: 0
-        })
-      });
-      const advisorData = await advisorRes.json().catch(() => ({}));
-      if(advisorData.error){
-        console.error('save-advisor error:', advisorData.error);
-        alert('Cuenta creada pero hubo un problema con tu perfil de advisor: '+advisorData.error+'. Puedes completarlo desde Mi Perfil.');
-      } else {
-        console.log('Advisor guardado:', advisorData);
-      }
-    } else {
-      alert('Cuenta creada. Revisa tu correo para confirmar y luego completa tu perfil de advisor.');
     }
     
     ['as1','as2','as3','as4'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
     document.getElementById('ma-suc').style.display='block';
+    
     const stripeUrl=selectedPlan==='Anual'?'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03':'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
     setTimeout(()=>window.open(stripeUrl,'_blank'),2000);
   }catch(e){
-    console.error(e);
+    console.error('Error en registro advisor:', e);
     alert('Error de conexión: '+e.message);
   }
 }
