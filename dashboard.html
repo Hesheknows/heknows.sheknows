@@ -78,6 +78,50 @@ body.menu-open{overflow:hidden;}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
+
+/* ===== MODAL DE RESEÑAS ===== */
+.rev-overlay{position:fixed;inset:0;background:rgba(26,20,16,0.65);backdrop-filter:blur(8px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;animation:revFadeIn 0.25s ease;}
+.rev-overlay.show{display:flex;}
+@keyframes revFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes revSlideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.rev-modal{background:#F7F3EE;border-radius:16px;max-width:440px;width:100%;padding:36px 32px 24px;text-align:center;position:relative;animation:revSlideUp 0.3s ease;font-family:'DM Sans',sans-serif;max-height:92vh;overflow-y:auto;}
+.rev-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:24px;color:#9A8880;cursor:pointer;line-height:1;padding:4px 8px;}
+.rev-close:hover{color:#1A1410;}
+.rev-av{width:72px;height:72px;border-radius:50%;background:#E8C4B0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.75rem;color:#C47A5A;margin:0 auto 12px;border:2px solid rgba(196,122,90,0.2);overflow:hidden;}
+.rev-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.rev-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.65rem;font-weight:400;color:#1A1410;margin-bottom:4px;line-height:1.2;}
+.rev-sub{font-size:0.78rem;color:#9A8880;letter-spacing:0.04em;margin-bottom:20px;}
+.rev-stars{display:flex;justify-content:center;gap:6px;margin:18px 0 8px;}
+.rev-star{font-size:2.2rem;color:rgba(26,20,16,0.15);cursor:pointer;transition:transform 0.15s,color 0.15s;user-select:none;line-height:1;}
+.rev-star.on{color:#C9A96E;}
+.rev-star:hover{transform:scale(1.15);}
+.rev-stars-label{font-size:0.72rem;color:#9A8880;letter-spacing:0.06em;margin-bottom:18px;min-height:18px;}
+.rev-q{font-size:0.88rem;color:#1A1410;margin:18px 0 10px;letter-spacing:0.02em;}
+.rev-yn{display:flex;gap:10px;justify-content:center;margin-bottom:18px;}
+.rev-yn-btn{flex:1;max-width:120px;padding:9px 18px;border:1.5px solid rgba(26,20,16,0.18);background:transparent;color:#1A1410;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;font-weight:500;letter-spacing:0.04em;transition:all 0.2s;}
+.rev-yn-btn:hover{border-color:#C47A5A;}
+.rev-yn-btn.on{background:#C47A5A;border-color:#C47A5A;color:#F7F3EE;}
+.rev-textarea-wrap{margin:16px 0;text-align:left;}
+.rev-textarea-label{font-size:0.74rem;color:#9A8880;letter-spacing:0.04em;display:block;margin-bottom:8px;}
+.rev-textarea{width:100%;min-height:84px;max-height:160px;padding:12px;border:1px solid rgba(26,20,16,0.15);border-radius:8px;background:#FFFFFF;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#1A1410;resize:vertical;box-sizing:border-box;}
+.rev-textarea:focus{outline:none;border-color:#C47A5A;}
+.rev-toggle{margin:14px 0;padding:12px 14px;background:rgba(232,196,176,0.22);border-radius:8px;display:flex;align-items:flex-start;gap:10px;text-align:left;}
+.rev-toggle input{margin-top:3px;accent-color:#C47A5A;cursor:pointer;}
+.rev-toggle label{font-size:0.78rem;color:#1A1410;font-weight:500;display:block;cursor:pointer;}
+.rev-toggle small{display:block;font-size:0.7rem;color:#9A8880;margin-top:2px;line-height:1.4;}
+.rev-anon{margin:10px 0;display:flex;align-items:center;gap:8px;padding-left:4px;justify-content:flex-start;}
+.rev-anon input{accent-color:#C47A5A;cursor:pointer;}
+.rev-anon label{font-size:0.74rem;color:#9A8880;cursor:pointer;}
+.rev-submit{width:100%;margin-top:18px;padding:13px;background:#1A1410;color:#F7F3EE;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.84rem;font-weight:500;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.rev-submit:hover{background:#C47A5A;}
+.rev-submit:disabled{background:rgba(26,20,16,0.4);cursor:not-allowed;}
+.rev-skip{display:block;width:100%;text-align:center;background:none;border:none;color:#9A8880;font-size:0.74rem;margin-top:10px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px;}
+.rev-skip:hover{color:#1A1410;}
+.rev-thanks{padding:30px 10px;text-align:center;}
+.rev-thanks-icon{font-size:2.5rem;color:#C9A96E;margin-bottom:10px;}
+.rev-thanks-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem;color:#1A1410;margin-bottom:6px;}
+.rev-thanks-sub{font-size:0.84rem;color:#9A8880;}
+
 @media(max-width:768px){
   nav{padding:15px 20px;}
   .nav-links{display:none;}
@@ -183,6 +227,63 @@ body.menu-open{overflow:hidden;}
     </a>
   </div>
 </div>
+
+<!-- ===== MODAL DE RESEÑAS (aparece automático si hay consultas pendientes) ===== -->
+<div class="rev-overlay" id="rev-overlay" role="dialog" aria-labelledby="rev-title">
+  <div class="rev-modal" id="rev-modal-content">
+    <div id="rev-form-view">
+      <button class="rev-close" onclick="revSkip()" aria-label="Cerrar">×</button>
+      <div class="rev-av" id="rev-av"></div>
+      <h2 class="rev-title" id="rev-title">¿Cómo te fue con <span id="rev-advisor-name">Advisor</span>?</h2>
+      <p class="rev-sub">Tu opinión ayuda a otras personas</p>
+
+      <div class="rev-stars" id="rev-stars">
+        <span class="rev-star" data-val="1">★</span>
+        <span class="rev-star" data-val="2">★</span>
+        <span class="rev-star" data-val="3">★</span>
+        <span class="rev-star" data-val="4">★</span>
+        <span class="rev-star" data-val="5">★</span>
+      </div>
+      <div class="rev-stars-label" id="rev-stars-label">Toca para calificar</div>
+
+      <div class="rev-q">¿La recomendarías?</div>
+      <div class="rev-yn">
+        <button type="button" class="rev-yn-btn" id="rev-yes" onclick="revSetRec(true)">Sí</button>
+        <button type="button" class="rev-yn-btn" id="rev-no" onclick="revSetRec(false)">No</button>
+      </div>
+
+      <div class="rev-textarea-wrap">
+        <label class="rev-textarea-label" for="rev-comment">Cuéntanos cómo te fue (opcional)</label>
+        <textarea id="rev-comment" class="rev-textarea" placeholder="Me ayudó a entender..." maxlength="1000"></textarea>
+      </div>
+
+      <div class="rev-toggle">
+        <input type="checkbox" id="rev-public" checked>
+        <div>
+          <label for="rev-public">Hacer mi reseña pública</label>
+          <small>Otras personas podrán verla en el perfil del advisor</small>
+        </div>
+      </div>
+
+      <div class="rev-anon">
+        <input type="checkbox" id="rev-anon">
+        <label for="rev-anon">Mostrar como anónimo</label>
+      </div>
+
+      <button class="rev-submit" id="rev-submit" onclick="revSubmit()" disabled>Enviar reseña</button>
+      <button class="rev-skip" onclick="revSkip()">Quizá después</button>
+    </div>
+
+    <div id="rev-thanks-view" style="display:none;">
+      <div class="rev-thanks">
+        <div class="rev-thanks-icon">★</div>
+        <div class="rev-thanks-title">¡Gracias por tu reseña!</div>
+        <div class="rev-thanks-sub">Tu opinión hace la diferencia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="supabase.js"></script>
 <script>
 /* ===== MENÚ MÓVIL ===== */
@@ -233,6 +334,9 @@ function closeMobileMenu(){
       document.getElementById('welcome-name').textContent = user.email.split('@')[0];
     }
 
+    // Esperar un poquito antes de mostrar el modal de reseñas (no interrumpe el flujo principal)
+    setTimeout(checkPendingReviews, 1200);
+
   } catch(e) {
     window.location.replace('/login.html');
   } finally {
@@ -256,6 +360,180 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
+</script>
+
+<!-- ===== LÓGICA DEL MODAL DE RESEÑAS ===== -->
+<script>
+let REV_PENDING_LIST = [];
+let REV_CURRENT = null;
+let REV_STARS = 0;
+let REV_RECOMMEND = null;
+
+async function checkPendingReviews() {
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+  if (!session?.access_token) return;
+
+  try {
+    const res = await fetch('/.netlify/functions/get-pending-reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: session.access_token })
+    });
+    const data = await res.json();
+
+    if (data?.pending && data.pending.length > 0) {
+      let skipped = [];
+      try { skipped = JSON.parse(sessionStorage.getItem('rev-skipped') || '[]'); } catch(e) {}
+
+      REV_PENDING_LIST = data.pending.filter(p => !skipped.includes(p.consultation_id));
+      if (REV_PENDING_LIST.length > 0) {
+        showNextReview();
+      }
+    }
+  } catch(e) {
+    console.error('checkPendingReviews error:', e);
+  }
+}
+
+function showNextReview() {
+  if (REV_PENDING_LIST.length === 0) {
+    closeRevModal();
+    return;
+  }
+  REV_CURRENT = REV_PENDING_LIST.shift();
+  resetRevForm();
+  fillAdvisorInfo(REV_CURRENT);
+  document.getElementById('rev-form-view').style.display = 'block';
+  document.getElementById('rev-thanks-view').style.display = 'none';
+  document.getElementById('rev-overlay').classList.add('show');
+}
+
+function fillAdvisorInfo(p) {
+  document.getElementById('rev-advisor-name').textContent = p.advisor_name || 'tu Advisor';
+  const av = document.getElementById('rev-av');
+  if (p.advisor_avatar) {
+    av.innerHTML = `<img src="${p.advisor_avatar}" alt="${p.advisor_name}">`;
+  } else {
+    av.textContent = (p.advisor_name?.[0] || 'A').toUpperCase();
+  }
+}
+
+function resetRevForm() {
+  REV_STARS = 0;
+  REV_RECOMMEND = null;
+  document.querySelectorAll('.rev-star').forEach(s => s.classList.remove('on'));
+  document.getElementById('rev-stars-label').textContent = 'Toca para calificar';
+  document.getElementById('rev-yes').classList.remove('on');
+  document.getElementById('rev-no').classList.remove('on');
+  document.getElementById('rev-comment').value = '';
+  document.getElementById('rev-public').checked = true;
+  document.getElementById('rev-anon').checked = false;
+  document.getElementById('rev-submit').disabled = true;
+  document.getElementById('rev-submit').textContent = 'Enviar reseña';
+}
+
+// Eventos de estrellas
+document.querySelectorAll('.rev-star').forEach(star => {
+  star.addEventListener('click', () => {
+    REV_STARS = parseInt(star.dataset.val);
+    document.querySelectorAll('.rev-star').forEach(s => {
+      s.classList.toggle('on', parseInt(s.dataset.val) <= REV_STARS);
+    });
+    const labels = {1:'Muy malo', 2:'Malo', 3:'Regular', 4:'Bueno', 5:'Excelente'};
+    document.getElementById('rev-stars-label').textContent = labels[REV_STARS] || '';
+    document.getElementById('rev-submit').disabled = REV_STARS === 0;
+  });
+});
+
+function revSetRec(val) {
+  REV_RECOMMEND = val;
+  document.getElementById('rev-yes').classList.toggle('on', val === true);
+  document.getElementById('rev-no').classList.toggle('on', val === false);
+}
+
+function revSkip() {
+  if (REV_CURRENT) {
+    try {
+      const skipped = JSON.parse(sessionStorage.getItem('rev-skipped') || '[]');
+      skipped.push(REV_CURRENT.consultation_id);
+      sessionStorage.setItem('rev-skipped', JSON.stringify(skipped));
+    } catch(e) {}
+  }
+  if (REV_PENDING_LIST.length > 0) {
+    showNextReview();
+  } else {
+    closeRevModal();
+  }
+}
+
+function closeRevModal() {
+  document.getElementById('rev-overlay').classList.remove('show');
+  REV_CURRENT = null;
+}
+
+async function revSubmit() {
+  if (!REV_CURRENT || REV_STARS === 0) return;
+
+  const btn = document.getElementById('rev-submit');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+  if (!session?.access_token) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar reseña';
+    return;
+  }
+
+  try {
+    const res = await fetch('/.netlify/functions/create-review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_token: session.access_token,
+        consultation_id: REV_CURRENT.consultation_id,
+        stars: REV_STARS,
+        would_recommend: REV_RECOMMEND,
+        comment: document.getElementById('rev-comment').value.trim() || null,
+        is_public: document.getElementById('rev-public').checked,
+        is_anonymous: document.getElementById('rev-anon').checked
+      })
+    });
+    const data = await res.json();
+
+    if (data?.success) {
+      document.getElementById('rev-form-view').style.display = 'none';
+      document.getElementById('rev-thanks-view').style.display = 'block';
+      setTimeout(() => {
+        if (REV_PENDING_LIST.length > 0) {
+          showNextReview();
+        } else {
+          closeRevModal();
+        }
+      }, 1500);
+    } else {
+      alert(data?.error || 'No se pudo enviar la reseña');
+      btn.disabled = false;
+      btn.textContent = 'Enviar reseña';
+    }
+  } catch(e) {
+    console.error('Submit review error:', e);
+    btn.disabled = false;
+    btn.textContent = 'Enviar reseña';
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('rev-overlay').classList.contains('show')) {
+    revSkip();
+  }
+});
+
+document.getElementById('rev-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'rev-overlay') revSkip();
+});
 </script>
 </body>
 </html>
