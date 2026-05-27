@@ -60,6 +60,15 @@ body.menu-open{overflow:hidden;}
 .ac-av img{width:56px;height:56px;border-radius:50%;object-fit:cover;}
 .ac-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--night);margin-bottom:4px;}
 .ac-spec{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;}
+
+/* ===== ESTRELLAS DE RATING ===== */
+.ac-rating{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:0.72rem;color:var(--slate);}
+.ac-rating-stars{color:var(--gold);letter-spacing:1px;font-size:0.85rem;line-height:1;}
+.ac-rating-stars .empty{color:rgba(26,20,16,0.18);}
+.ac-rating-avg{font-weight:500;color:var(--night);}
+.ac-rating-count{color:var(--muted);}
+.ac-rating-empty{font-size:0.68rem;color:var(--muted);font-style:italic;margin-bottom:10px;letter-spacing:0.03em;}
+
 .ac-bio{font-size:0.78rem;line-height:1.6;color:var(--muted);font-weight:300;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .ac-footer{display:flex;align-items:center;justify-content:space-between;}
 .ac-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--night);}
@@ -293,6 +302,30 @@ function filterBy(btn, keyword) {
   renderAdvisors(filtered);
 }
 
+// ===== RENDER DE ESTRELLAS DE RATING =====
+function renderRatingStars(avg, count) {
+  const average = parseFloat(avg) || 0;
+  const total = parseInt(count) || 0;
+
+  if (total === 0) {
+    return `<div class="ac-rating-empty">Sin reseñas todavía</div>`;
+  }
+
+  const rounded = Math.round(average);
+  let stars = '';
+  for (let i = 1; i <= 5; i++) {
+    stars += i <= rounded
+      ? `<span>★</span>`
+      : `<span class="empty">★</span>`;
+  }
+
+  return `<div class="ac-rating">
+    <span class="ac-rating-stars">${stars}</span>
+    <span class="ac-rating-avg">${average.toFixed(1)}</span>
+    <span class="ac-rating-count">· ${total} reseña${total !== 1 ? 's' : ''}</span>
+  </div>`;
+}
+
 function renderAdvisors(list) {
   const grid = document.getElementById('advisors-grid');
   if (!list || list.length === 0) {
@@ -310,6 +343,7 @@ function renderAdvisors(list) {
     const available = adv.available !== false;
     const price = adv.price_per_session ? `$${adv.price_per_session}` : 'Gratis';
     const bio = adv.bio || a.bio || 'Advisor verificado en He Knows She Knows.';
+    const ratingHtml = renderRatingStars(adv.rating_average, adv.rating_count);
     const avatarHtml = a.avatar_url
       ? `<img src="${a.avatar_url}" alt="${name}">`
       : initial;
@@ -318,6 +352,7 @@ function renderAdvisors(list) {
       <div class="ac-av">${avatarHtml}</div>
       <div class="ac-name">${name}</div>
       <div class="ac-spec">${(adv.specialty || "Advisor").replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}❤️👻💕💪🧴💬❤🔥\s]+/gu, " ").trim()}</div>
+      ${ratingHtml}
       <div class="ac-bio">${bio}</div>
       <div class="ac-footer">
         <div class="ac-price">${price} <span>MXN / consulta</span></div>
@@ -340,7 +375,6 @@ function openPayModal(advisor) {
   if (!advisor || !advisor.id) return;
   SELECTED_ADVISOR = advisor;
 
-  // Llenar info en el modal
   const av = document.getElementById('pay-advisor-av');
   if (advisor.avatar_url) {
     av.innerHTML = `<img src="${advisor.avatar_url}" alt="${advisor.name}">`;
@@ -355,7 +389,6 @@ function openPayModal(advisor) {
   const price = parseInt(advisor.price) || 0;
   document.getElementById('pay-price-amount').textContent = price ? `$${price.toLocaleString()}` : 'Gratis';
 
-  // Reset btn
   const btn = document.getElementById('pay-proceed-btn');
   btn.disabled = false;
   btn.textContent = price > 0 ? 'Pagar y consultar →' : 'Continuar →';
@@ -375,7 +408,6 @@ async function proceedToPayment() {
   btn.disabled = true;
   btn.textContent = 'Procesando…';
 
-  // Si el precio es 0, ir directo a mensajes (gratis)
   if (!SELECTED_ADVISOR.price || parseFloat(SELECTED_ADVISOR.price) <= 0) {
     window.location.href = `mensajes.html?advisorId=${SELECTED_ADVISOR.id}`;
     return;
@@ -400,7 +432,6 @@ async function proceedToPayment() {
     }
 
     if (data.checkout_url) {
-      // Redirige a Stripe Checkout
       window.location.href = data.checkout_url;
     } else {
       showToast('Error: no se pudo iniciar el pago', true);
@@ -422,14 +453,12 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 4000);
 }
 
-// Cerrar modal con tecla Escape
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && document.getElementById('pay-modal').style.display === 'flex') {
     closePayModal();
   }
 });
 
-// Cerrar modal al click fuera
 document.getElementById('pay-modal').addEventListener('click', (e) => {
   if (e.target.id === 'pay-modal') closePayModal();
 });
