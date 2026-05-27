@@ -1,5 +1,5 @@
 // netlify/functions/stripe-webhook.js
-// v2: Cuando el advisor paga, se activa (available=true) y aparece en /buscar-advisors.
+// v3: ahora detecta cuando advisor completa onboarding de Stripe Connect.
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -56,37 +56,58 @@ exports.handler = async (event) => {
         const session = stripeEvent.data.object;
         const metadata = session.metadata || {};
 
-        // Caso A: consulta (Stripe Connect)
+        // Caso A: consulta privada (con split via Stripe Connect)
         if (metadata.type === 'consultation') {
-          console.log('Consulta pagada:', {
+          console.log('💰 Consulta pagada:', {
             user: metadata.userId,
             advisor: metadata.advisorId,
             amount: session.amount_total
           });
+
+          // Registrar consulta y activar acceso 24h
+          const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+          await fetch(`${SUPABASE_URL}/rest/v1/consultations`, {
+            method: 'POST',
+            headers: {
+              ...supabaseHeaders(),
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+              user_id: metadata.userId,
+              advisor_id: metadata.advisorId,
+              amount: session.amount_total / 100,
+              advisor_amount: parseFloat(metadata.advisorAmount) / 100,
+              platform_fee: parseFloat(metadata.platformFee) / 100,
+              commission_rate: parseFloat(metadata.commissionRate),
+              status: 'paid',
+              stripe_session_id: session.id,
+              stripe_payment_intent_id: session.payment_intent,
+              paid_at: new Date().toISOString(),
+              expires_at: expiresAt
+            })
+          });
+
+          console.log(`✅ Consulta registrada. Acceso hasta: ${expiresAt}`);
           break;
         }
 
         // Caso B: membresía de advisor
         const email = session.customer_details?.email || session.customer_email;
-        const amount = session.amount_total; // centavos MXN
+        const amount = session.amount_total;
 
         let plan = null;
-        if (amount >= 99900) plan = 'advisor_anual';      // $999
-        else if (amount >= 9900) plan = 'advisor_mensual'; // $99
+        if (amount >= 99900) plan = 'advisor_anual';
+        else if (amount >= 9900) plan = 'advisor_mensual';
 
-        if (!plan) {
-          console.log('Pago sin plan reconocido, monto:', amount);
-          break;
-        }
-
-        if (!email) {
-          console.log('Pago sin email asociado');
+        if (!plan || !email) {
+          console.log('Pago sin plan/email reconocido');
           break;
         }
 
         console.log('Membresía advisor pagada:', email, plan);
 
-        // Buscar usuario por email
         const userRes = await fetch(
           `${SUPABASE_URL}/rest/v1/profiles?email=eq.${encodeURIComponent(email)}&select=id,email,role`,
           { headers: supabaseHeaders() }
@@ -100,7 +121,6 @@ exports.handler = async (event) => {
 
         const user = users[0];
 
-        // Actualizar perfil: plan + rol = advisor
         await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
           method: 'PATCH',
           headers: { ...supabaseHeaders(), 'Content-Type': 'application/json' },
@@ -111,23 +131,22 @@ exports.handler = async (event) => {
           })
         });
 
-        // ✅ ACTIVAR advisor + asignar commission_rate
         const commissionRate = plan === 'advisor_anual' ? 0.90 : 0.70;
         await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${user.id}`, {
           method: 'PATCH',
           headers: { ...supabaseHeaders(), 'Content-Type': 'application/json' },
           body: JSON.stringify({
             commission_rate: commissionRate,
-            available: true   // ⭐ AQUÍ se activa para aparecer en /buscar-advisors
+            available: true
           })
         });
 
-        console.log(`✅ Plan ${plan} activado para ${email}, comisión ${commissionRate * 100}%, AVAILABLE=true`);
+        console.log(`✅ Plan ${plan} activado para ${email}`);
         break;
       }
 
       // ────────────────────────────────────────────────
-      // ADVISOR COMPLETA ONBOARDING DE CONNECT
+      // ADVISOR COMPLETA / ACTUALIZA ONBOARDING DE CONNECT
       // ────────────────────────────────────────────────
       case 'account.updated': {
         const account = stripeEvent.data.object;
@@ -138,18 +157,34 @@ exports.handler = async (event) => {
           break;
         }
 
-        const onboarded =
-          account.charges_enabled &&
-          account.payouts_enabled &&
-          account.details_submitted;
+        const onboardingComplete = account.details_submitted;
+        const chargesEnabled = account.charges_enabled;
+        const payoutsEnabled = account.payouts_enabled;
 
         await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${advisorId}`, {
           method: 'PATCH',
           headers: { ...supabaseHeaders(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ stripe_onboarding_complete: onboarded })
+          body: JSON.stringify({
+            stripe_onboarding_complete: onboardingComplete,
+            charges_enabled: chargesEnabled,
+            payouts_enabled: payoutsEnabled
+          })
         });
 
-        console.log(`Advisor ${advisorId} onboarding: ${onboarded ? '✅ completo' : '⏳ pendiente'}`);
+        const status = (onboardingComplete && chargesEnabled && payoutsEnabled)
+          ? '✅ COMPLETO - puede recibir pagos'
+          : '⏳ pendiente';
+        console.log(`Connect onboarding advisor ${advisorId}: ${status}`);
+        break;
+      }
+
+      // ────────────────────────────────────────────────
+      // PAYOUT RECIBIDO EN BANCO DEL ADVISOR
+      // ────────────────────────────────────────────────
+      case 'payout.paid': {
+        const payout = stripeEvent.data.object;
+        console.log(`💸 Payout pagado: ${payout.amount / 100} MXN a cuenta ${payout.destination}`);
+        // (futuro: notificar al advisor por email/Slack)
         break;
       }
 
