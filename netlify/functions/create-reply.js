@@ -1,4 +1,6 @@
 // netlify/functions/create-reply.js
+// FIX: usar SERVICE_KEY para validar token (la anon_key no tiene permisos para verificar tokens de otros usuarios)
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(200, {});
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method Not Allowed' });
@@ -12,14 +14,32 @@ exports.handler = async (event) => {
 
   const SUPA_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
   const SERVICE_KEY = process.env.SUPABASE_SECRET_KEY;
-  const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 
-  // Verificar token
+  if (!SERVICE_KEY) {
+    console.error('SUPABASE_SECRET_KEY no está configurada');
+    return json(500, { error: 'Server misconfigured' });
+  }
+
+  // Verificar token usando SERVICE_KEY como apikey (no la anon_key)
   const userRes = await fetch(`${SUPA_URL}/auth/v1/user`, {
-    headers: { 'Authorization': `Bearer ${token}`, 'apikey': ANON_KEY }
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'apikey': SERVICE_KEY
+    }
   });
-  if (!userRes.ok) return json(401, { error: 'Token invalido o expirado' });
-  const { id: userId } = await userRes.json();
+
+  if (!userRes.ok) {
+    const errText = await userRes.text();
+    console.error('Token validation failed:', userRes.status, errText);
+    return json(401, { error: 'Token invalido o expirado' });
+  }
+
+  const userData = await userRes.json();
+  const userId = userData.id;
+
+  if (!userId) {
+    return json(401, { error: 'Usuario no encontrado' });
+  }
 
   try {
     const replyRes = await fetch(`${SUPA_URL}/rest/v1/post_replies`, {
@@ -46,7 +66,7 @@ exports.handler = async (event) => {
 
     const [reply] = await replyRes.json();
 
-    // Incrementar likes no, pero si actualizar updated_at del post
+    // Actualizar updated_at del post
     await fetch(`${SUPA_URL}/rest/v1/posts?id=eq.${post_id}`, {
       method: 'PATCH',
       headers: {
@@ -66,6 +86,11 @@ exports.handler = async (event) => {
 
 const json = (s, d) => ({
   statusCode: s,
-  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  },
   body: JSON.stringify(d)
 });
