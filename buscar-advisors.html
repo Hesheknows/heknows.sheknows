@@ -20,7 +20,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
 .btn-logout:hover{background:var(--terra);color:white;}
 
-/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
 .hamburger span:nth-child(1){top:13px;}
@@ -82,6 +81,38 @@ body.menu-open{overflow:hidden;}
 .loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
 .loader-logo span{color:var(--terra);font-style:italic;}
 @keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* ===== PAYMENT MODAL ===== */
+.pay-overlay{position:fixed;inset:0;background:rgba(26,20,16,0.65);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.25s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.pay-modal{background:white;border-radius:16px;max-width:420px;width:100%;padding:36px 32px 28px;text-align:center;position:relative;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pay-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;padding:4px 8px;}
+.pay-close:hover{color:var(--night);}
+.pay-advisor-av{width:80px;height:80px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--terra);margin:0 auto 14px;border:2px solid rgba(196,122,90,0.2);overflow:hidden;}
+.pay-advisor-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.pay-advisor-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--night);margin-bottom:4px;}
+.pay-advisor-spec{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:20px;}
+.pay-price-box{background:var(--cream);border-radius:12px;padding:20px;margin-bottom:18px;}
+.pay-price-label{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px;}
+.pay-price-amount{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;color:var(--terra);line-height:1;margin-bottom:4px;}
+.pay-price-period{font-size:0.75rem;color:var(--muted);}
+.pay-features{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;text-align:left;}
+.pay-feature{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--slate);}
+.pay-feature svg{flex-shrink:0;}
+.pay-note{font-size:0.7rem;color:var(--muted);line-height:1.5;margin-bottom:18px;font-style:italic;}
+.pay-btn{background:var(--terra);color:white;border:none;padding:14px 28px;border-radius:8px;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:background 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+.pay-btn:hover{background:#b5694a;}
+.pay-btn:disabled{background:var(--blush);cursor:not-allowed;}
+.pay-cancel{background:transparent;border:none;color:var(--muted);padding:10px;font-size:0.75rem;cursor:pointer;margin-top:8px;font-family:'DM Sans',sans-serif;width:100%;}
+.pay-cancel:hover{color:var(--night);}
+.pay-stripe-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.68rem;color:var(--muted);margin-top:12px;}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--night);color:var(--cream);font-size:0.85rem;padding:12px 22px;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:2000;max-width:90%;text-align:center;}
+.toast.show{opacity:1;}
+.toast.error{background:#c0392b;}
+
 @media(max-width:900px){.advisors-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   nav{padding:15px 20px;}
@@ -103,14 +134,13 @@ body.menu-open{overflow:hidden;}
     <a href="mensajes.html">Mensajes</a>
     <a href="perfil.html">Mi perfil</a>
     <span class="nav-email" id="nav-email"></span>
-    <button class="btn-logout" onclick="HKSK.signOut()">Salir</button>
+    <button class="btn-logout" onclick="logout()">Salir</button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
@@ -119,7 +149,7 @@ body.menu-open{overflow:hidden;}
   <a href="mensajes.html" onclick="closeMobileMenu()">Mensajes</a>
   <a href="perfil.html" onclick="closeMobileMenu()">Mi perfil</a>
   <span class="mm-email" id="mm-email"></span>
-  <button class="mm-logout" onclick="HKSK.signOut()">Salir</button>
+  <button class="mm-logout" onclick="logout()">Salir</button>
 </div>
 
 <div class="page">
@@ -143,9 +173,51 @@ body.menu-open{overflow:hidden;}
     <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
   </div>
 </div>
-<script src="supabase.js"></script>
+
+<!-- ===== PAYMENT MODAL ===== -->
+<div class="pay-overlay" id="pay-modal" style="display:none;">
+  <div class="pay-modal">
+    <button class="pay-close" onclick="closePayModal()">×</button>
+    <div class="pay-advisor-av" id="pay-advisor-av"></div>
+    <div class="pay-advisor-name" id="pay-advisor-name"></div>
+    <div class="pay-advisor-spec" id="pay-advisor-spec"></div>
+
+    <div class="pay-price-box">
+      <div class="pay-price-label">Precio de la consulta</div>
+      <div class="pay-price-amount" id="pay-price-amount">$0</div>
+      <div class="pay-price-period">MXN · Acceso 24 horas</div>
+    </div>
+
+    <div class="pay-features">
+      <div class="pay-feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Chat privado con tu Advisor por 24h
+      </div>
+      <div class="pay-feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Consulta directa, honesta y confidencial
+      </div>
+      <div class="pay-feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Pago seguro vía Stripe
+      </div>
+    </div>
+
+    <button class="pay-btn" id="pay-proceed-btn" onclick="proceedToPayment()">
+      Pagar y consultar →
+    </button>
+    <button class="pay-cancel" onclick="closePayModal()">Cancelar</button>
+
+    <div class="pay-stripe-note">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 8 21 12 22C16 21 20 17 20 12V6L12 2Z" stroke="#9A8880" stroke-width="1.5" fill="none"/></svg>
+      Pago 100% seguro
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script>
-/* ===== MENÚ MÓVIL ===== */
 function toggleMobileMenu(){
   const ham=document.getElementById('hamburger');
   const menu=document.getElementById('mobile-menu');
@@ -164,19 +236,33 @@ function closeMobileMenu(){
 }
 
 let ALL_ADVISORS = [];
+let SESSION = null;
+let SELECTED_ADVISOR = null;
 
 (async () => {
   try {
-    let session = null;
-    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
-    if (!session?.access_token) { window.location.replace('/login.html'); return; }
-    document.getElementById('nav-email').textContent = session.user.email;
-    document.getElementById('mm-email').textContent = session.user.email;
+    try { SESSION = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+    if (!SESSION?.access_token) { window.location.replace('/login.html'); return; }
+    document.getElementById('nav-email').textContent = SESSION.user.email;
+    document.getElementById('mm-email').textContent = SESSION.user.email;
+
+    // Detectar si volvió de pago cancelado
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('consultation') === 'cancelled') {
+      showToast('Pago cancelado. Tu consulta no se procesó.', true);
+      history.replaceState({}, '', 'buscar-advisors.html');
+    }
+
     await loadAdvisors();
   } finally {
     document.getElementById('loader').classList.add('gone');
   }
 })();
+
+function logout() {
+  localStorage.removeItem('hksk-session');
+  window.location.href = 'login.html';
+}
 
 async function loadAdvisors() {
   try {
@@ -236,37 +322,117 @@ function renderAdvisors(list) {
       <div class="ac-footer">
         <div class="ac-price">${price} <span>MXN / consulta</span></div>
         ${available
-          ? `<button class="ac-btn" onclick="contactAdvisor('${a.id}')">Consultar →</button>`
+          ? `<button class="ac-btn" onclick='openPayModal(${JSON.stringify({
+              id: a.id,
+              name: name,
+              specialty: (adv.specialty || "Advisor"),
+              price: adv.price_per_session || 0,
+              avatar_url: a.avatar_url || null
+            }).replace(/'/g, "&#39;")})'>Consultar →</button>`
           : `<span style="font-size:0.66rem;color:var(--muted);font-style:italic;">No disponible</span>`}
       </div>
     </div>`;
   }).join('');
 }
 
-function contactAdvisor(id) {
-  window.location.href = `mensajes.html?advisorId=${id}`;
-}
-</script>
-<!-- PAYMENT MODAL -->
-<div class="pay-overlay" id="pay-modal" style="display:none;">
-  <div class="pay-modal">
-    <div class="pay-advisor-av" id="pay-advisor-av"></div>
-    <div class="pay-advisor-name" id="pay-advisor-name"></div>
-    <div class="pay-advisor-spec" id="pay-advisor-spec"></div>
-    <div class="pay-price-box">
-      <div class="pay-price-label"><span class="es">Precio de la consulta</span><span class="en">Consultation price</span></div>
-      <div class="pay-price-amount" id="pay-price-amount">$0</div>
-      <div class="pay-price-period" id="pay-period">MXN · acceso 24hrs</div>
-    </div>
-    <p class="pay-note" id="pay-note-text"></p>
-    <button class="pay-btn" id="pay-proceed-btn" onclick="proceedToPayment()">
-      <span class="es">Pagar y consultar →</span><span class="en">Pay and consult →</span>
-    </button>
-    <button class="pay-cancel" onclick="document.getElementById('pay-modal').style.display='none'">
-      <span class="es">Cancelar</span><span class="en">Cancel</span>
-    </button>
-  </div>
-</div>
+// ===== PAYMENT MODAL =====
+function openPayModal(advisor) {
+  if (!advisor || !advisor.id) return;
+  SELECTED_ADVISOR = advisor;
 
+  // Llenar info en el modal
+  const av = document.getElementById('pay-advisor-av');
+  if (advisor.avatar_url) {
+    av.innerHTML = `<img src="${advisor.avatar_url}" alt="${advisor.name}">`;
+  } else {
+    av.textContent = (advisor.name[0] || 'A').toUpperCase();
+  }
+
+  document.getElementById('pay-advisor-name').textContent = advisor.name;
+  document.getElementById('pay-advisor-spec').textContent = (advisor.specialty || 'Advisor')
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
+
+  const price = parseInt(advisor.price) || 0;
+  document.getElementById('pay-price-amount').textContent = price ? `$${price.toLocaleString()}` : 'Gratis';
+
+  // Reset btn
+  const btn = document.getElementById('pay-proceed-btn');
+  btn.disabled = false;
+  btn.textContent = price > 0 ? 'Pagar y consultar →' : 'Continuar →';
+
+  document.getElementById('pay-modal').style.display = 'flex';
+}
+
+function closePayModal() {
+  document.getElementById('pay-modal').style.display = 'none';
+  SELECTED_ADVISOR = null;
+}
+
+async function proceedToPayment() {
+  if (!SELECTED_ADVISOR || !SESSION) return;
+
+  const btn = document.getElementById('pay-proceed-btn');
+  btn.disabled = true;
+  btn.textContent = 'Procesando…';
+
+  // Si el precio es 0, ir directo a mensajes (gratis)
+  if (!SELECTED_ADVISOR.price || parseFloat(SELECTED_ADVISOR.price) <= 0) {
+    window.location.href = `mensajes.html?advisorId=${SELECTED_ADVISOR.id}`;
+    return;
+  }
+
+  try {
+    const res = await fetch('/.netlify/functions/create-consultation-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_token: SESSION.access_token,
+        advisor_id: SELECTED_ADVISOR.id
+      })
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      showToast(data.error, true);
+      btn.disabled = false;
+      btn.textContent = 'Pagar y consultar →';
+      return;
+    }
+
+    if (data.checkout_url) {
+      // Redirige a Stripe Checkout
+      window.location.href = data.checkout_url;
+    } else {
+      showToast('Error: no se pudo iniciar el pago', true);
+      btn.disabled = false;
+      btn.textContent = 'Pagar y consultar →';
+    }
+  } catch (e) {
+    console.error('Payment error:', e);
+    showToast('Error de conexión', true);
+    btn.disabled = false;
+    btn.textContent = 'Pagar y consultar →';
+  }
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast${isError ? ' error' : ''} show`;
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// Cerrar modal con tecla Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('pay-modal').style.display === 'flex') {
+    closePayModal();
+  }
+});
+
+// Cerrar modal al click fuera
+document.getElementById('pay-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'pay-modal') closePayModal();
+});
+</script>
 </body>
 </html>
