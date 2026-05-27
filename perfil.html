@@ -188,6 +188,59 @@ main {
 
 .settings-col { display: flex; flex-direction: column; gap: 16px; }
 
+/* ===== STRIPE CONNECT BANNER ===== */
+.stripe-banner {
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  border: 1.5px solid;
+  animation: slideDown 0.4s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stripe-banner.warning {
+  background: linear-gradient(135deg, #FFF4ED 0%, #FFEEE3 100%);
+  border-color: var(--terra);
+}
+.stripe-banner.success {
+  background: linear-gradient(135deg, #E8F5E9 0%, #D4EDDA 100%);
+  border-color: #27ae60;
+}
+.stripe-banner-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stripe-banner.warning .stripe-banner-icon { background: var(--terra); color: white; }
+.stripe-banner.success .stripe-banner-icon { background: #27ae60; color: white; }
+.stripe-banner-content { flex: 1; min-width: 200px; }
+.stripe-banner-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 600;
+  color: var(--night); margin-bottom: 2px;
+}
+.stripe-banner-text {
+  font-size: 13px; color: var(--muted); line-height: 1.5;
+}
+.stripe-banner-btn {
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  font-size: 13px; padding: 10px 20px;
+  border-radius: 24px; cursor: pointer;
+  border: none; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.stripe-banner.warning .stripe-banner-btn {
+  background: var(--terra); color: white;
+}
+.stripe-banner.warning .stripe-banner-btn:hover { background: #b5694a; }
+.stripe-banner.success .stripe-banner-btn {
+  background: white; color: #27ae60; border: 1px solid #27ae60;
+}
+.stripe-banner-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 .settings-bar {
   background: var(--white);
   border: 1px solid var(--border);
@@ -453,6 +506,9 @@ main {
 
   <div class="settings-col">
 
+    <!-- ===== STRIPE CONNECT BANNER (solo advisors) ===== -->
+    <div id="stripe-banner" style="display:none"></div>
+
     <div class="settings-bar">
       <div class="bar-plan">
         <span id="plan-badge" class="plan-badge plan-free">Free</span>
@@ -640,6 +696,16 @@ async function init() {
     localStorage.setItem('hksk-session', JSON.stringify(session));
   }
 
+  // Detectar si vuelve de Stripe Connect onboarding
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('stripe') === 'complete') {
+    showToast(localStorage.getItem('hksk-lang')==='en'?'Payment setup complete!':'¡Pagos configurados!');
+    history.replaceState({}, '', 'perfil.html');
+  } else if (params.get('stripe') === 'refresh') {
+    showToast(localStorage.getItem('hksk-lang')==='en'?'Please complete setup':'Por favor completa la configuración', true);
+    history.replaceState({}, '', 'perfil.html');
+  }
+
   await loadProfile();
   buildSpecialtyGrid();
 
@@ -683,6 +749,97 @@ async function loadProfile() {
 
   if (profile.role === 'advisor' && advisorProfile) {
     loadAdvisorProfileData();
+    renderStripeBanner();
+  }
+}
+
+// ===== STRIPE CONNECT BANNER =====
+function renderStripeBanner() {
+  const banner = document.getElementById('stripe-banner');
+  if (!advisorProfile) { banner.style.display = 'none'; return; }
+
+  const lang = localStorage.getItem('hksk-lang') || 'es';
+  const onboardingComplete = advisorProfile.stripe_onboarding_complete === true;
+  const payoutsEnabled = advisorProfile.payouts_enabled === true;
+  const chargesEnabled = advisorProfile.charges_enabled === true;
+  const isFullyReady = onboardingComplete && payoutsEnabled && chargesEnabled;
+
+  banner.style.display = 'flex';
+
+  if (isFullyReady) {
+    banner.className = 'stripe-banner success';
+    banner.innerHTML = `
+      <div class="stripe-banner-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="stripe-banner-content">
+        <div class="stripe-banner-title">${lang==='en' ? 'Payments configured' : 'Pagos configurados'}</div>
+        <div class="stripe-banner-text">${lang==='en' ? "You're ready to receive payments from consultations." : 'Estás listo para recibir pagos por consultas.'}</div>
+      </div>
+    `;
+  } else {
+    banner.className = 'stripe-banner warning';
+    const title = onboardingComplete
+      ? (lang==='en' ? 'Verification in progress' : 'Verificación en proceso')
+      : (lang==='en' ? 'Configure your payments' : 'Configura tus pagos');
+    const text = onboardingComplete
+      ? (lang==='en' ? 'Stripe is verifying your information. You can continue updating data if needed.' : 'Stripe está verificando tu información. Puedes continuar actualizando datos si es necesario.')
+      : (lang==='en' ? 'To receive payments from consultations, connect your bank account with Stripe.' : 'Para recibir pagos de consultas, conecta tu cuenta bancaria con Stripe.');
+    const btnText = onboardingComplete
+      ? (lang==='en' ? 'Update info' : 'Actualizar datos')
+      : (lang==='en' ? 'Set up payments →' : 'Configurar pagos →');
+
+    banner.innerHTML = `
+      <div class="stripe-banner-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 9V13M12 17H12.01M3 12C3 7.03 7.03 3 12 3C16.97 3 21 7.03 21 12C21 16.97 16.97 21 12 21C7.03 21 3 16.97 3 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="stripe-banner-content">
+        <div class="stripe-banner-title">${title}</div>
+        <div class="stripe-banner-text">${text}</div>
+      </div>
+      <button class="stripe-banner-btn" id="stripe-connect-btn" onclick="startStripeOnboarding()">${btnText}</button>
+    `;
+  }
+}
+
+async function startStripeOnboarding() {
+  const btn = document.getElementById('stripe-connect-btn');
+  if (!btn) return;
+  const lang = localStorage.getItem('hksk-lang') || 'es';
+  btn.disabled = true;
+  btn.textContent = lang==='en' ? 'Loading…' : 'Cargando…';
+
+  try {
+    const res = await fetch('/.netlify/functions/connect-advisor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: session.access_token })
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      showToast(data.error, true);
+      btn.disabled = false;
+      btn.textContent = lang==='en' ? 'Set up payments →' : 'Configurar pagos →';
+      return;
+    }
+
+    if (data.onboarding_url) {
+      // Redirige a Stripe Express onboarding
+      window.location.href = data.onboarding_url;
+    } else {
+      showToast('Error: no se recibió URL', true);
+      btn.disabled = false;
+    }
+  } catch (e) {
+    console.error('Stripe onboarding error:', e);
+    showToast(lang==='en' ? 'Connection error' : 'Error de conexión', true);
+    btn.disabled = false;
+    btn.textContent = lang==='en' ? 'Set up payments →' : 'Configurar pagos →';
   }
 }
 
@@ -720,7 +877,6 @@ function setPlanUI(plan) {
   badge.className = `plan-badge ${p.cls}`;
   name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
 
-  // ✨ CAMBIO: ya no muestra botón "Ser Advisor →" para plan free
   if (plan === 'free') {
     actions.innerHTML = '';
   } else if (plan === 'advisor_mensual') {
@@ -814,11 +970,9 @@ async function uploadAvatar(input) {
   if (!file) return;
   if (file.size > 2 * 1024 * 1024) return showToast('La imagen debe ser menor a 2MB', true);
 
-  // Convertir archivo a base64
   const fileBase64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = e => {
-      // Preview inmediato
       ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
         const img = document.getElementById(id);
         if (img) { img.src = e.target.result; img.style.display = ''; }
@@ -827,7 +981,6 @@ async function uploadAvatar(input) {
       const prevPh = document.getElementById('preview-avatar-ph');
       if (editPh) editPh.style.display = 'none';
       if (prevPh) prevPh.style.display = 'none';
-      // Devolver solo la parte base64 (sin el prefijo data:image/...;base64,)
       resolve(e.target.result.split(',')[1]);
     };
     reader.onerror = reject;
@@ -851,7 +1004,6 @@ async function uploadAvatar(input) {
     console.log('avatar-upload response:', data);
     if (data.url || data.avatar_url) {
       showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
-      // Refrescar la foto con la URL definitiva del servidor
       const finalUrl = data.url || data.avatar_url;
       ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
         const img = document.getElementById(id);
