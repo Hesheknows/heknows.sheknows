@@ -90,6 +90,61 @@ body.menu-open{overflow:hidden;}
 .post-time{font-size:0.7rem;color:var(--muted);}
 .post-tag{margin-left:auto;font-size:0.65rem;padding:3px 9px;border-radius:10px;background:var(--cream);color:var(--muted);border:1px solid var(--border);font-weight:500;display:inline-flex;align-items:center;gap:5px;}
 .post-tag svg{width:12px;height:12px;flex-shrink:0;}
+
+/* Botón de tres puntitos (más opciones) en posts y respuestas */
+.post-menu-wrap{position:relative;display:inline-block;}
+.post-menu-btn{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;padding:4px 6px;
+  border-radius:4px;display:flex;align-items:center;font-size:1rem;line-height:1;
+  font-family:inherit;transition:background 0.15s;
+}
+.post-menu-btn:hover{background:var(--cream);color:var(--night);}
+.post-menu-dropdown{
+  position:absolute;top:calc(100% + 4px);right:0;background:var(--white);
+  border:1px solid var(--border);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,0.08);
+  padding:4px;min-width:140px;z-index:50;display:none;
+}
+.post-menu-dropdown.open{display:block;}
+.post-menu-item{
+  display:block;width:100%;text-align:left;background:transparent;border:none;
+  padding:8px 12px;font-size:0.8rem;color:var(--night);cursor:pointer;border-radius:4px;
+  font-family:inherit;transition:background 0.15s;
+}
+.post-menu-item:hover{background:var(--cream);color:#C47A5A;}
+
+.reply-meta-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.reply-actions-row{display:flex;align-items:center;gap:6px;margin-top:6px;justify-content:flex-end;}
+
+/* Modal de reportar (compartido con mensajes.html) */
+.report-overlay {
+  position:fixed; inset:0; background:rgba(26,20,16,0.5); backdrop-filter:blur(4px);
+  display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+}
+.report-overlay.show { display:flex; }
+.report-modal {
+  background:#FFFFFF; border-radius:8px; max-width:440px; width:100%;
+  padding:28px 24px 20px; box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.report-modal h3 { margin:0 0 8px; font-size:1.15rem; font-weight:500; color:var(--night); }
+.report-modal p { margin:0 0 16px; font-size:0.85rem; line-height:1.5; color:var(--muted); }
+.report-modal textarea {
+  width:100%; min-height:90px; padding:10px 12px; border:1px solid var(--border);
+  border-radius:4px; font-family:inherit; font-size:0.9rem; color:var(--night);
+  resize:vertical; box-sizing:border-box; background:#FAFAF8;
+}
+.report-modal textarea:focus { outline:none; border-color:#C47A5A; }
+.report-actions {
+  display:flex; gap:10px; justify-content:flex-end; margin-top:16px;
+}
+.report-btn-cancel, .report-btn-send {
+  font-family:inherit; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;
+  padding:9px 18px; border-radius:3px; cursor:pointer; border:1px solid;
+}
+.report-btn-cancel { background:transparent; border-color:var(--border); color:var(--muted); }
+.report-btn-cancel:hover { color:var(--night); }
+.report-btn-send { background:#C47A5A; border-color:#C47A5A; color:#FFFFFF; }
+.report-btn-send:hover { background:#A86547; border-color:#A86547; }
+.report-btn-send:disabled { opacity:0.5; cursor:wait; }
 .post-body{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--night);line-height:1.6;margin-bottom:12px;}
 .post-body::before{content:'"';color:var(--terra);}
 .post-body::after{content:'"';color:var(--terra);}
@@ -414,6 +469,14 @@ function renderPost(p) {
         <div class="post-time">${timeAgo}</div>
       </div>
       ${catLabel ? `<div class="post-tag">${catLabel}</div>` : ''}
+      <div class="post-menu-wrap" style="${catLabel ? '' : 'margin-left:auto;'}">
+        <button class="post-menu-btn" onclick="togglePostMenu(event, 'post', '${p.id}')" aria-label="Más opciones">⋯</button>
+        <div class="post-menu-dropdown" id="menu-post-${p.id}">
+          <button class="post-menu-item" onclick="openReportFromHonest('post', '${p.id}')">
+            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
+          </button>
+        </div>
+      </div>
     </div>
     <div class="post-body">${escHtml(p.body)}</div>
     ${replyHtml}
@@ -443,10 +506,20 @@ function renderReplyPreview(reply) {
     : '';
   const badgeClass = isAdvisor ? 'reply-badge' : 'reply-badge f';
   const badgeText = isAdvisor ? 'Advisor' : (localStorage.getItem('hksk-lang')==='en'?'User':'Usuario');
+  const menuHtml = reply.id ? `
+      <div class="post-menu-wrap" style="margin-left:auto;">
+        <button class="post-menu-btn" onclick="togglePostMenu(event, 'reply', '${reply.id}')" aria-label="Más opciones">⋯</button>
+        <div class="post-menu-dropdown" id="menu-reply-${reply.id}">
+          <button class="post-menu-item" onclick="openReportFromHonest('reply', '${reply.id}')">
+            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
+          </button>
+        </div>
+      </div>` : '';
   return `<div class="reply-preview">
     <div class="reply-meta-row">
       <span class="${badgeClass}">${badgeText}</span>
       ${avatarHtml}<span class="reply-name">${escHtml(name)}</span>
+      ${menuHtml}
     </div>
     <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}</div>
   </div>`;
@@ -607,6 +680,117 @@ function showToast(msg) {
 }
 
 init();
+</script>
+
+<!-- Modal de reportar (post o respuesta) -->
+<div class="report-overlay" id="report-modal-ht">
+  <div class="report-modal">
+    <h3>
+      <span class="es">Reportar contenido</span>
+      <span class="en">Report content</span>
+    </h3>
+    <p>
+      <span class="es">Cuéntanos qué pasó (opcional). Nuestro equipo revisa cada reporte. El autor no sabrá que reportaste.</span>
+      <span class="en">Tell us what happened (optional). Our team reviews every report. The author will not know you reported.</span>
+    </p>
+    <textarea id="report-motivo-ht" placeholder="" maxlength="1000"></textarea>
+    <div class="report-actions">
+      <button class="report-btn-cancel" onclick="closeReportModalHT()">
+        <span class="es">Cancelar</span><span class="en">Cancel</span>
+      </button>
+      <button class="report-btn-send" id="report-send-btn-ht" onclick="submitReportHT()">
+        <span class="es">Enviar reporte</span><span class="en">Send report</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Estado del item que se está por reportar
+let reportingItem = null; // { kind:'post'|'reply', id:'...' }
+
+// Abre/cierra el menú de tres puntitos. Cierra cualquier otro abierto.
+function togglePostMenu(event, kind, id) {
+  event.stopPropagation();
+  const menuId = `menu-${kind}-${id}`;
+  const menu = document.getElementById(menuId);
+  if (!menu) return;
+  const isOpen = menu.classList.contains('open');
+  // Cerrar todos los menús abiertos
+  document.querySelectorAll('.post-menu-dropdown.open').forEach(m => m.classList.remove('open'));
+  if (!isOpen) menu.classList.add('open');
+}
+
+// Cerrar menú al picar fuera
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.post-menu-wrap')) {
+    document.querySelectorAll('.post-menu-dropdown.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// Abrir modal de reporte para un post o reply
+function openReportFromHonest(kind, id) {
+  // Cerrar menús
+  document.querySelectorAll('.post-menu-dropdown.open').forEach(m => m.classList.remove('open'));
+  // Verificar sesión
+  if (!session?.access_token) {
+    showToast(localStorage.getItem('hksk-lang')==='en'
+      ? 'You need to be signed in to report.'
+      : 'Necesitas iniciar sesión para reportar.');
+    return;
+  }
+  reportingItem = { kind, id };
+  const modal = document.getElementById('report-modal-ht');
+  const ta = document.getElementById('report-motivo-ht');
+  ta.value = '';
+  ta.placeholder = localStorage.getItem('hksk-lang')==='en'
+    ? 'What happened? (optional)'
+    : '¿Qué pasó? (opcional)';
+  modal.classList.add('show');
+  setTimeout(() => ta.focus(), 100);
+}
+
+function closeReportModalHT() {
+  document.getElementById('report-modal-ht').classList.remove('show');
+  reportingItem = null;
+}
+
+async function submitReportHT() {
+  if (!session?.access_token || !reportingItem) return;
+  const motivo = document.getElementById('report-motivo-ht').value.trim();
+  const btn = document.getElementById('report-send-btn-ht');
+  btn.disabled = true;
+  try {
+    await fetch('/.netlify/functions/report-post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: session.access_token,
+        kind: reportingItem.kind,
+        itemId: reportingItem.id,
+        motivo
+      })
+    });
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en'
+      ? 'Thank you. We received your report and our team will review it.'
+      : '¡Gracias! Recibimos tu reporte. Nuestro equipo lo revisará.');
+    closeReportModalHT();
+  } catch (err) {
+    console.error('Error enviando reporte:', err);
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en'
+      ? 'Could not send report. Try again.'
+      : 'No se pudo enviar el reporte. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Cerrar modal al picarle al fondo
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'report-modal-ht') closeReportModalHT();
+});
 </script>
 
 <script>
