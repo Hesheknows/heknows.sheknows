@@ -166,7 +166,86 @@ He Knows · She Knows
   return { subject, htmlContent, textContent };
 }
 
-module.exports = { sendEmail, emailNuevaConsulta };
+// ============================================================
+// PLANTILLA: Nuevo mensaje en el chat
+// ============================================================
+function emailNuevoMensaje({ recipientName, senderName, preview, role }) {
+  // role: 'advisor' = el destinatario es advisor, 'user' = es usuario
+  const subject = `💬 Tienes un mensaje nuevo de ${senderName || 'alguien'} — He Knows · She Knows`;
+  // Recortar preview por si es muy largo
+  const previewCorto = (preview || '').slice(0, 140) + ((preview || '').length > 140 ? '...' : '');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#F7F3EE;font-family:'Helvetica Neue',Arial,sans-serif;color:#1A1410;">
+<div style="max-width:600px;margin:0 auto;background:#FFFFFF;">
+
+  <div style="padding:32px 32px 24px;border-bottom:1px solid #EDE7DF;text-align:center;">
+    <div style="font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:#1A1410;font-weight:300;">
+      He Knows · <em style="color:#C47A5A;font-style:italic;">She Knows</em>
+    </div>
+  </div>
+
+  <div style="padding:36px 32px 24px;">
+    <h1 style="margin:0 0 16px;font-size:1.5rem;font-weight:400;color:#1A1410;">
+      💬 Tienes un mensaje nuevo
+    </h1>
+    <p style="margin:0 0 12px;font-size:1rem;line-height:1.6;color:#3D3530;">
+      Hola <strong>${recipientName || ''}</strong>,
+    </p>
+    <p style="margin:0 0 20px;font-size:1rem;line-height:1.6;color:#3D3530;">
+      <strong>${senderName || 'Alguien'}</strong> te envió un mensaje:
+    </p>
+
+    <div style="background:#F7F3EE;border-left:3px solid #C47A5A;padding:16px 20px;margin:20px 0;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.5;color:#1A1410;font-style:italic;">
+        "${previewCorto}"
+      </p>
+    </div>
+
+    <div style="text-align:center;margin:28px 0;">
+      <a href="https://he-sheknows.com/mensajes" style="display:inline-block;background:#C47A5A;color:#FFFFFF;text-decoration:none;padding:14px 32px;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;">
+        Responder →
+      </a>
+    </div>
+
+    <p style="margin:24px 0 0;font-size:0.85rem;line-height:1.5;color:#9A8880;text-align:center;">
+      Recuerda: mantén la conversación dentro de la plataforma. No compartas datos de contacto.
+    </p>
+  </div>
+
+  <div style="padding:20px 32px;text-align:center;background:#F7F3EE;border-top:1px solid #EDE7DF;">
+    <p style="margin:0 0 6px;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#1A1410;">
+      He Knows · <em style="color:#C47A5A;">She Knows</em>
+    </p>
+    <p style="margin:0;font-size:0.7rem;color:#9A8880;">
+      Recibiste este email porque tienes una conversación activa.
+    </p>
+  </div>
+
+</div>
+</body></html>`;
+
+  const textContent = `
+💬 Tienes un mensaje nuevo — He Knows · She Knows
+
+Hola ${recipientName || ''},
+
+${senderName || 'Alguien'} te envió un mensaje:
+
+"${previewCorto}"
+
+→ Responder: https://he-sheknows.com/mensajes
+
+Recuerda: mantén la conversación dentro de la plataforma. No compartas datos de contacto.
+
+He Knows · She Knows
+`.trim();
+
+  return { subject, htmlContent, textContent };
+}
+
+module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje };
 
 // Handler vacío — este archivo es solo una librería, no un endpoint.
 // Netlify requiere que toda función exporte un handler; aquí responde 404.
