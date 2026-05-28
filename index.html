@@ -139,11 +139,15 @@ body.menu-open{overflow:hidden;}
 .ac{background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.12);padding:48px 40px;position:relative;}
 .ac.feat{background:rgba(196,122,90,0.1);border-color:rgba(196,122,90,0.35);}
 .asv{position:absolute;top:18px;right:18px;background:var(--terra);color:var(--cream);font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:700;}
+.atrial{display:inline-block;background:linear-gradient(135deg,#C9A96E,#C47A5A);color:white;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;padding:5px 14px;border-radius:20px;font-weight:700;margin-bottom:14px;box-shadow:0 4px 12px rgba(201,169,110,0.3);}
 .apl{font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:rgba(201,169,110,0.6);margin-bottom:14px;font-weight:600;}
 .anm2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--cream);margin-bottom:4px;}
 .abl{font-size:0.7rem;color:rgba(247,243,238,0.35);margin-bottom:18px;}
 .aam{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--terra);line-height:1;margin-bottom:4px;}
-.amx{font-size:0.7rem;color:rgba(247,243,238,0.32);margin-bottom:22px;}
+.aam-free{color:var(--gold);}
+.amx{font-size:0.7rem;color:rgba(247,243,238,0.32);margin-bottom:8px;}
+.aafter{font-size:0.72rem;color:rgba(247,243,238,0.55);margin-bottom:18px;font-style:italic;}
+.aafter strong{color:var(--terra);font-style:normal;}
 .adv{width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-bottom:18px;}
 .afs{display:flex;flex-direction:column;gap:9px;margin-bottom:30px;}
 .af{font-size:0.78rem;color:rgba(247,243,238,0.62);display:flex;gap:8px;align-items:flex-start;line-height:1.5;font-weight:300;}
@@ -212,6 +216,7 @@ footer{background:#110D0A;padding:44px 80px;display:flex;align-items:center;just
 .plop{border:2px solid rgba(201,169,110,0.2);border-radius:3px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;}
 .plop:hover,.plop.sel{border-color:var(--terra);background:rgba(196,122,90,0.08);}
 .plsv{position:absolute;top:-8px;right:10px;background:var(--terra);color:white;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;padding:3px 10px;border-radius:10px;font-weight:700;}
+.pltrial{display:inline-block;background:linear-gradient(135deg,#C9A96E,#C47A5A);color:white;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:700;margin-bottom:8px;}
 .plnm{font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,243,238,0.5);margin-bottom:6px;font-weight:600;}
 .plpr{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--terra);line-height:1;}
 .plpe{font-size:0.65rem;color:rgba(247,243,238,0.35);margin-top:3px;}
@@ -385,17 +390,20 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
 </section>
 
 <section class="s s-slate" id="advsec">
-  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Convierte lo que ya sabes<br>en <em>ingresos reales.</em></span><span class="en">Turn what you already know<br>into <em>real income.</em></span></h2><p class="ss ss-w"><span class="es">Si has vivido, amado, perdido y aprendido… ya tienes una perspectiva que puede ayudar a alguien más.</span><span class="en">If you've lived, loved, lost and learned… you already have a perspective that can help someone else.</span></p></div>
+  <div class="sh"><p class="sl sl-w"><span class="es">Para Advisors · Todo en MXN</span><span class="en">For Advisors · All in MXN</span></p><h2 class="st st-w"><span class="es">Empieza a ganar<br><em>antes de pagar.</em></span><span class="en">Start earning<br><em>before paying.</em></span></h2><p class="ss ss-w"><span class="es">Prueba 60 días sin costo. Tu primera consulta paga tu membresía. Si has vivido, amado, perdido y aprendido… ya tienes una perspectiva que puede ayudar a alguien más.</span><span class="en">Try 60 days at no cost. Your first consultation pays your membership. If you've lived, loved, lost and learned… you already have a perspective that can help someone else.</span></p></div>
   <div class="rqg">
     <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="32" height="24" rx="2"/><circle cx="16" cy="20" r="4" fill="#C9A96E" fill-opacity="0.3"/><line x1="24" y1="18" x2="32" y2="18"/><line x1="24" y1="22" x2="30" y2="22"/><line x1="12" y1="28" x2="32" y2="28"/></svg></div><div class="rqt"><span class="es">Verificación de identidad</span><span class="en">Identity Verification</span></div><p class="rqd"><span class="es">Verificamos tu identidad con ID oficial. Tu nombre real nunca se muestra a los usuarios.</span><span class="en">Official ID without photo. Verified but your name is never shown to users.</span></p></div>
     <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.2" stroke-linejoin="round"><polygon points="22,5 27,16 39,17 30,25 33,37 22,30 11,37 14,25 5,17 17,16" fill="#C9A96E" fill-opacity="0.15"/></svg></div><div class="rqt"><span class="es">Sistema de rating real</span><span class="en">Real Rating System</span></div><p class="rqd"><span class="es">Cada consejo recibe una calificación. Mejor rating = más visibilidad y más ganancias.</span><span class="en">Each advice gets a rating. Better rating = more visibility and more earnings.</span></p></div>
     <div class="rq"><div class="rqi"><svg width="28" height="28" viewBox="0 0 44 44" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="5" width="18" height="34" rx="3"/><line x1="20" y1="34" x2="24" y2="34"/><line x1="13" y1="10" x2="31" y2="10"/></svg></div><div class="rqt"><span class="es">Desde tu celular</span><span class="en">From Your Phone</span></div><p class="rqd"><span class="es">Sin horario fijo. Sin jefe. Tú decides cuándo y cuánto trabajas.</span><span class="en">No fixed schedule. No boss. You decide when and how much you work.</span></p></div>
   </div>
-  <div class="sh" style="margin-bottom:40px;"><p class="sl sl-w"><span class="es">Membresía Advisor · Pesos Mexicanos</span><span class="en">Advisor Membership · Mexican Pesos</span></p><h3 class="st st-w" style="font-size:clamp(1.8rem,3vw,2.6rem);"><span class="es">Elige tu plan<br>de <em>Advisor.</em></span><span class="en">Choose your<br><em>Advisor</em> plan.</span></h3></div>
+  <div class="sh" style="margin-bottom:40px;"><p class="sl sl-w"><span class="es">Membresía Advisor · 60 días gratis</span><span class="en">Advisor Membership · 60 days free</span></p><h3 class="st st-w" style="font-size:clamp(1.8rem,3vw,2.6rem);"><span class="es">Elige tu plan<br>de <em>Advisor.</em></span><span class="en">Choose your<br><em>Advisor</em> plan.</span></h3></div>
   <div class="agrid">
     <div class="ac">
-      <div class="apl"><span class="es">Mensual</span><span class="en">Monthly</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro mensual · MXN</span><span class="en">Monthly billing · MXN</span></div>
-      <div class="aam">$99</div><div class="amx"><span class="es">MXN por mes</span><span class="en">MXN per month</span></div><div class="adv"></div>
+      <span class="atrial"><span class="es">60 días gratis</span><span class="en">60 days free</span></span>
+      <div class="apl"><span class="es">Mensual</span><span class="en">Monthly</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Después de la prueba · MXN</span><span class="en">After trial · MXN</span></div>
+      <div class="aam aam-free">$0</div><div class="amx"><span class="es">los primeros 2 meses</span><span class="en">the first 2 months</span></div>
+      <div class="aafter"><span class="es">Después: <strong>$99 MXN/mes</strong></span><span class="en">Then: <strong>$99 MXN/month</strong></span></div>
+      <div class="adv"></div>
       <div class="afs">
         <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--terra);">70%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--terra);">70%</strong> earnings per consultation</span></div>
         <div class="af"><span class="ack">✓</span><span class="es">Tú pones tu precio por consulta</span><span class="en">You set your own consultation price</span></div>
@@ -403,12 +411,15 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
         <div class="af"><span class="ack">✓</span><span class="es">Perfil en el directorio público</span><span class="en">Profile in public directory</span></div>
         <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
       </div>
-      <button class="bad" onclick="openM('ma')"><span class="es">Registrarme como Advisor</span><span class="en">Register as Advisor</span></button>
+      <button class="bad" onclick="openM('ma')"><span class="es">Empezar gratis 60 días</span><span class="en">Start 60-day free trial</span></button>
     </div>
     <div class="ac feat">
       <div class="asv"><span class="es">GANA 20% MÁS</span><span class="en">EARN 20% MORE</span></div>
-      <div class="apl"><span class="es">Anual</span><span class="en">Annual</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Cobro anual · MXN</span><span class="en">Annual billing · MXN</span></div>
-      <div class="aam">$999</div><div class="amx"><span class="es">MXN por año · (~$83/mes)</span><span class="en">MXN per year · (~$83/mo)</span></div><div class="adv"></div>
+      <span class="atrial"><span class="es">60 días gratis</span><span class="en">60 days free</span></span>
+      <div class="apl"><span class="es">Anual</span><span class="en">Annual</span></div><div class="anm2"><span class="es">Membresía Advisor</span><span class="en">Advisor Membership</span></div><div class="abl"><span class="es">Después de la prueba · MXN</span><span class="en">After trial · MXN</span></div>
+      <div class="aam aam-free">$0</div><div class="amx"><span class="es">los primeros 2 meses</span><span class="en">the first 2 months</span></div>
+      <div class="aafter"><span class="es">Después: <strong>$999 MXN/año</strong> (~$83/mes)</span><span class="en">Then: <strong>$999 MXN/year</strong> (~$83/mo)</span></div>
+      <div class="adv"></div>
       <div class="afs">
         <div class="af"><span class="ack">✓</span><span class="es"><strong style="color:var(--gold);">90%</strong> de ganancias por consulta</span><span class="en"><strong style="color:var(--gold);">90%</strong> earnings per consultation</span></div>
         <div class="af"><span class="ack">✓</span><span class="es">20% más que el plan mensual</span><span class="en">20% more than monthly plan</span></div>
@@ -417,10 +428,10 @@ footer{flex-direction:column;text-align:center;padding:36px 24px;}
         <div class="af"><span class="ack">✓</span><span class="es">Múltiples fotos de perfil</span><span class="en">Multiple profile photos</span></div>
         <div class="af"><span class="ack">✓</span><span class="es">Pagos quincenales vía SPEI</span><span class="en">Bi-weekly payments via SPEI</span></div>
       </div>
-      <button class="bad" onclick="openM('ma')"><span class="es">Quiero el plan anual →</span><span class="en">Get annual plan →</span></button>
+      <button class="bad" onclick="openM('ma')"><span class="es">Empezar gratis 60 días</span><span class="en">Start 60-day free trial</span></button>
     </div>
   </div>
-  <p class="anote"><span class="es">Ganas entre <strong>70% y 90%</strong> de cada consulta · Pagos quincenales en MXN · Sin mínimos</span><span class="en">Earn between <strong>70% and 90%</strong> per consultation · Bi-weekly payments in MXN · No minimums</span></p>
+  <p class="anote"><span class="es"><strong>60 días gratis</strong> · Cancela cuando quieras · Pagos quincenales en MXN</span><span class="en"><strong>60 days free</strong> · Cancel anytime · Bi-weekly payments in MXN</span></p>
 </section>
 
 <section class="s s-mid">
@@ -532,17 +543,30 @@ async function subscribeNewsletter() {
     </div>
     <div id="as4" style="display:none;">
       <div class="fsteps"><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div><div class="fsd on"></div></div>
-      <p class="mlb">Paso 4 de 4 · Tu plan · Todo en MXN</p>
+      <p class="mlb">Paso 4 de 4 · Tu plan · 60 días gratis</p>
       <h2 class="mtt">Elige tu<br><em>membresía.</em></h2>
-      <p class="msb">Al continuar serás redirigido/a a Stripe para completar tu pago. Tu perfil se activa cuando se confirma el pago.</p>
+      <p class="msb">Empiezas <strong style="color:var(--gold);">60 días gratis</strong>. Solo registramos tu tarjeta para activar después de la prueba. Cancela cuando quieras.</p>
       <div class="fg"><div class="plno">
-        <div class="plop" onclick="selP(this)"><div class="plnm">Mensual</div><div class="plpr">$99 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por mes</div><div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Sin compromiso anual</div></div></div>
-        <div class="plop sel" onclick="selP(this)"><div class="plsv">GANA 20% MÁS</div><div class="plnm">Anual</div><div class="plpr">$999 <span style="font-size:1rem;">MXN</span></div><div class="plpe">por año · ~$83/mes</div><div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Prioridad en búsquedas</div></div></div>
+        <div class="plop" onclick="selP(this)">
+          <span class="pltrial"><span class="es">60 días gratis</span><span class="en">60 days free</span></span>
+          <div class="plnm">Mensual</div>
+          <div class="plpr">$0 <span style="font-size:0.85rem;color:rgba(247,243,238,0.5);">→ $99/mes</span></div>
+          <div class="plpe">los primeros 2 meses</div>
+          <div class="plfs"><div class="plf">70% de ganancias</div><div class="plf">Cancela cuando quieras</div></div>
+        </div>
+        <div class="plop sel" onclick="selP(this)">
+          <div class="plsv">GANA 20% MÁS</div>
+          <span class="pltrial"><span class="es">60 días gratis</span><span class="en">60 days free</span></span>
+          <div class="plnm">Anual</div>
+          <div class="plpr">$0 <span style="font-size:0.85rem;color:rgba(247,243,238,0.5);">→ $999/año</span></div>
+          <div class="plpe">los primeros 2 meses</div>
+          <div class="plfs"><div class="plf">90% de ganancias</div><div class="plf">Prioridad en búsquedas</div></div>
+        </div>
       </div></div>
       <div class="fdv"></div>
-      <button class="bfl" onclick="showSuc('ma')">Continuar a pago →</button>
+      <button class="bfl" onclick="showSuc('ma')">Continuar a Stripe →</button>
       <div style="display:flex;justify-content:center;margin-top:12px;"><button class="bfl bflo" onclick="aB(4)" style="width:auto;padding:10px 24px;font-size:0.65rem;">← Atrás</button></div>
-      <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br>Pagos seguros en MXN · <strong>70-90% de ganancias</strong></p>
+      <p class="fnote">Al registrarte aceptas los <a href="terminos-condiciones.html" style="color:var(--gold);">Términos para Advisors</a><br><strong>60 días gratis</strong> · Solo se cobra después de la prueba</p>
     </div>
   </div>
 </div>
@@ -637,7 +661,7 @@ async function showSuc(id){
 
     if(data.error){
       alert('Error: '+data.error);
-      if(btn){btn.disabled=false;btn.textContent='Continuar a pago →';}
+      if(btn){btn.disabled=false;btn.textContent='Continuar a Stripe →';}
       return;
     }
 
@@ -664,7 +688,7 @@ async function showSuc(id){
   }catch(e){
     console.error('Error en registro advisor:', e);
     alert('Error de conexión: '+e.message);
-    if(btn){btn.disabled=false;btn.textContent='Continuar a pago →';}
+    if(btn){btn.disabled=false;btn.textContent='Continuar a Stripe →';}
   }
 }
 </script>
