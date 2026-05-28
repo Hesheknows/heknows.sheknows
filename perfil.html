@@ -30,9 +30,9 @@ body {
 
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(247,243,238,0.95);
+  background: var(--white);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(196,122,90,0.12);
+  border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 48px;
 }
@@ -415,19 +415,21 @@ main {
   display: flex; align-items: center; justify-content: center;
   padding: 60px; color: var(--muted); font-size: 14px;
 }
+.btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:"DM Sans",sans-serif;transition:all 0.2s;}
+.btn-logout:hover{background:var(--terra);color:white;}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
+  <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
     <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="honest-talk.html">Honest Talk</a>
     <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
     <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
-    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+    <button class="btn-logout" onclick="logout()"><span class="es">Salir</span><span class="en">Sign out</span></button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
     <span></span><span></span><span></span>
@@ -1193,6 +1195,12 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
+
+function logout() {
+  localStorage.removeItem("hksk-session");
+  window.location.href = "login.html";
+}
+
 </script>
 </body>
 </html>
