@@ -522,7 +522,7 @@ function renderPost(p) {
   const replyBtnHtml = isDeleted ? '' : `
       <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">${langCur==='en'?'+ Reply':'+ Responder'}</button>`;
 
-  return `<div class="post-card${isDeleted ? ' deleted-post' : ''}" id="post-${p.id}">
+  return `<div class="post-card${isDeleted ? ' deleted-post' : ''}" id="post-${p.id}" data-fullbody="${escHtml(p.body || '')}">
     <div class="post-meta">
       ${avatarHtml}
       <div>
@@ -586,7 +586,7 @@ function renderReplyPreview(reply) {
 
   const editedMark = wasEdited ? `<span class="edited-mark"> · ${langCur==='en'?'edited':'editado'}</span>` : '';
 
-  return `<div class="reply-preview" id="reply-${reply.id}">
+  return `<div class="reply-preview" id="reply-${reply.id}" data-fullbody="${escHtml(reply.body || '')}">
     <div class="reply-meta-row">
       <span class="${badgeClass}">${badgeText}</span>
       ${avatarHtml}<span class="reply-name">${escHtml(name)}</span>
@@ -701,7 +701,9 @@ function updateStats(posts) {
 }
 
 function updateTrending(posts) {
-  const sorted = [...posts].sort((a, b) => (b.reply_count || 0) - (a.reply_count || 0)).slice(0, 3);
+  // Excluir posts eliminados del trending (no tiene sentido mostrar su body)
+  const visibles = posts.filter(p => !p.is_deleted);
+  const sorted = [...visibles].sort((a, b) => (b.reply_count || 0) - (a.reply_count || 0)).slice(0, 3);
   const list = document.getElementById('trending-list');
   if (!sorted.length) { list.innerHTML = `<p style="font-size:0.78rem;color:var(--muted);">${localStorage.getItem('hksk-lang')==='en'?'No trending yet.':'Aún sin tendencias.'}</p>`; return; }
   list.innerHTML = sorted.map((p, i) => `
@@ -924,27 +926,19 @@ function openEditModalHT(kind, id) {
     showToast(localStorage.getItem('hksk-lang')==='en' ? 'Sign in first.' : 'Inicia sesión primero.');
     return;
   }
-  // Tomar el texto actual del DOM (sin la marca "editado")
+  // Tomar el texto actual desde data-fullbody (contiene el body completo sin recortar)
   let currentText = '';
   if (kind === 'post') {
     const card = document.getElementById(`post-${id}`);
-    const body = card?.querySelector('.post-body');
-    if (body) {
-      // Quitar el span .edited-mark del clon para extraer solo el texto original
-      const clone = body.cloneNode(true);
-      clone.querySelectorAll('.edited-mark').forEach(e => e.remove());
-      currentText = clone.textContent.trim();
-    }
+    currentText = card?.getAttribute('data-fullbody') || '';
   } else {
     const replyEl = document.getElementById(`reply-${id}`);
-    const txt = replyEl?.querySelector('.reply-text');
-    if (txt) {
-      const clone = txt.cloneNode(true);
-      clone.querySelectorAll('.edited-mark').forEach(e => e.remove());
-      // Remover el "…" final si existía (era recorte de preview)
-      currentText = clone.textContent.replace(/…$/, '').trim();
-    }
+    currentText = replyEl?.getAttribute('data-fullbody') || '';
   }
+  // Decodificar entidades HTML (data-fullbody está escapado)
+  const decoder = document.createElement('div');
+  decoder.innerHTML = currentText;
+  currentText = decoder.textContent || '';
   editingItem = { kind, id };
   const ta = document.getElementById('edit-textarea-ht');
   ta.value = currentText;
