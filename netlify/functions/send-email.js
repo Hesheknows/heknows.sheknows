@@ -245,7 +245,93 @@ He Knows · She Knows
   return { subject, htmlContent, textContent };
 }
 
-module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje };
+// ============================================================
+// PLANTILLA: Nueva respuesta en Honest Talk
+// ============================================================
+function emailNuevaRespuestaHonest({ preview, postPreview }) {
+  const subject = '🗨️ Tienes una respuesta nueva en Honest Talk — He Knows · She Knows';
+  const previewCorto = (preview || '').slice(0, 160) + ((preview || '').length > 160 ? '...' : '');
+  const postCorto = (postPreview || '').slice(0, 100) + ((postPreview || '').length > 100 ? '...' : '');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#F7F3EE;font-family:'Helvetica Neue',Arial,sans-serif;color:#1A1410;">
+<div style="max-width:600px;margin:0 auto;background:#FFFFFF;">
+
+  <div style="padding:32px 32px 24px;border-bottom:1px solid #EDE7DF;text-align:center;">
+    <div style="font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:#1A1410;font-weight:300;">
+      He Knows · <em style="color:#C47A5A;font-style:italic;">She Knows</em>
+    </div>
+  </div>
+
+  <div style="padding:36px 32px 24px;">
+    <h1 style="margin:0 0 16px;font-size:1.5rem;font-weight:400;color:#1A1410;">
+      🗨️ Tienes una respuesta nueva
+    </h1>
+    <p style="margin:0 0 20px;font-size:1rem;line-height:1.6;color:#3D3530;">
+      Tu pregunta en Honest Talk recibió una respuesta nueva.
+    </p>
+
+    ${postCorto ? `
+    <p style="margin:0 0 8px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Tu pregunta
+    </p>
+    <p style="margin:0 0 20px;font-size:0.95rem;line-height:1.5;color:#3D3530;font-style:italic;">
+      "${postCorto}"
+    </p>
+    ` : ''}
+
+    <p style="margin:0 0 8px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#C47A5A;">
+      Nueva respuesta
+    </p>
+    <div style="background:#F7F3EE;border-left:3px solid #C47A5A;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.5;color:#1A1410;">
+        "${previewCorto}"
+      </p>
+    </div>
+
+    <div style="text-align:center;margin:28px 0;">
+      <a href="https://he-sheknows.com/honest-talk" style="display:inline-block;background:#C47A5A;color:#FFFFFF;text-decoration:none;padding:14px 32px;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;">
+        Ver respuesta completa →
+      </a>
+    </div>
+
+    <p style="margin:24px 0 0;font-size:0.85rem;line-height:1.5;color:#9A8880;text-align:center;">
+      ¿Quieres una respuesta privada y más profunda? Consulta a un advisor.
+    </p>
+  </div>
+
+  <div style="padding:20px 32px;text-align:center;background:#F7F3EE;border-top:1px solid #EDE7DF;">
+    <p style="margin:0 0 6px;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#1A1410;">
+      He Knows · <em style="color:#C47A5A;">She Knows</em>
+    </p>
+    <p style="margin:0;font-size:0.7rem;color:#9A8880;">
+      Recibiste este email porque hiciste una pregunta en Honest Talk.
+    </p>
+  </div>
+
+</div>
+</body></html>`;
+
+  const textContent = `
+🗨️ Tienes una respuesta nueva en Honest Talk — He Knows · She Knows
+
+Tu pregunta en Honest Talk recibió una respuesta nueva.
+
+${postCorto ? `Tu pregunta:\n"${postCorto}"\n\n` : ''}Nueva respuesta:
+"${previewCorto}"
+
+→ Ver respuesta completa: https://he-sheknows.com/honest-talk
+
+¿Quieres una respuesta privada y más profunda? Consulta a un advisor.
+
+He Knows · She Knows
+`.trim();
+
+  return { subject, htmlContent, textContent };
+}
+
+module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje, emailNuevaRespuestaHonest };
 
 // Handler vacío — este archivo es solo una librería, no un endpoint.
 // Netlify requiere que toda función exporte un handler; aquí responde 404.
