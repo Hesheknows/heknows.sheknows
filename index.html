@@ -674,8 +674,8 @@ async function showSuc(id){
     // Construir URL de Stripe con email pre-rellenado
     const userId = data.user_id || data.user?.id || '';
     const baseStripeUrl = selectedPlan==='Anual'
-      ? 'https://buy.stripe.com/6oU5kw7FQagVftscIccQU03'
-      : 'https://buy.stripe.com/dRm8wIe4e3Sx4OOeQkcQU02';
+      ? 'https://buy.stripe.com/9B66oA9NY74Ja9837CcQU05'
+      : 'https://buy.stripe.com/eVq14g4tE60Fgxw4bGcQU04';
 
     const stripeUrl = baseStripeUrl
       + '?prefilled_email=' + encodeURIComponent(email)
