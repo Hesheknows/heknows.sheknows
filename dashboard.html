@@ -313,8 +313,10 @@ function closeMobileMenu(){
     }
 
     const user = session.user;
-    document.getElementById('nav-email').textContent = user.email;
-    document.getElementById('mm-email').textContent = user.email;
+    const navEmailEl = document.getElementById('nav-email');
+    if (navEmailEl) navEmailEl.textContent = user.email;
+    const mmEmailEl = document.getElementById('mm-email');
+    if (mmEmailEl) mmEmailEl.textContent = user.email;
 
     try {
       const profile = await HKSK.getProfile(user.id);
