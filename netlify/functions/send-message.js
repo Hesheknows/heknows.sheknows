@@ -130,6 +130,9 @@ exports.handler = async (event) => {
     }
 
     // Insertar el mensaje
+    // Aplicar censura de contactos antes de guardar
+    const { texto: bodyLimpio, censurado } = censurarContactos(msgBody.trim());
+
     const msgRes = await fetch(`${SUPA_URL}/rest/v1/messages`, {
       method: 'POST',
       headers: {
@@ -141,7 +144,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         conversation_id: convId,
         sender_id: userId,
-        body: msgBody.trim()
+        body: bodyLimpio
       })
     });
     if (!msgRes.ok) {
@@ -160,12 +163,12 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        last_message: msgBody.trim().slice(0, 100),
+        last_message: bodyLimpio.slice(0, 100),
         updated_at: new Date().toISOString()
       })
     });
 
-    return json(200, { message: msg, conversationId: convId });
+    return json(200, { message: msg, conversationId: convId, censurado });
 
   } catch (err) {
     console.error('send-message catch:', err.message, err.stack);
@@ -178,3 +181,49 @@ const json = (s, d) => ({
   headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
   body: JSON.stringify(d)
 });
+
+// ============================================================
+// CENSURA DE CONTACTOS
+// Reemplaza teléfonos, emails y menciones de redes/contacto
+// por [oculto]. Protege la comisión de la plataforma evitando
+// que usuarios y advisors se vayan por fuera.
+// Devuelve { texto, censurado:true/false }
+// ============================================================
+function censurarContactos(texto) {
+  let t = texto;
+  let hubo = false;
+  const marca = () => { hubo = true; return '[oculto]'; };
+
+  // 1) Emails  ej: alguien@correo.com
+  t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, marca);
+
+  // 2) URLs / enlaces  ej: wa.me/52..., t.me/..., http...
+  t = t.replace(/(https?:\/\/|www\.)[^\s]+/gi, marca);
+  t = t.replace(/\b(wa\.me|t\.me|bit\.ly|instagram\.com|fb\.com|facebook\.com)\/[^\s]*/gi, marca);
+
+  // 3) Teléfonos: secuencias con 7+ dígitos, permitiendo +, espacios, guiones, paréntesis y puntos
+  //    ej: 5512345678, +52 55 1234 5678, 55-1234-5678, (55) 1234.5678
+  t = t.replace(/(\+?\d[\d\s().\-]{6,}\d)/g, (m) => {
+    const soloDigitos = m.replace(/\D/g, '');
+    return soloDigitos.length >= 7 ? marca() : m;
+  });
+
+  // 4) Palabras clave de contacto / redes sociales
+  const palabras = [
+    'whatsapp', 'whats app', 'whatsap', 'wsp', 'wpp', 'whats',
+    'telegram', 'telegrama',
+    'instagram', 'insta', 'ig',
+    'facebook', 'face', 'fb', 'messenger',
+    'tiktok', 'tik tok',
+    'snapchat', 'snap',
+    'mi numero', 'mi número', 'mi cel', 'mi celular', 'mi telefono', 'mi teléfono', 'mi correo', 'mi mail',
+    'llamame', 'llámame', 'marcame', 'márcame', 'escribeme', 'escríbeme',
+    'mi whats', 'mi wpp', 'mi ig', 'mi insta'
+  ];
+  for (const p of palabras) {
+    const re = new RegExp('\\b' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+    t = t.replace(re, marca);
+  }
+
+  return { texto: t.trim(), censurado: hubo };
+}
