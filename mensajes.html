@@ -508,6 +508,13 @@ async function sendMessage() {
         if (pollInterval) clearInterval(pollInterval);
         pollInterval = setInterval(loadMessages, 4000);
       }
+      // Aviso si se censuró un dato de contacto
+      if (data.censurado) {
+        const lang = localStorage.getItem('hksk-lang')||'es';
+        showToast(lang==='en'
+          ? 'For your safety, sharing contact info is not allowed. Keep the conversation here.'
+          : 'Por tu seguridad, no se permite compartir datos de contacto. Mantén la conversación aquí.');
+      }
       await loadMessages();
       await loadConversations();
     }
