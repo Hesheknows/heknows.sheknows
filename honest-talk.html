@@ -982,8 +982,8 @@ async function submitEditHT() {
     const lang = localStorage.getItem('hksk-lang')||'es';
     showToast(lang==='en' ? 'Saved.' : 'Cambios guardados.');
     closeEditModalHT();
-    // Recargar feed para ver el cambio
-    setTimeout(() => { offset = 0; loadPosts(); }, 300);
+    // Recargar feed para ver el cambio (reset=true para no duplicar)
+    setTimeout(() => loadPosts(true), 300);
   } catch (err) {
     console.error('Error editando:', err);
     const lang = localStorage.getItem('hksk-lang')||'es';
@@ -1038,7 +1038,7 @@ async function submitDeleteHT() {
     const lang = localStorage.getItem('hksk-lang')||'es';
     showToast(lang==='en' ? 'Deleted.' : 'Eliminado.');
     closeDeleteModalHT();
-    setTimeout(() => { offset = 0; loadPosts(); }, 300);
+    setTimeout(() => loadPosts(true), 300);
   } catch (err) {
     console.error('Error borrando:', err);
     const lang = localStorage.getItem('hksk-lang')||'es';
