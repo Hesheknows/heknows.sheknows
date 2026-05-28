@@ -257,8 +257,10 @@ let SELECTED_ADVISOR = null;
   try {
     try { SESSION = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
     if (!SESSION?.access_token) { window.location.replace('/login.html'); return; }
-    document.getElementById('nav-email').textContent = SESSION.user.email;
-    document.getElementById('mm-email').textContent = SESSION.user.email;
+    const navEmailEl = document.getElementById('nav-email');
+    if (navEmailEl) navEmailEl.textContent = SESSION.user.email;
+    const mmEmailEl = document.getElementById('mm-email');
+    if (mmEmailEl) mmEmailEl.textContent = SESSION.user.email;
 
     // Detectar si volvió de pago cancelado
     const params = new URLSearchParams(window.location.search);
