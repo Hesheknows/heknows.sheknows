@@ -1,7 +1,8 @@
 // netlify/functions/stripe-webhook.js
-// v3: ahora detecta cuando advisor completa onboarding de Stripe Connect.
+// v4: ahora también envía email al advisor cuando recibe nueva consulta pagada.
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { sendEmail, emailNuevaConsulta } = require('./send-email');
 
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
@@ -90,6 +91,48 @@ exports.handler = async (event) => {
           });
 
           console.log(`✅ Consulta registrada. Acceso hasta: ${expiresAt}`);
+
+          // ────────────────────────────────────────────
+          // 📧 ENVIAR EMAIL AL ADVISOR
+          // (no bloqueante: si falla, el pago igual queda registrado)
+          // ────────────────────────────────────────────
+          try {
+            // Obtener email + nombre del advisor desde profiles
+            const advisorRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/profiles?id=eq.${metadata.advisorId}&select=email,full_name`,
+              { headers: supabaseHeaders() }
+            );
+            const [advisor] = await advisorRes.json();
+
+            // Obtener nombre del usuario que pagó
+            const userRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/profiles?id=eq.${metadata.userId}&select=full_name,email`,
+              { headers: supabaseHeaders() }
+            );
+            const [usuario] = await userRes.json();
+
+            if (advisor?.email) {
+              const tmpl = emailNuevaConsulta({
+                advisorName: advisor.full_name || 'advisor',
+                userName: usuario?.full_name || 'Un usuario',
+                amount: session.amount_total / 100
+              });
+              await sendEmail({
+                to: advisor.email,
+                toName: advisor.full_name,
+                subject: tmpl.subject,
+                htmlContent: tmpl.htmlContent,
+                textContent: tmpl.textContent
+              });
+              console.log(`📧 Email de nueva consulta enviado a ${advisor.email}`);
+            } else {
+              console.warn('⚠️ No se pudo obtener email del advisor:', metadata.advisorId);
+            }
+          } catch (emailErr) {
+            console.error('❌ Error al enviar email de nueva consulta:', emailErr.message);
+            // No re-lanzamos: el pago ya quedó registrado, el email es secundario
+          }
+
           break;
         }
 
