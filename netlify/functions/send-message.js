@@ -35,10 +35,66 @@ exports.handler = async (event) => {
   try {
     let convId = conversationId;
 
+    // ============================================================
+    // CANDADO: verificar que exista una consulta ACTIVA y NO vencida
+    // entre el usuario y el advisor de esta conversación.
+    // Ventana de 24h: ambos (usuario y advisor) pueden escribir
+    // mientras la consulta esté 'active' y expires_at sea futuro.
+    // ============================================================
+
+    // 1) Determinar quién es el usuario y quién es el advisor de la conversación
+    let convUserId = null;     // el que paga (user_id en consultations)
+    let convAdvisorId = null;  // el que recibe (advisor_id en consultations)
+
+    if (convId) {
+      // Si ya hay conversación, sacamos los participantes de ella
+      const convRes = await fetch(
+        `${SUPA_URL}/rest/v1/conversations?id=eq.${convId}&select=user_id,advisor_id`,
+        { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
+      );
+      const convRows = await convRes.json();
+      if (!convRows.length) return json(404, { error: 'Conversación no encontrada' });
+      convUserId = convRows[0].user_id;
+      convAdvisorId = convRows[0].advisor_id;
+    } else {
+      // Sin conversación todavía: el que escribe es el usuario y advisorId viene en el body
+      if (!advisorId) return json(400, { error: 'Se requiere conversationId o advisorId' });
+      convUserId = userId;
+      convAdvisorId = advisorId;
+    }
+
+    // 2) Confirmar que quien escribe es uno de los dos participantes
+    if (userId !== convUserId && userId !== convAdvisorId) {
+      return json(403, { error: 'No participas en esta conversación' });
+    }
+
+    // 3) Buscar una consulta activa y no vencida entre ese par
+    const nowISO = new Date().toISOString();
+    const consultaRes = await fetch(
+      `${SUPA_URL}/rest/v1/consultations?user_id=eq.${convUserId}&advisor_id=eq.${convAdvisorId}&status=eq.active&expires_at=gt.${nowISO}&select=id,expires_at&limit=1`,
+      { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
+    );
+    if (!consultaRes.ok) {
+      const t = await consultaRes.text();
+      console.error('Error verificando consulta:', consultaRes.status, t);
+      return json(500, { error: 'Error verificando consulta activa' });
+    }
+    const consultas = await consultaRes.json();
+
+    if (!consultas.length) {
+      // No hay consulta activa → bloquear con mensaje amable
+      return json(403, {
+        error: 'no_active_consultation',
+        message: 'Esta consulta finalizó o no está activa. Inicia una nueva consulta para conversar.'
+      });
+    }
+
+    // ============================================================
+    // FIN DEL CANDADO — a partir de aquí, flujo normal de envío
+    // ============================================================
+
     // Si no hay conversationId, buscar o crear una con el advisorId
     if (!convId) {
-      if (!advisorId) return json(400, { error: 'Se requiere conversationId o advisorId' });
-
       const existingRes = await fetch(
         `${SUPA_URL}/rest/v1/conversations?user_id=eq.${userId}&advisor_id=eq.${advisorId}&select=id`,
         { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
