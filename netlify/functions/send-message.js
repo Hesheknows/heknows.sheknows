@@ -1,4 +1,6 @@
 // netlify/functions/send-message.js
+const { sendEmail, emailNuevoMensaje } = require('./send-email');
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method Not Allowed' });
 
@@ -167,6 +169,67 @@ exports.handler = async (event) => {
         updated_at: new Date().toISOString()
       })
     });
+
+    // ============================================================
+    // 📧 EMAIL DE NUEVO MENSAJE (con throttling de 1 hora)
+    // Lógica: solo mandar email si no hubo otro mensaje en la última hora.
+    // Así no saturamos a la gente cuando conversan en vivo, pero sí avisamos
+    // si pasó tiempo de silencio.
+    // No bloqueante: si Brevo falla, el mensaje igual queda guardado.
+    // ============================================================
+    try {
+      const hace1hISO = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      // Buscar mensajes anteriores en esta conversación dentro de la última hora,
+      // EXCLUYENDO el mensaje que acabamos de insertar
+      const prevRes = await fetch(
+        `${SUPA_URL}/rest/v1/messages?conversation_id=eq.${convId}&created_at=gt.${hace1hISO}&id=neq.${msg.id}&select=id`,
+        {
+          headers: {
+            'Authorization': `Bearer ${SERVICE_KEY}`,
+            'apikey': SERVICE_KEY,
+            'Prefer': 'count=exact'
+          }
+        }
+      );
+      const prevMensajes = await prevRes.json();
+      const huboActividadReciente = Array.isArray(prevMensajes) && prevMensajes.length > 0;
+
+      if (!huboActividadReciente) {
+        // Pasó >1h de silencio (o es el primer mensaje): enviar email
+        const recipientId = (userId === convUserId) ? convAdvisorId : convUserId;
+
+        // Obtener email + nombre del destinatario y nombre del que envía
+        const profRes = await fetch(
+          `${SUPA_URL}/rest/v1/profiles?id=in.(${recipientId},${userId})&select=id,email,full_name`,
+          { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
+        );
+        const perfiles = await profRes.json();
+        const recipient = perfiles.find(p => p.id === recipientId);
+        const sender = perfiles.find(p => p.id === userId);
+
+        if (recipient?.email) {
+          const tmpl = emailNuevoMensaje({
+            recipientName: recipient.full_name || '',
+            senderName: sender?.full_name || 'Alguien',
+            preview: bodyLimpio,
+            role: (recipientId === convAdvisorId) ? 'advisor' : 'user'
+          });
+          await sendEmail({
+            to: recipient.email,
+            toName: recipient.full_name,
+            subject: tmpl.subject,
+            htmlContent: tmpl.htmlContent,
+            textContent: tmpl.textContent
+          });
+          console.log(`📧 Email de nuevo mensaje enviado a ${recipient.email}`);
+        }
+      } else {
+        console.log('Throttle: hubo mensajes en la última hora, no se envía email');
+      }
+    } catch (emailErr) {
+      console.error('❌ Error enviando email de mensaje (no crítico):', emailErr.message);
+      // No re-lanzamos: el mensaje ya quedó guardado, el email es secundario
+    }
 
     return json(200, { message: msg, conversationId: convId, censurado });
 
