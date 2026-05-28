@@ -517,7 +517,14 @@ async function publishPost() {
     await loadPosts(true);
   } else {
     const data = await res.json();
-    showToast('Error: ' + (data.error || 'Intenta de nuevo.'));
+    const lang = localStorage.getItem('hksk-lang')==='en' ? 'en' : 'es';
+    if (data.error === 'daily_limit') {
+      showToast(lang==='en'
+        ? 'You already asked your free question today. Come back tomorrow or consult an advisor.'
+        : 'Ya hiciste tu pregunta gratis de hoy. Vuelve mañana o consulta a un advisor.');
+    } else {
+      showToast('Error: ' + (data.error || 'Intenta de nuevo.'));
+    }
   }
 
   btn.disabled = false; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Post →':'Publicar →';
