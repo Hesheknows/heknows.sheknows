@@ -1,5 +1,8 @@
 // netlify/functions/save-advisor.js
-// Guarda/actualiza el perfil de advisor del usuario autenticado
+// v2: valida que el advisor tenga nombre real (no apodos) y foto de perfil
+// Guarda/actualiza el perfil de advisor del usuario autenticado.
+
+const { validarNombre } = require('./name-validator');
 
 const json = (statusCode, data) => ({
   statusCode,
@@ -75,7 +78,41 @@ exports.handler = async (event) => {
     return json(500, { error: 'Error al verificar usuario' });
   }
 
-  // 3. Preparar datos del advisor (INCLUYENDO BIO ESTA VEZ)
+  // 🆕 3. VALIDAR que el usuario tenga NOMBRE REAL y FOTO antes de convertirse en advisor
+  //    Lee su perfil actual de la tabla 'profiles' y exige ambos campos.
+  try {
+    const profileCheck = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=full_name,avatar_url`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const [perfil] = await profileCheck.json();
+
+    if (!perfil) {
+      return json(400, { error: 'Perfil no encontrado. Completa tu perfil primero.' });
+    }
+
+    // Validar nombre
+    const v = validarNombre(perfil.full_name || '');
+    if (!v.valido) {
+      return json(400, {
+        error: `Antes de ser advisor, actualiza tu nombre en tu perfil. ${v.error}`,
+        field: 'full_name'
+      });
+    }
+
+    // Validar foto (debe existir y no estar vacía)
+    if (!perfil.avatar_url || !perfil.avatar_url.trim()) {
+      return json(400, {
+        error: 'Para ser advisor necesitas una foto de perfil. Sube una foto desde tu perfil antes de continuar.',
+        field: 'avatar_url'
+      });
+    }
+  } catch (e) {
+    console.error('Error verificando perfil:', e.message);
+    return json(500, { error: 'Error al verificar perfil' });
+  }
+
+  // 4. Preparar datos del advisor
   const advisorData = {
     id: userId,
     specialty: specialty.trim(),
@@ -88,7 +125,7 @@ exports.handler = async (event) => {
     updated_at: new Date().toISOString()
   };
 
-  // 4. Upsert en advisor_profiles
+  // 5. Upsert en advisor_profiles
   let upsertResponse;
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles`, {
@@ -125,7 +162,7 @@ exports.handler = async (event) => {
     return json(500, { error: 'Error de red al guardar advisor' });
   }
 
-  // 5. Actualizar rol en profiles a 'advisor'
+  // 6. Actualizar rol en profiles a 'advisor'
   try {
     const profileRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
       method: 'PATCH',
