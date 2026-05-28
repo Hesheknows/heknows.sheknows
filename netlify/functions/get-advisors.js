@@ -1,4 +1,5 @@
 // netlify/functions/get-advisors.js
+// v2: filtra advisors sin foto de perfil (no aparecen públicamente)
 exports.handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -38,7 +39,15 @@ exports.handler = async (event) => {
         }
       };
     });
-    return { statusCode: 200, headers, body: JSON.stringify(combined) };
+
+    // 🆕 FILTRO: solo mostrar advisors que tengan foto de perfil
+    // (calidad mínima del marketplace — sin foto no aparece públicamente)
+    const visibles = combined.filter(a =>
+      a.avatar_url && typeof a.avatar_url === 'string' && a.avatar_url.trim() !== ''
+    );
+    console.log(`get-advisors: ${combined.length} totales, ${visibles.length} con foto`);
+
+    return { statusCode: 200, headers, body: JSON.stringify(visibles) };
   } catch (err) {
     console.log('Error:', err.message);
     return { statusCode: 200, headers, body: JSON.stringify({ error: err.message }) };
