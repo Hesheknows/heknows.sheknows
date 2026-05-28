@@ -439,7 +439,135 @@ Próximos pasos: Revisa el chat en Supabase usando el ID de la conversación.
   return { subject, htmlContent, textContent };
 }
 
-module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje, emailNuevaRespuestaHonest, emailReporte };
+// ============================================================
+// PLANTILLA: Reporte de post o respuesta en Honest Talk
+// kind: 'post' (pregunta) | 'reply' (respuesta)
+// ============================================================
+function emailReportePost({ kind, reporterName, reporterEmail, reporterRole, authorName, authorEmail, authorRole, contenido, motivo, itemId, postId, fecha }) {
+  const tipoContenido = kind === 'reply' ? 'Respuesta' : 'Pregunta';
+  const subject = `🚨 Reporte en Honest Talk — ${tipoContenido} reportada`;
+  const contenidoCorto = (contenido || '').slice(0, 300) + ((contenido || '').length > 300 ? '...' : '');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#F7F3EE;font-family:'Helvetica Neue',Arial,sans-serif;color:#1A1410;">
+<div style="max-width:600px;margin:0 auto;background:#FFFFFF;">
+
+  <div style="padding:24px 32px;background:#1A1410;color:#FFFFFF;">
+    <div style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A96E;margin-bottom:6px;">
+      Admin · He Knows · She Knows
+    </div>
+    <h1 style="margin:0;font-size:1.3rem;font-weight:400;">
+      🚨 Reporte en Honest Talk
+    </h1>
+  </div>
+
+  <div style="padding:28px 32px 20px;">
+    <p style="margin:0 0 6px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Tipo de contenido reportado
+    </p>
+    <p style="margin:0 0 24px;font-size:1.05rem;font-weight:500;color:#C47A5A;">
+      ${tipoContenido} en Honest Talk
+    </p>
+
+    <p style="margin:0 0 8px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Contenido reportado
+    </p>
+    <div style="background:#F7F3EE;border-left:3px solid #C47A5A;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.5;color:#1A1410;font-style:italic;">
+        "${contenidoCorto}"
+      </p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;margin:0 0 24px;">
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;width:40%;">Autor del contenido</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">
+          <strong>${authorName || '(sin nombre)'}</strong><br>
+          <span style="color:#9A8880;font-size:0.85rem;">${authorEmail || ''} · ${authorRole || ''}</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">Quien reporta</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">
+          <strong>${reporterName || '(sin nombre)'}</strong><br>
+          <span style="color:#9A8880;font-size:0.85rem;">${reporterEmail || ''} · ${reporterRole || ''}</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">Fecha</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">${fecha || ''}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">ID del ${kind === 'reply' ? 'reply' : 'post'}</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.8rem;color:#1A1410;font-family:monospace;">${itemId || '-'}</td>
+      </tr>
+      ${kind === 'reply' && postId ? `
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">ID del post padre</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.8rem;color:#1A1410;font-family:monospace;">${postId}</td>
+      </tr>
+      ` : ''}
+    </table>
+
+    <p style="margin:0 0 8px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Motivo del reporte
+    </p>
+    <div style="background:#FAFAF8;border:1px solid #EDE7DF;padding:16px 20px;margin:0 0 24px;border-radius:4px;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.5;color:#1A1410;${motivo ? '' : 'font-style:italic;color:#9A8880;'}">
+        ${motivo || '(El usuario no escribió motivo)'}
+      </p>
+    </div>
+
+    <p style="margin:0 0 16px;font-size:0.9rem;line-height:1.6;color:#3D3530;">
+      <strong>Próximos pasos:</strong> Revisa el contenido en Supabase (tabla
+      <code style="background:#F7F3EE;padding:2px 6px;border-radius:2px;font-size:0.85rem;">${kind === 'reply' ? 'post_replies' : 'posts'}</code>)
+      usando el ID. Decide si corresponde borrar el contenido, advertir o suspender al autor.
+    </p>
+  </div>
+
+  <div style="padding:20px 32px;background:#F7F3EE;border-top:1px solid #EDE7DF;text-align:center;">
+    <p style="margin:0;font-size:0.7rem;color:#9A8880;">
+      Reporte silencioso. El autor no sabe que su contenido fue reportado.
+    </p>
+  </div>
+
+</div>
+</body></html>`;
+
+  const textContent = `
+🚨 REPORTE EN HONEST TALK — He Knows · She Knows
+
+Tipo: ${tipoContenido}
+
+Contenido reportado:
+"${contenidoCorto}"
+
+Autor:
+  Nombre: ${authorName || '(sin nombre)'}
+  Email: ${authorEmail || ''}
+  Rol: ${authorRole || ''}
+
+Quien reporta:
+  Nombre: ${reporterName || '(sin nombre)'}
+  Email: ${reporterEmail || ''}
+  Rol: ${reporterRole || ''}
+
+Fecha: ${fecha || ''}
+ID del ${kind === 'reply' ? 'reply' : 'post'}: ${itemId || '-'}
+${kind === 'reply' && postId ? `ID del post padre: ${postId}\n` : ''}
+Motivo:
+${motivo || '(El usuario no escribió motivo)'}
+
+Próximos pasos: Revisa en Supabase (tabla ${kind === 'reply' ? 'post_replies' : 'posts'}) usando el ID.
+
+— Reporte silencioso. El autor no sabe que su contenido fue reportado.
+`.trim();
+
+  return { subject, htmlContent, textContent };
+}
+
+module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje, emailNuevaRespuestaHonest, emailReporte, emailReportePost };
 
 // Handler vacío — este archivo es solo una librería, no un endpoint.
 // Netlify requiere que toda función exporte un handler; aquí responde 404.
