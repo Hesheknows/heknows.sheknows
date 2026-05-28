@@ -1,5 +1,11 @@
 // netlify/functions/update-profile.js
-// Actualiza el perfil del usuario autenticado en la tabla "profiles"
+// v2: valida nombre con reglas de marketplace.
+// Si el usuario YA es advisor, también exige nombre real (no apodos).
+// Nota: la foto se sube por separado en avatar-upload.js, aquí no se toca.
+// Pero si tu frontend permite borrar el avatar_url enviando null/vacío, esta función
+// también lo bloquea para advisors.
+
+const { validarNombre } = require('./name-validator');
 
 const json = (statusCode, data) => ({
   statusCode,
@@ -31,7 +37,7 @@ exports.handler = async (event) => {
     return json(400, { error: 'JSON inválido en el body' });
   }
 
-  const { token, full_name, bio, city, country, gender, is_anonymous } = body;
+  const { token, full_name, bio, city, country, gender, is_anonymous, avatar_url } = body;
 
   if (!token) {
     return json(400, { error: 'Token requerido' });
@@ -73,9 +79,43 @@ exports.handler = async (event) => {
     return json(401, { error: 'Usuario no encontrado' });
   }
 
-  // 4. Construir payload solo con campos enviados (evita sobreescribir con undefined)
+  // 🆕 4. Si se quiere cambiar el nombre, validarlo
+  let nombreLimpio = null;
+  if (typeof full_name === 'string') {
+    const v = validarNombre(full_name);
+    if (!v.valido) {
+      return json(400, { error: v.error, field: 'full_name' });
+    }
+    nombreLimpio = v.nombreLimpio;
+  }
+
+  // 🆕 5. Si el usuario YA es advisor, no permitir borrar la foto
+  //       (revisar si están mandando avatar_url vacío o null intencionalmente)
+  let esAdvisor = false;
+  try {
+    const profRes = await fetch(
+      `${URL}/rest/v1/profiles?id=eq.${userData.id}&select=role,avatar_url`,
+      { headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` } }
+    );
+    const [perfilActual] = await profRes.json();
+    esAdvisor = (perfilActual?.role === 'advisor');
+  } catch (e) {
+    console.warn('No se pudo verificar rol (no crítico):', e.message);
+  }
+
+  if (esAdvisor && 'avatar_url' in body) {
+    // Solo evaluamos si el frontend mandó avatar_url explícitamente
+    if (!avatar_url || (typeof avatar_url === 'string' && !avatar_url.trim())) {
+      return json(400, {
+        error: 'Como advisor, no puedes eliminar tu foto de perfil. Súbe una nueva foto si quieres reemplazarla.',
+        field: 'avatar_url'
+      });
+    }
+  }
+
+  // 6. Construir payload solo con campos enviados (evita sobreescribir con undefined)
   const payload = {};
-  if (typeof full_name === 'string') payload.full_name = full_name.trim();
+  if (nombreLimpio !== null) payload.full_name = nombreLimpio;
   if (typeof bio === 'string') payload.bio = bio.trim();
   if (typeof city === 'string') payload.city = city.trim();
   if (typeof country === 'string') payload.country = country.trim();
@@ -86,7 +126,7 @@ exports.handler = async (event) => {
     return json(400, { error: 'No hay datos para actualizar' });
   }
 
-  // 5. Actualizar profile en Supabase
+  // 7. Actualizar profile en Supabase
   try {
     const updateRes = await fetch(`${URL}/rest/v1/profiles?id=eq.${userData.id}`, {
       method: 'PATCH',
