@@ -117,6 +117,48 @@ body.menu-open{overflow:hidden;}
 .chat-header-name { font-size:14px; font-weight:400; color:var(--night); }
 .chat-header-role { font-size:11px; color:var(--muted); }
 
+/* Botón reportar */
+.chat-report-btn {
+  margin-left:auto; background:transparent; border:1px solid var(--border);
+  color:var(--muted); font-size:11px; padding:5px 10px; border-radius:14px;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+  display:flex; align-items:center; gap:4px;
+}
+.chat-report-btn:hover { border-color:#C47A5A; color:#C47A5A; }
+
+/* Modal de reportar */
+.report-overlay {
+  position:fixed; inset:0; background:rgba(26,20,16,0.5); backdrop-filter:blur(4px);
+  display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+}
+.report-overlay.show { display:flex; }
+.report-modal {
+  background:#FFFFFF; border-radius:8px; max-width:440px; width:100%;
+  padding:28px 24px 20px; box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.report-modal h3 {
+  margin:0 0 8px; font-size:1.15rem; font-weight:500; color:var(--night);
+}
+.report-modal p { margin:0 0 16px; font-size:0.85rem; line-height:1.5; color:var(--muted); }
+.report-modal textarea {
+  width:100%; min-height:90px; padding:10px 12px; border:1px solid var(--border);
+  border-radius:4px; font-family:inherit; font-size:0.9rem; color:var(--night);
+  resize:vertical; box-sizing:border-box; background:#FAFAF8;
+}
+.report-modal textarea:focus { outline:none; border-color:#C47A5A; }
+.report-actions {
+  display:flex; gap:10px; justify-content:flex-end; margin-top:16px;
+}
+.report-btn-cancel, .report-btn-send {
+  font-family:inherit; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;
+  padding:9px 18px; border-radius:3px; cursor:pointer; border:1px solid;
+}
+.report-btn-cancel { background:transparent; border-color:var(--border); color:var(--muted); }
+.report-btn-cancel:hover { color:var(--night); }
+.report-btn-send { background:#C47A5A; border-color:#C47A5A; color:#FFFFFF; }
+.report-btn-send:hover { background:#A86547; border-color:#A86547; }
+.report-btn-send:disabled { opacity:0.5; cursor:wait; }
+
 .messages-area { flex:1; overflow-y:auto; padding:20px 16px; display:flex; flex-direction:column; gap:10px; }
 
 .msg { display:flex; flex-direction:column; max-width:72%; }
@@ -265,6 +307,7 @@ const ANON_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
 
 let session = null;
 let currentConvId = null;
+let currentOther = null;
 let pollInterval = null;
 
 let userPlan = 'free';
@@ -357,6 +400,7 @@ async function openConv(convId, other) {
 }
 
 function renderChatHeader(other) {
+  currentOther = other; // guardar referencia para reportes
   const avatarHtml = other.avatar_url
     ? `<img class="chat-header-avatar" src="${other.avatar_url}" alt="">`
     : `<div class="chat-header-avatar-ph"><svg width="18" height="18" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="16" r="8" fill="#C47A5A" opacity="0.5"/><path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="#C47A5A" opacity="0.5"/></svg></div>`;
@@ -364,7 +408,11 @@ function renderChatHeader(other) {
     ${avatarHtml}
     <div>
       <div class="chat-header-name">${other.full_name || 'Usuario'}</div>
-    </div>`;
+    </div>
+    <button class="chat-report-btn" onclick="openReportModal()" title="Reportar">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      <span class="es">Reportar</span><span class="en">Report</span>
+    </button>`;
 }
 
 async function loadMessages() {
@@ -563,6 +611,89 @@ init();
     <button class="upgrade-cancel" onclick="document.getElementById('upgrade-modal').style.display='none'"><span class="es">Ahora no</span><span class="en">Not now</span></button>
   </div>
 </div>
+
+<!-- Modal de reportar advisor/usuario -->
+<div class="report-overlay" id="report-modal">
+  <div class="report-modal">
+    <h3>
+      <span class="es">Reportar a este usuario</span>
+      <span class="en">Report this user</span>
+    </h3>
+    <p>
+      <span class="es">Cuéntanos qué pasó (opcional). Nuestro equipo revisa cada reporte. La otra persona no sabrá que reportaste.</span>
+      <span class="en">Tell us what happened (optional). Our team reviews every report. The other person will not know you reported.</span>
+    </p>
+    <textarea id="report-motivo" placeholder="" maxlength="1000"></textarea>
+    <div class="report-actions">
+      <button class="report-btn-cancel" onclick="closeReportModal()">
+        <span class="es">Cancelar</span><span class="en">Cancel</span>
+      </button>
+      <button class="report-btn-send" id="report-send-btn" onclick="submitReport()">
+        <span class="es">Enviar reporte</span><span class="en">Send report</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openReportModal() {
+  if (!currentConvId) {
+    showToast(localStorage.getItem('hksk-lang')==='en'
+      ? 'Open a conversation first.'
+      : 'Abre una conversación primero.');
+    return;
+  }
+  const modal = document.getElementById('report-modal');
+  const ta = document.getElementById('report-motivo');
+  ta.value = '';
+  ta.placeholder = localStorage.getItem('hksk-lang')==='en'
+    ? 'What happened? (optional)'
+    : '¿Qué pasó? (opcional)';
+  modal.classList.add('show');
+  setTimeout(() => ta.focus(), 100);
+}
+
+function closeReportModal() {
+  document.getElementById('report-modal').classList.remove('show');
+}
+
+async function submitReport() {
+  if (!session?.access_token || !currentConvId) return;
+  const motivo = document.getElementById('report-motivo').value.trim();
+  const btn = document.getElementById('report-send-btn');
+  btn.disabled = true;
+  try {
+    await fetch('/.netlify/functions/report-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: session.access_token,
+        conversationId: currentConvId,
+        motivo
+      })
+    });
+    // Toast de agradecimiento (bilingüe), pase lo que pase en el servidor
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en'
+      ? 'Thank you. We received your report and our team will review it.'
+      : '¡Gracias! Recibimos tu reporte. Nuestro equipo lo revisará.');
+    closeReportModal();
+  } catch (err) {
+    console.error('Error enviando reporte:', err);
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en'
+      ? 'Could not send report. Try again.'
+      : 'No se pudo enviar el reporte. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Cerrar modal al picarle al fondo
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'report-modal') closeReportModal();
+});
+</script>
 
 <script>
 function setLang(lang){
