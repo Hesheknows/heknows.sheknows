@@ -160,20 +160,21 @@ body.menu-open{overflow:hidden;}
   .layout{grid-template-columns:1fr;}
   .sidebar{display:none;}
 }
+.btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:"DM Sans",sans-serif;transition:all 0.2s;}
+.btn-logout:hover{background:var(--terra);color:white;}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">He Knows · <span>She Knows</span></a>
+  <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
     <a href="dashboard.html">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="honest-talk.html" class="active">Honest Talk</a>
     <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
-    <a href="perfil.html"><span class="es">Mi Perfil</span><span class="en">My Profile</span></a>
-    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
-    <span class="nav-user" id="nav-user"></span>
+    <a href="perfil.html"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <button class="btn-logout" onclick="logout()"><span class="es">Salir</span><span class="en">Sign out</span></button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
     <span></span><span></span><span></span>
@@ -340,7 +341,8 @@ async function init() {
   if (raw) {
     session = JSON.parse(raw);
     const email = session.user?.email?.split('@')[0] || '';
-    document.getElementById('nav-user').textContent = email;
+    const navUserEl = document.getElementById('nav-user');
+    if (navUserEl) navUserEl.textContent = email;
     const mmu = document.getElementById('mm-user');
     if (mmu) mmu.textContent = session.user?.email || '';
   } else {
@@ -624,6 +626,12 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
+
+function logout() {
+  localStorage.removeItem("hksk-session");
+  window.location.href = "login.html";
+}
+
 </script>
 </body>
 </html>
