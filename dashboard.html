@@ -1,58 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mi Perfil — He Knows She Knows</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · He Knows · She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="icons.js"></script>
 <style>
-:root {
-  --cream: #F7F3EE;
-  --terra: #C47A5A;
-  --night: #1A1410;
-  --muted: #9A8880;
-  --gold:  #C9A96E;
-  --blush: #E8C4B0;
-  --white: #FFFFFF;
-  --border: #EDE7DF;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  background: var(--cream);
-  color: var(--night);
-  min-height: 100vh;
-}
-
-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(247,243,238,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(196,122,90,0.12);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 48px;
-}
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem; font-weight: 300;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--night); text-decoration: none;
-  margin-right: 40px; white-space: nowrap;
-}
-.nav-logo span { color: var(--terra); font-style: italic; }
-.nav-back {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; font-weight: 500;
-  transition: color 0.2s;
-}
-.nav-back:hover { color: var(--terra); }
+:root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);min-height:100vh;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:#FFFFFF;backdrop-filter:blur(12px);border-bottom:1px solid #EDE7DF;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);text-decoration:none;margin-right:40px;white-space:nowrap;}
+.nav-logo span{color:var(--terra);font-style:italic;}
 .nav-links{display:flex;gap:24px;align-items:center;}
+.nav-links a{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate);text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:var(--terra);}
+.nav-email{display:none;}
+.btn-logout{background:transparent;border:1px solid rgba(196,122,90,0.3);color:var(--terra);padding:8px 16px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.btn-logout:hover{background:var(--terra);color:white;}
 
+/* ===== MENÚ HAMBURGUESA MÓVIL ===== */
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:201;position:relative;width:42px;height:42px;align-items:center;justify-content:center;}
 .hamburger span{display:block;width:24px;height:2px;background:var(--night);position:absolute;left:9px;transition:all 0.3s ease;}
 .hamburger span:nth-child(1){top:13px;}
@@ -67,6 +35,9 @@ nav {
 .mobile-menu a{display:block;font-size:0.95rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:400;padding:16px 0;border-bottom:1px solid rgba(247,243,238,0.08);transition:color 0.2s;}
 .mobile-menu a:hover{color:var(--terra);}
 .mobile-menu a.active{color:var(--terra);}
+.mobile-menu .mm-email{display:block;color:rgba(247,243,238,0.4);font-size:0.7rem;padding:14px 0;border-bottom:1px solid rgba(247,243,238,0.08);}
+.mobile-menu .mm-logout{display:inline-block;background:transparent;border:1px solid rgba(196,122,90,0.4);color:var(--terra);padding:12px 24px;border-radius:2px;margin-top:24px;font-size:0.72rem;letter-spacing:0.12em;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-transform:uppercase;}
+.mobile-menu .mm-logout:hover{background:var(--terra);color:white;}
 .mobile-menu .mm-lang{display:flex;gap:0;border:1px solid rgba(247,243,238,0.2);border-radius:2px;overflow:hidden;margin-top:24px;width:fit-content;}
 .mobile-menu .mm-lang button{background:transparent;border:none;color:rgba(247,243,238,0.6);font-size:0.68rem;letter-spacing:0.12em;font-weight:600;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .mobile-menu .mm-lang button.active{background:var(--terra);color:white;}
@@ -74,581 +45,246 @@ nav {
 .mobile-overlay.open{display:block;opacity:1;}
 body.menu-open{overflow:hidden;}
 
-main {
-  max-width: 900px; margin: 0 auto;
-  padding: 32px 20px 80px;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
-  align-items: start;
-}
-@media (max-width: 768px) {
-  nav { padding: 15px 20px; }
-  .nav-links { display: none; }
-  .hamburger { display: flex; }
-  .mobile-menu { display: block; }
-}
-@media (max-width: 700px) {
-  main { grid-template-columns: 1fr; }
-}
-
-.preview-card {
-  background: var(--white);
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  position: sticky; top: 72px;
-}
-.preview-header {
-  background: var(--white);
-  padding: 32px 24px 16px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  position: relative;
-  border-bottom: 1px solid var(--border);
-}
-.preview-label {
-  position: absolute; top: 10px; right: 12px;
-  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
-  color: var(--muted); text-transform: uppercase;
-}
-.preview-avatar-wrap {
-  width: 110px; height: 110px; position: relative;
-}
-.preview-avatar {
-  width: 110px; height: 110px; border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--blush);
-  background: var(--blush);
-  box-shadow: 0 4px 20px rgba(196,122,90,0.15);
-}
-.preview-avatar-placeholder {
-  width: 110px; height: 110px; border-radius: 50%;
-  background: var(--cream);
-  border: 3px solid var(--blush);
-  display: flex; align-items: center; justify-content: center;
-}
-.preview-avatar-placeholder svg { opacity: 0.4; }
-.preview-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300; font-size: 24px;
-  color: var(--night); text-align: center;
-}
-.preview-city {
-  font-size: 12px; color: var(--muted);
-  display: flex; align-items: center; gap: 4px;
-}
-.preview-body { padding: 20px 24px; }
-.preview-bio {
-  font-size: 13px; color: var(--muted);
-  line-height: 1.7; font-style: italic;
-  min-height: 40px;
-}
-.preview-bio.empty { color: var(--border); }
-.preview-divider {
-  height: 1px; background: var(--border);
-  margin: 16px 0;
-}
-.preview-specialties {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 12px;
-}
-.specialty-pill {
-  font-size: 11px; font-weight: 400;
-  background: var(--cream); color: var(--terra);
-  border: 1px solid var(--blush);
-  padding: 4px 10px; border-radius: 20px;
-  display: inline-flex; align-items: center; gap: 5px;
-}
-.preview-meta {
-  display: flex; flex-direction: column; gap: 6px;
-}
-.preview-meta-row {
-  display: flex; justify-content: space-between;
-  font-size: 12px; color: var(--muted);
-}
-.preview-meta-row span:last-child { color: var(--night); font-weight: 400; }
-.preview-price {
-  margin-top: 16px;
-  background: var(--cream); border-radius: 12px;
-  padding: 12px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.preview-price-label { font-size: 12px; color: var(--muted); }
-.preview-price-amount {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px; font-weight: 600; color: var(--terra);
-}
-.preview-price-unit { font-size: 11px; color: var(--muted); }
-.anon-badge {
-  margin-top: 12px;
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; color: var(--muted);
-  background: #FFF8F5; border: 1px solid var(--blush);
-  border-radius: 8px; padding: 6px 10px;
-}
-
-.settings-col { display: flex; flex-direction: column; gap: 16px; }
-
-/* ===== STRIPE CONNECT BANNER ===== */
-.stripe-banner {
-  border-radius: 16px;
-  padding: 18px 22px;
-  display: flex; align-items: center; gap: 16px;
-  flex-wrap: wrap;
-  border: 1.5px solid;
-  animation: slideDown 0.4s ease;
-}
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.stripe-banner.warning {
-  background: linear-gradient(135deg, #FFF4ED 0%, #FFEEE3 100%);
-  border-color: var(--terra);
-}
-.stripe-banner.success {
-  background: linear-gradient(135deg, #E8F5E9 0%, #D4EDDA 100%);
-  border-color: #27ae60;
-}
-.stripe-banner-icon {
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.stripe-banner.warning .stripe-banner-icon { background: var(--terra); color: white; }
-.stripe-banner.success .stripe-banner-icon { background: #27ae60; color: white; }
-.stripe-banner-content { flex: 1; min-width: 200px; }
-.stripe-banner-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px; font-weight: 600;
-  color: var(--night); margin-bottom: 2px;
-}
-.stripe-banner-text {
-  font-size: 13px; color: var(--muted); line-height: 1.5;
-}
-.stripe-banner-btn {
-  font-family: 'DM Sans', sans-serif; font-weight: 500;
-  font-size: 13px; padding: 10px 20px;
-  border-radius: 24px; cursor: pointer;
-  border: none; transition: all 0.2s;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.stripe-banner.warning .stripe-banner-btn {
-  background: var(--terra); color: white;
-}
-.stripe-banner.warning .stripe-banner-btn:hover { background: #b5694a; }
-.stripe-banner.success .stripe-banner-btn {
-  background: white; color: #27ae60; border: 1px solid #27ae60;
-}
-.stripe-banner-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.settings-bar {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 12px;
-}
-.bar-plan { display: flex; align-items: center; gap: 10px; }
-.plan-badge {
-  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
-  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
-}
-.plan-free    { background: #F0EDEA; color: var(--muted); }
-.plan-premium { background: #FFF3E0; color: #B06000; }
-.plan-elite   { background: var(--night); color: var(--gold); }
-.bar-plan-name { font-size: 13px; color: var(--night); }
-.bar-plan-name span { color: var(--muted); font-size: 12px; margin-left: 4px; }
-.bar-actions { display: flex; align-items: center; gap: 8px; }
-.btn-sm {
-  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
-  padding: 6px 14px; border-radius: 20px; cursor: pointer;
-  transition: all 0.2s; border: 1px solid transparent;
-}
-.btn-upgrade { background: var(--terra); color: var(--white); }
-.btn-upgrade:hover { background: #b5694a; }
-.btn-outline { background: transparent; color: var(--terra); border-color: var(--blush); }
-.btn-outline:hover { border-color: var(--terra); }
-.btn-danger  { background: transparent; color: #c0392b; border-color: #f5c6c6; }
-.btn-danger:hover  { background: #fff0f0; }
-.privacy-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-.toggle {
-  width: 36px; height: 20px; background: var(--border); border-radius: 20px;
-  position: relative; cursor: pointer; border: none; outline: none;
-  transition: background 0.2s; flex-shrink: 0;
-}
-.toggle.on { background: var(--terra); }
-.toggle::after {
-  content: ''; position: absolute; top: 2px; left: 2px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--white); transition: transform 0.2s;
-}
-.toggle.on::after { transform: translateX(16px); }
-
-.settings-section {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.section-head {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px; font-weight: 400; color: var(--night);
-}
-.section-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
-.form-input, .form-textarea, .form-select {
-  font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px;
-  color: var(--night);
-  background: var(--cream); border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 14px;
-  outline: none; transition: border-color 0.2s; width: 100%;
-}
-.form-input:focus, .form-textarea:focus, .form-select:focus {
-  border-color: var(--terra);
-}
-.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-.avatar-area {
-  display: flex; align-items: center; gap: 16px;
-}
-.avatar-preview {
-  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
-  object-fit: cover; background: var(--blush);
-  border: 2px solid var(--blush);
-}
-.avatar-preview-placeholder {
-  width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
-  background: var(--cream); border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-}
-.avatar-info { display: flex; flex-direction: column; gap: 6px; }
-.btn-avatar {
-  font-size: 12px; font-weight: 400; font-family: 'DM Sans', sans-serif;
-  padding: 7px 14px; border-radius: 20px; cursor: pointer;
-  background: var(--cream); color: var(--terra);
-  border: 1px solid var(--blush); transition: border-color 0.2s;
-  display: inline-block;
-}
-.btn-avatar:hover { border-color: var(--terra); }
-#avatar-file { display: none; }
-.avatar-hint { font-size: 11px; color: var(--muted); }
-
-.specialties-grid {
-  display: flex; flex-wrap: wrap; gap: 8px;
-}
-.spec-chip {
-  font-size: 12px; font-weight: 400;
-  padding: 5px 12px; border-radius: 20px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--cream); color: var(--muted);
-  transition: all 0.15s; user-select: none;
-}
-.spec-chip.selected {
-  background: var(--terra); color: var(--white); border-color: var(--terra);
-}
-
-.advisor-collapsed {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.advisor-collapsed-header {
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer;
-}
-.advisor-status {
-  display: flex; align-items: center; gap: 10px;
-}
-.advisor-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: #27ae60;
-}
-.advisor-dot.inactive { background: var(--muted); }
-.advisor-collapsed-expand {
-  font-size: 11px; color: var(--terra); font-weight: 400;
-  background: none; border: none; cursor: pointer; padding: 0;
-}
-.advisor-collapsed-body {
-  padding: 0 20px 20px;
-  display: none;
-}
-.advisor-collapsed-body.open { display: block; }
-
-.btn-save {
-  font-family: 'DM Sans', sans-serif; font-weight: 400;
-  font-size: 14px; padding: 12px 28px;
-  background: var(--terra); color: var(--white);
-  border: none; border-radius: 12px; cursor: pointer;
-  transition: background 0.2s; width: 100%;
-}
-.btn-save:hover { background: #b5694a; }
-.btn-save:disabled { background: var(--blush); cursor: not-allowed; }
-
-.toast {
-  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: var(--night); color: var(--white);
-  font-size: 13px; padding: 10px 20px; border-radius: 30px;
-  opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.error { background: #c0392b; }
-
-.nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;font-weight:500;transition:color 0.2s;}
-.nav-links a:hover,.nav-links a.active{color:var(--terra);}
+.page{padding:100px 0 80px;max-width:900px;margin:0 auto;padding-left:24px;padding-right:24px;}
+.welcome{margin-bottom:48px;}
+.welcome-tag{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;}
+.welcome-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.1;color:var(--night);margin-bottom:6px;}
+.welcome-title em{font-style:italic;color:var(--terra);}
+.welcome-sub{font-size:0.92rem;color:var(--muted);font-weight:300;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(196,122,90,0.1);border-radius:3px;overflow:hidden;margin-bottom:48px;}
+.stat{background:var(--cream);padding:28px 24px;}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--night);line-height:1;}
+.stat-l{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-top:6px;}
+.section-label{font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:18px;}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px;}
+.action-card{background:white;border:1px solid rgba(196,122,90,0.12);border-radius:3px;padding:28px 24px;cursor:pointer;transition:all 0.25s;text-decoration:none;display:block;}
+.action-card:hover{border-color:var(--terra);transform:translateY(-2px);box-shadow:0 12px 32px rgba(26,20,16,0.08);}
+.ac-icon{font-size:1.8rem;margin-bottom:14px;display:block;line-height:0;}
+.ac-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--night);margin-bottom:6px;}
+.ac-desc{font-size:0.78rem;line-height:1.6;color:var(--muted);font-weight:300;}
+.alert{background:linear-gradient(135deg,rgba(196,122,90,0.08),rgba(201,169,110,0.05));border:1px solid rgba(196,122,90,0.2);border-radius:3px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:36px;}
+.alert-icon{font-size:1.4rem;flex-shrink:0;}
+.alert-text{font-size:0.84rem;line-height:1.6;color:var(--slate);font-weight:300;flex:1;}
+.alert-text strong{font-weight:600;color:var(--night);}
+.alert-btn{background:var(--terra);color:white;padding:9px 18px;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:600;white-space:nowrap;text-decoration:none;display:inline-block;transition:background 0.2s;}
+.alert-btn:hover{background:var(--night);}
+.loader{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:200;transition:opacity 0.35s;}
+.loader.gone{opacity:0;pointer-events:none;}
+.loader-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.28em;text-transform:uppercase;animation:pu 1.4s ease-in-out infinite;}
+.loader-logo span{color:var(--terra);font-style:italic;}
+@keyframes pu{0%,100%{opacity:.35}50%{opacity:1}}
 .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
 .lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--muted);transition:all 0.2s;}
 .lang-btn.active{background:var(--terra);color:white;}
 [data-lang="en"] .es{display:none!important;}
 [data-lang="es"] .en{display:none!important;}
 
-.loading {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px; color: var(--muted); font-size: 14px;
+/* ===== MODAL DE RESEÑAS ===== */
+.rev-overlay{position:fixed;inset:0;background:rgba(26,20,16,0.65);backdrop-filter:blur(8px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;animation:revFadeIn 0.25s ease;}
+.rev-overlay.show{display:flex;}
+@keyframes revFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes revSlideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.rev-modal{background:#F7F3EE;border-radius:16px;max-width:440px;width:100%;padding:36px 32px 24px;text-align:center;position:relative;animation:revSlideUp 0.3s ease;font-family:'DM Sans',sans-serif;max-height:92vh;overflow-y:auto;}
+.rev-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:24px;color:#9A8880;cursor:pointer;line-height:1;padding:4px 8px;}
+.rev-close:hover{color:#1A1410;}
+.rev-av{width:72px;height:72px;border-radius:50%;background:#E8C4B0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.75rem;color:#C47A5A;margin:0 auto 12px;border:2px solid rgba(196,122,90,0.2);overflow:hidden;}
+.rev-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.rev-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.65rem;font-weight:400;color:#1A1410;margin-bottom:4px;line-height:1.2;}
+.rev-sub{font-size:0.78rem;color:#9A8880;letter-spacing:0.04em;margin-bottom:20px;}
+.rev-stars{display:flex;justify-content:center;gap:6px;margin:18px 0 8px;}
+.rev-star{font-size:2.2rem;color:rgba(26,20,16,0.15);cursor:pointer;transition:transform 0.15s,color 0.15s;user-select:none;line-height:1;}
+.rev-star.on{color:#C9A96E;}
+.rev-star:hover{transform:scale(1.15);}
+.rev-stars-label{font-size:0.72rem;color:#9A8880;letter-spacing:0.06em;margin-bottom:18px;min-height:18px;}
+.rev-q{font-size:0.88rem;color:#1A1410;margin:18px 0 10px;letter-spacing:0.02em;}
+.rev-yn{display:flex;gap:10px;justify-content:center;margin-bottom:18px;}
+.rev-yn-btn{flex:1;max-width:120px;padding:9px 18px;border:1.5px solid rgba(26,20,16,0.18);background:transparent;color:#1A1410;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;font-weight:500;letter-spacing:0.04em;transition:all 0.2s;}
+.rev-yn-btn:hover{border-color:#C47A5A;}
+.rev-yn-btn.on{background:#C47A5A;border-color:#C47A5A;color:#F7F3EE;}
+.rev-textarea-wrap{margin:16px 0;text-align:left;}
+.rev-textarea-label{font-size:0.74rem;color:#9A8880;letter-spacing:0.04em;display:block;margin-bottom:8px;}
+.rev-textarea{width:100%;min-height:84px;max-height:160px;padding:12px;border:1px solid rgba(26,20,16,0.15);border-radius:8px;background:#FFFFFF;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#1A1410;resize:vertical;box-sizing:border-box;}
+.rev-textarea:focus{outline:none;border-color:#C47A5A;}
+.rev-toggle{margin:14px 0;padding:12px 14px;background:rgba(232,196,176,0.22);border-radius:8px;display:flex;align-items:flex-start;gap:10px;text-align:left;}
+.rev-toggle input{margin-top:3px;accent-color:#C47A5A;cursor:pointer;}
+.rev-toggle label{font-size:0.78rem;color:#1A1410;font-weight:500;display:block;cursor:pointer;}
+.rev-toggle small{display:block;font-size:0.7rem;color:#9A8880;margin-top:2px;line-height:1.4;}
+.rev-anon{margin:10px 0;display:flex;align-items:center;gap:8px;padding-left:4px;justify-content:flex-start;}
+.rev-anon input{accent-color:#C47A5A;cursor:pointer;}
+.rev-anon label{font-size:0.74rem;color:#9A8880;cursor:pointer;}
+.rev-submit{width:100%;margin-top:18px;padding:13px;background:#1A1410;color:#F7F3EE;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:0.84rem;font-weight:500;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.rev-submit:hover{background:#C47A5A;}
+.rev-submit:disabled{background:rgba(26,20,16,0.4);cursor:not-allowed;}
+.rev-skip{display:block;width:100%;text-align:center;background:none;border:none;color:#9A8880;font-size:0.74rem;margin-top:10px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px;}
+.rev-skip:hover{color:#1A1410;}
+.rev-thanks{padding:30px 10px;text-align:center;}
+.rev-thanks-icon{font-size:2.5rem;color:#C9A96E;margin-bottom:10px;}
+.rev-thanks-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem;color:#1A1410;margin-bottom:6px;}
+.rev-thanks-sub{font-size:0.84rem;color:#9A8880;}
+
+@media(max-width:768px){
+  nav{padding:15px 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{display:block;}
+  .stats{grid-template-columns:1fr 1fr;}
+  .actions{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
-
+<div class="loader" id="loader"><div class="loader-logo">He Knows · <span>She Knows</span></div></div>
 <nav>
-  <a href="index.html" class="nav-logo">HE KNOWS · <span>SHE KNOWS</span></a>
+  <a href="dashboard.html" class="nav-logo">He Knows · <span>She Knows</span></a>
   <div class="nav-links">
-    <a href="dashboard.html">Home</a>
+    <a href="dashboard.html" class="active">Home</a>
     <a href="buscar-advisors.html">Advisors</a>
     <a href="honest-talk.html">Honest Talk</a>
     <a href="mensajes.html"><span class="es">Mensajes</span><span class="en">Messages</span></a>
-    <a href="perfil.html" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
-    <div class="lang-toggle"><button class="lang-btn" onclick="setLang('es')">ES</button><button class="lang-btn" onclick="setLang('en')">EN</button></div>
+    <a href="perfil.html"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+    <button class="btn-logout" onclick="logout()"><span class="es">Salir</span><span class="en">Sign out</span></button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menú">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
+<!-- MENÚ MÓVIL -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobile-menu">
-  <a href="dashboard.html" onclick="closeMobileMenu()">Home</a>
+  <a href="dashboard.html" onclick="closeMobileMenu()" class="active">Home</a>
   <a href="buscar-advisors.html" onclick="closeMobileMenu()">Advisors</a>
   <a href="honest-talk.html" onclick="closeMobileMenu()">Honest Talk</a>
   <a href="mensajes.html" onclick="closeMobileMenu()"><span class="es">Mensajes</span><span class="en">Messages</span></a>
-  <a href="perfil.html" onclick="closeMobileMenu()" class="active"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+  <a href="perfil.html" onclick="closeMobileMenu()"><span class="es">Mi perfil</span><span class="en">My Profile</span></a>
+  <span class="mm-email" id="mm-email"></span>
+  <button class="mm-logout" onclick="HKSK.signOut()"><span class="es">Salir</span><span class="en">Sign out</span></button>
   <div class="mm-lang">
     <button onclick="setLang('es')">ES</button>
     <button onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<div id="loading" class="loading">Cargando perfil…</div>
-
-<main id="main-content" style="display:none">
-
-  <aside>
-    <div class="preview-card">
-      <div class="preview-header">
-        <span class="preview-label"><span class="es">Así te ven los demás</span><span class="en">How others see you</span></span>
-        <div class="preview-avatar-wrap">
-          <img id="preview-avatar-img" class="preview-avatar" style="display:none"/>
-          <div id="preview-avatar-ph" class="preview-avatar-placeholder">
-            <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
-              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
-              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
-            </svg>
-          </div>
-        </div>
-        <div id="preview-name" class="preview-name">Tu nombre</div>
-        <div id="preview-city" class="preview-city" style="display:none">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1C5.2 1 3 3.2 3 6C3 10 8 15 8 15C8 15 13 10 13 6C13 3.2 10.8 1 8 1ZM8 8C6.9 8 6 7.1 6 6C6 4.9 6.9 4 8 4C9.1 4 10 4.9 10 6C10 7.1 9.1 8 8 8Z" fill="var(--muted)"/>
-          </svg>
-          <span id="preview-city-text"></span>
-        </div>
-      </div>
-      <div class="preview-body">
-        <p id="preview-bio" class="preview-bio empty">Aquí aparecerá tu bio…</p>
-        <div class="preview-divider"></div>
-        <div id="preview-specialties" class="preview-specialties" style="display:none"></div>
-        <div id="preview-advisor-meta" class="preview-meta" style="display:none">
-          <div class="preview-meta-row">
-            <span>Estado civil</span>
-            <span id="pm-civil">—</span>
-          </div>
-          <div class="preview-meta-row">
-            <span>Experiencia</span>
-            <span id="pm-exp">—</span>
-          </div>
-        </div>
-        <div id="preview-price" class="preview-price" style="display:none">
-          <div>
-            <div class="preview-price-label"><span class="es">Consulta</span><span class="en">Session</span></div>
-            <div class="preview-price-amount" id="pm-price">$0</div>
-            <div class="preview-price-unit"><span class="es">MXN / sesión</span><span class="en">MXN / session</span></div>
-          </div>
-          <div id="preview-icon-desahogo"></div>
-        </div>
-        <div id="preview-anon" class="anon-badge" style="display:none">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="7" stroke="var(--muted)" stroke-width="1.2"/>
-            <path d="M5 8C5 6.3 6.3 5 8 5C9.7 5 11 6.3 11 8C11 9.7 9.7 11 8 11C6.3 11 5 9.7 5 8Z" stroke="var(--muted)" stroke-width="1.2"/>
-          </svg>
-          <span class="es">Modo anónimo activo</span><span class="en">Anonymous mode on</span>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <div class="settings-col">
-
-    <!-- ===== STRIPE CONNECT BANNER (solo advisors) ===== -->
-    <div id="stripe-banner" style="display:none"></div>
-
-    <div class="settings-bar">
-      <div class="bar-plan">
-        <span id="plan-badge" class="plan-badge plan-free">Free</span>
-        <div>
-          <div id="bar-plan-name" class="bar-plan-name">Explorador <span>· plan actual</span></div>
-        </div>
-      </div>
-      <div class="bar-actions" id="bar-actions"></div>
-      <div class="privacy-toggle">
-        <button id="anon-toggle" class="toggle" title="Modo anónimo" onclick="toggleAnon()"></button>
-        <span><span class="es">Anónimo</span><span class="en">Anonymous</span></span>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="section-head">
-        <span class="section-title"><span class="es">Datos personales</span><span class="en">Personal info</span></span>
-      </div>
-      <div class="section-body">
-
-        <div class="avatar-area">
-          <img id="edit-avatar-img" class="avatar-preview" style="display:none"/>
-          <div id="edit-avatar-ph" class="avatar-preview-placeholder">
-            <svg width="28" height="28" viewBox="0 0 44 44" fill="none">
-              <circle cx="22" cy="16" r="8" fill="var(--blush)"/>
-              <path d="M8 40C8 32 14 28 22 28C30 28 36 32 36 40" fill="var(--blush)"/>
-            </svg>
-          </div>
-          <div class="avatar-info">
-            <label class="btn-avatar" for="avatar-file"><span class="es">Cambiar foto</span><span class="en">Change photo</span></label>
-            <input type="file" id="avatar-file" accept="image/*" onchange="uploadAvatar(this)"/>
-            <span class="avatar-hint"><span class="es">JPG o PNG, máx. 2MB</span><span class="en">JPG or PNG, max. 2MB</span></span>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label"><span class="es">Nombre completo</span><span class="en">Full name</span></label>
-            <input type="text" id="full-name" class="form-input" placeholder="Tu nombre"
-              oninput="syncPreview()"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Ciudad</label>
-            <input type="text" id="city" class="form-input" placeholder="Ciudad, País"
-              oninput="syncPreview()"/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Género</label>
-          <select id="gender" class="form-select">
-            <option value="">Prefiero no decir</option>
-            <option value="hombre">Hombre</option>
-            <option value="mujer">Mujer</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Bio</label>
-          <textarea id="bio" class="form-textarea"
-            placeholder="Cuéntanos un poco sobre ti…"
-            oninput="syncPreview()"></textarea>
-        </div>
-
-        <button class="btn-save" onclick="saveProfile()"><span class="es">Guardar cambios</span><span class="en">Save changes</span></button>
-      </div>
-    </div>
-
-    <div class="advisor-collapsed" id="advisor-section">
-      <div class="advisor-collapsed-header" onclick="toggleAdvisorPanel()">
-        <div class="advisor-status">
-          <div class="advisor-dot inactive" id="advisor-dot"></div>
-          <div>
-            <div class="section-title" id="advisor-section-title">Ser advisor</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px" id="advisor-section-sub">
-              Ayuda a otros y gana dinero
-            </div>
-          </div>
-        </div>
-        <button class="advisor-collapsed-expand" id="advisor-expand-btn">Configurar →</button>
-      </div>
-      <div class="advisor-collapsed-body" id="advisor-panel">
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Activo como advisor</span><span class="en">Active as advisor</span></label>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
-            <button id="advisor-available-toggle" class="toggle" onclick="toggleAdvisorAvailable()"></button>
-            <span id="advisor-available-label" style="font-size:13px;color:var(--muted)">Disponible</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Bio de advisor</span><span class="en">Advisor bio</span></label>
-          <textarea id="advisor-bio" class="form-textarea"
-            placeholder="Cuéntales qué los hace especial…"
-            oninput="syncPreview()"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Especialidades</label>
-          <div class="specialties-grid" id="specialties-grid"></div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Estado civil</label>
-            <select id="civil-status" class="form-select" onchange="syncPreview()">
-              <option value="">Selecciona</option>
-              <option value="Soltero/a">Soltero/a</option>
-              <option value="En relación">En relación</option>
-              <option value="Casado/a">Casado/a</option>
-              <option value="Divorciado/a">Divorciado/a</option>
-              <option value="Viudo/a">Viudo/a</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="es">Años en relación/matrimonio</span><span class="en">Years in relationship</span></label>
-            <input type="number" id="years-together" class="form-input"
-              min="0" max="60" placeholder="0" onchange="syncPreview()"/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label"><span class="es">Precio por sesión (MXN)</span><span class="en">Price per session (MXN)</span></label>
-          <input type="number" id="price" class="form-input"
-            min="0" step="50" placeholder="500" onchange="syncPreview()"/>
-        </div>
-
-        <button class="btn-save" onclick="saveAdvisor()"><span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span></button>
-      </div>
-    </div>
-
+<div class="page">
+  <div class="welcome">
+    <div class="welcome-tag"><span class="es">Tu espacio · He Knows She Knows</span><span class="en">Your space · He Knows She Knows</span></div>
+    <h1 class="welcome-title">Hola, <em id="welcome-name">bienvenido/a</em></h1>
+    <p class="welcome-sub"><span class="es">¿Qué quieres entender hoy?</span><span class="en">What do you want to understand today?</span></p>
   </div>
-</main>
+  <div class="alert" id="alert-perfil" style="display:none;">
+    <span class="alert-icon">👤</span>
+    <div class="alert-text"><strong><span class="es">Completa tu perfil</span><span class="en">Complete your profile</span></strong> <span class="es">para aprovechar al máximo la plataforma.</span><span class="en">to get the most out of the platform.</span></div>
+    <a href="perfil.html" class="alert-btn"><span class="es">Completar →</span><span class="en">Complete →</span></a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l"><span class="es">Preguntas hechas</span><span class="en">Questions asked</span></div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l"><span class="es">Respuestas recibidas</span><span class="en">Answers received</span></div></div>
+    <div class="stat"><div class="stat-n" id="stat-plan">—</div><div class="stat-l"><span class="es">Tu plan actual</span><span class="en">Your current plan</span></div></div>
+  </div>
+  <div class="section-label"><span class="es">Acciones rápidas</span><span class="en">Quick actions</span></div>
+  <div class="actions">
+    <a href="buscar-advisors.html" class="action-card">
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="19" cy="19" r="11" stroke="#C47A5A" stroke-width="2"/>
+  <circle cx="15" cy="17" r="4" fill="#C47A5A" opacity="0.3"/>
+  <circle cx="23" cy="17" r="4" fill="#C9A96E" opacity="0.3"/>
+  <path d="M27 27L34 34" stroke="#C47A5A" stroke-width="2.5" stroke-linecap="round"/>
+</svg></span>
+      <div class="ac-title"><span class="es">Buscar un Advisor</span><span class="en">Find an Advisor</span></div>
+      <p class="ac-desc"><span class="es">Encuentra la perspectiva del sexo opuesto. Filtra por especialidad y precio.</span><span class="en">Find the opposite sex perspective. Filter by specialty and price.</span></p>
+    </a>
+    <a href="perfil.html" class="action-card">
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="22" cy="15" r="7" fill="#C47A5A" opacity="0.85"/>
+  <path d="M8 38C8 30 14 26 22 26C30 26 36 30 36 38" fill="#C47A5A" opacity="0.85"/>
+  <polygon points="34,6 36,11 41,11 37,14 38.5,19 34,16 29.5,19 31,14 27,11 32,11" fill="#C9A96E"/>
+</svg></span>
+      <div class="ac-title">Mi perfil</div>
+      <p class="ac-desc"><span class="es">Actualiza tu foto, bio y configuración de cuenta.</span><span class="en">Update your photo, bio and account settings.</span></p>
+    </a>
+    <a href="index.html#precios" class="action-card">
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <polygon points="22,4 26,15 38,15 28,22 32,34 22,27 12,34 16,22 6,15 18,15" fill="#C9A96E"/>
+  <polygon points="22,9 25,17 34,17 27,22 29,31 22,26 15,31 17,22 10,17 19,17" fill="#C47A5A" opacity="0.4"/>
+</svg></span>
+      <div class="ac-title"><span class="es">Mejorar mi plan</span><span class="en">Upgrade my plan</span></div>
+      <p class="ac-desc"><span class="es">Obtén más consultas privadas y respuesta prioritaria.</span><span class="en">Get more private consultations and priority response.</span></p>
+    </a>
+    <a href="index.html#advsec" class="action-card">
+      <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+  <circle cx="16" cy="14" r="6" fill="#C47A5A" opacity="0.9"/>
+  <path d="M4 34C4 27 9 24 16 24C23 24 28 27 28 34" fill="#C47A5A" opacity="0.9"/>
+  <rect x="26" y="18" width="16" height="12" rx="4" fill="#C9A96E" opacity="0.9"/>
+  <path d="M42 28L44 34L34 30" fill="#C9A96E" opacity="0.9"/>
+  <circle cx="31" cy="24" r="1.2" fill="white"/>
+  <circle cx="34" cy="24" r="1.2" fill="white"/>
+  <circle cx="37" cy="24" r="1.2" fill="white"/>
+</svg></span>
+      <div class="ac-title"><span class="es">Ser Advisor</span><span class="en">Become an Advisor</span></div>
+      <p class="ac-desc"><span class="es">¿Quieres dar consejos y ganar dinero? Regístrate como Advisor.</span><span class="en">Want to give advice and earn money? Register as an Advisor.</span></p>
+    </a>
+  </div>
+</div>
 
-<div id="toast" class="toast"></div>
+<!-- ===== MODAL DE RESEÑAS (aparece automático si hay consultas pendientes) ===== -->
+<div class="rev-overlay" id="rev-overlay" role="dialog" aria-labelledby="rev-title">
+  <div class="rev-modal" id="rev-modal-content">
+    <div id="rev-form-view">
+      <button class="rev-close" onclick="revSkip()" aria-label="Cerrar">×</button>
+      <div class="rev-av" id="rev-av"></div>
+      <h2 class="rev-title" id="rev-title">¿Cómo te fue con <span id="rev-advisor-name">Advisor</span>?</h2>
+      <p class="rev-sub">Tu opinión ayuda a otras personas</p>
 
+      <div class="rev-stars" id="rev-stars">
+        <span class="rev-star" data-val="1">★</span>
+        <span class="rev-star" data-val="2">★</span>
+        <span class="rev-star" data-val="3">★</span>
+        <span class="rev-star" data-val="4">★</span>
+        <span class="rev-star" data-val="5">★</span>
+      </div>
+      <div class="rev-stars-label" id="rev-stars-label">Toca para calificar</div>
+
+      <div class="rev-q">¿La recomendarías?</div>
+      <div class="rev-yn">
+        <button type="button" class="rev-yn-btn" id="rev-yes" onclick="revSetRec(true)">Sí</button>
+        <button type="button" class="rev-yn-btn" id="rev-no" onclick="revSetRec(false)">No</button>
+      </div>
+
+      <div class="rev-textarea-wrap">
+        <label class="rev-textarea-label" for="rev-comment">Cuéntanos cómo te fue (opcional)</label>
+        <textarea id="rev-comment" class="rev-textarea" placeholder="Me ayudó a entender..." maxlength="1000"></textarea>
+      </div>
+
+      <div class="rev-toggle">
+        <input type="checkbox" id="rev-public" checked>
+        <div>
+          <label for="rev-public">Hacer mi reseña pública</label>
+          <small>Otras personas podrán verla en el perfil del advisor</small>
+        </div>
+      </div>
+
+      <div class="rev-anon">
+        <input type="checkbox" id="rev-anon">
+        <label for="rev-anon">Mostrar como anónimo</label>
+      </div>
+
+      <button class="rev-submit" id="rev-submit" onclick="revSubmit()" disabled>Enviar reseña</button>
+      <button class="rev-skip" onclick="revSkip()">Quizá después</button>
+    </div>
+
+    <div id="rev-thanks-view" style="display:none;">
+      <div class="rev-thanks">
+        <div class="rev-thanks-icon">★</div>
+        <div class="rev-thanks-title">¡Gracias por tu reseña!</div>
+        <div class="rev-thanks-sub">Tu opinión hace la diferencia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="supabase.js"></script>
 <script>
+/* ===== MENÚ MÓVIL ===== */
 function toggleMobileMenu(){
   const ham=document.getElementById('hamburger');
   const menu=document.getElementById('mobile-menu');
@@ -666,516 +302,45 @@ function closeMobileMenu(){
   document.body.classList.remove('menu-open');
 }
 
-const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const SPECIALTIES = [
-  'Relaciones', 'Ghosting', 'Infidelidad', 'Texting',
-  'Citas', 'Confianza', 'Desahogo', 'Cómo piensa el sexo opuesto',
-  'Styling', 'Sexualidad', 'Divorcio', 'Autoestima'
-];
-
-let session = null;
-let profile = null;
-let advisorProfile = null;
-let selectedSpecs = [];
-let isAdvisorAvailable = true;
-let isAnon = false;
-
-async function init() {
-  const raw = localStorage.getItem('hksk-session');
-  if (!raw) return window.location.href = 'login.html';
-  session = JSON.parse(raw);
-  const { data: refreshed } = await sb.auth.setSession({
-    access_token: session.access_token,
-    refresh_token: session.refresh_token
-  });
-  if (refreshed?.session) {
-    session.access_token = refreshed.session.access_token;
-    session.refresh_token = refreshed.session.refresh_token;
-    localStorage.setItem('hksk-session', JSON.stringify(session));
-  }
-
-  // Detectar si vuelve de Stripe Connect onboarding
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('stripe') === 'complete') {
-    showToast(localStorage.getItem('hksk-lang')==='en'?'Payment setup complete!':'¡Pagos configurados!');
-    history.replaceState({}, '', 'perfil.html');
-  } else if (params.get('stripe') === 'refresh') {
-    showToast(localStorage.getItem('hksk-lang')==='en'?'Please complete setup':'Por favor completa la configuración', true);
-    history.replaceState({}, '', 'perfil.html');
-  }
-
-  await loadProfile();
-  buildSpecialtyGrid();
-
-  if (typeof HKSK !== 'undefined' && HKSK.icons) {
-    const desEl = document.getElementById('preview-icon-desahogo');
-    if (desEl) {
-      desEl.innerHTML = HKSK.icons.desahogo
-        .replace('width="44"', 'width="32"').replace('height="44"', 'height="32"');
-    }
-  }
-
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('main-content').style.display = '';
-}
-
-async function loadProfile() {
+(async () => {
   try {
-    const res = await fetch('/.netlify/functions/get-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: session.access_token })
-    });
-    const data = await res.json();
-    profile = data.profile || {};
-    advisorProfile = data.advisor_profile || null;
-  } catch(e) {
-    console.error('Error cargando perfil:', e);
-    profile = {};
-  }
+    let session = null;
+    try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
 
-  document.getElementById('full-name').value = profile.full_name || '';
-  document.getElementById('bio').value = profile.bio || '';
-  document.getElementById('city').value = profile.city || '';
-  document.getElementById('gender').value = profile.gender || '';
-  isAnon = !!profile.is_anonymous;
-
-  if (profile.avatar_url) setAvatarUI(profile.avatar_url);
-  setPlanUI(profile.plan || 'free');
-  setAnonUI(isAnon);
-  syncPreview();
-
-  if (profile.role === 'advisor' && advisorProfile) {
-    loadAdvisorProfileData();
-    renderStripeBanner();
-  }
-}
-
-// ===== STRIPE CONNECT BANNER =====
-function renderStripeBanner() {
-  const banner = document.getElementById('stripe-banner');
-  if (!advisorProfile) { banner.style.display = 'none'; return; }
-
-  const lang = localStorage.getItem('hksk-lang') || 'es';
-  const onboardingComplete = advisorProfile.stripe_onboarding_complete === true;
-  const payoutsEnabled = advisorProfile.payouts_enabled === true;
-  const chargesEnabled = advisorProfile.charges_enabled === true;
-  const isFullyReady = onboardingComplete && payoutsEnabled && chargesEnabled;
-
-  banner.style.display = 'flex';
-
-  if (isFullyReady) {
-    banner.className = 'stripe-banner success';
-    banner.innerHTML = `
-      <div class="stripe-banner-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="stripe-banner-content">
-        <div class="stripe-banner-title">${lang==='en' ? 'Payments configured' : 'Pagos configurados'}</div>
-        <div class="stripe-banner-text">${lang==='en' ? "You're ready to receive payments from consultations." : 'Estás listo para recibir pagos por consultas.'}</div>
-      </div>
-    `;
-  } else {
-    banner.className = 'stripe-banner warning';
-    const title = onboardingComplete
-      ? (lang==='en' ? 'Verification in progress' : 'Verificación en proceso')
-      : (lang==='en' ? 'Configure your payments' : 'Configura tus pagos');
-    const text = onboardingComplete
-      ? (lang==='en' ? 'Stripe is verifying your information. You can continue updating data if needed.' : 'Stripe está verificando tu información. Puedes continuar actualizando datos si es necesario.')
-      : (lang==='en' ? 'To receive payments from consultations, connect your bank account with Stripe.' : 'Para recibir pagos de consultas, conecta tu cuenta bancaria con Stripe.');
-    const btnText = onboardingComplete
-      ? (lang==='en' ? 'Update info' : 'Actualizar datos')
-      : (lang==='en' ? 'Set up payments →' : 'Configurar pagos →');
-
-    banner.innerHTML = `
-      <div class="stripe-banner-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 9V13M12 17H12.01M3 12C3 7.03 7.03 3 12 3C16.97 3 21 7.03 21 12C21 16.97 16.97 21 12 21C7.03 21 3 16.97 3 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="stripe-banner-content">
-        <div class="stripe-banner-title">${title}</div>
-        <div class="stripe-banner-text">${text}</div>
-      </div>
-      <button class="stripe-banner-btn" id="stripe-connect-btn" onclick="startStripeOnboarding()">${btnText}</button>
-    `;
-  }
-}
-
-async function startStripeOnboarding() {
-  const btn = document.getElementById('stripe-connect-btn');
-  if (!btn) return;
-  const lang = localStorage.getItem('hksk-lang') || 'es';
-  btn.disabled = true;
-  btn.textContent = lang==='en' ? 'Loading…' : 'Cargando…';
-
-  try {
-    const res = await fetch('/.netlify/functions/connect-advisor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token: session.access_token })
-    });
-    const data = await res.json();
-
-    if (data.error) {
-      showToast(data.error, true);
-      btn.disabled = false;
-      btn.textContent = lang==='en' ? 'Set up payments →' : 'Configurar pagos →';
+    if (!session?.access_token) {
+      window.location.replace('/login.html');
       return;
     }
 
-    if (data.onboarding_url) {
-      // Redirige a Stripe Express onboarding
-      window.location.href = data.onboarding_url;
-    } else {
-      showToast('Error: no se recibió URL', true);
-      btn.disabled = false;
+    const user = session.user;
+    document.getElementById('nav-email').textContent = user.email;
+    document.getElementById('mm-email').textContent = user.email;
+
+    try {
+      const profile = await HKSK.getProfile(user.id);
+      const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
+      document.getElementById('welcome-name').textContent = name;
+      if (!profile?.full_name || !profile?.bio) {
+        document.getElementById('alert-perfil').style.display = 'flex';
+      }
+      const planNames = {
+        'free': 'Free', 'premium': 'Premium', 'elite': 'Elite',
+        'advisor_mensual': 'Advisor', 'advisor_anual': 'Advisor+'
+      };
+      document.getElementById('stat-plan').textContent = planNames[profile?.plan] || 'Free';
+    } catch(e) {
+      document.getElementById('welcome-name').textContent = user.email.split('@')[0];
     }
-  } catch (e) {
-    console.error('Stripe onboarding error:', e);
-    showToast(lang==='en' ? 'Connection error' : 'Error de conexión', true);
-    btn.disabled = false;
-    btn.textContent = lang==='en' ? 'Set up payments →' : 'Configurar pagos →';
-  }
-}
 
-function loadAdvisorProfileData() {
-  document.getElementById('advisor-bio').value = advisorProfile.bio || '';
-  document.getElementById('civil-status').value = advisorProfile.civil_status || '';
-  document.getElementById('years-together').value = advisorProfile.years_together || '';
-  document.getElementById('price').value = advisorProfile.price_per_session || '';
-  isAdvisorAvailable = advisorProfile.available !== false;
+    // Esperar un poquito antes de mostrar el modal de reseñas (no interrumpe el flujo principal)
+    setTimeout(checkPendingReviews, 1200);
 
-  if (advisorProfile.specialty) {
-    selectedSpecs = advisorProfile.specialty.split(',').map(s => s.trim()).filter(Boolean);
-  }
-
-  updateAdvisorSectionHeader(true);
-  setAdvisorAvailableUI(isAdvisorAvailable);
-  refreshSpecialtyGrid();
-  syncPreview();
-}
-
-function setPlanUI(plan) {
-  const badge = document.getElementById('plan-badge');
-  const name = document.getElementById('bar-plan-name');
-  const actions = document.getElementById('bar-actions');
-
-  const plans = {
-    free:            { label: 'Free',    cls: 'plan-free',    display: 'Explorador' },
-    premium:         { label: 'Premium', cls: 'plan-premium', display: 'Premium' },
-    elite:           { label: 'Elite',   cls: 'plan-elite',   display: 'Elite' },
-    advisor_mensual: { label: 'Advisor', cls: 'plan-premium', display: 'Advisor Mensual' },
-    advisor_anual:   { label: 'Advisor', cls: 'plan-elite',   display: 'Advisor Anual' },
-  };
-  const p = plans[plan] || plans.free;
-  badge.textContent = p.label;
-  badge.className = `plan-badge ${p.cls}`;
-  name.innerHTML = `${p.display} <span>· <span class="es">plan actual</span><span class="en">current plan</span></span>`;
-
-  if (plan === 'free') {
-    actions.innerHTML = '';
-  } else if (plan === 'advisor_mensual') {
-    actions.innerHTML = `
-      <a href="https://buy.stripe.com/6oU5kw7FQagVftscIccQU03" class="btn-sm btn-outline" target="_blank">Subir a Anual</a>
-      <button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar</button>`;
-  } else {
-    actions.innerHTML = `<button class="btn-sm btn-danger" onclick="cancelPlan()">Cancelar plan</button>`;
-  }
-}
-
-function syncPreview() {
-  const name = document.getElementById('full-name').value.trim();
-  const bio = document.getElementById('bio').value.trim() || document.getElementById('advisor-bio').value.trim();
-  const city = document.getElementById('city').value.trim();
-  const price = document.getElementById('price').value;
-  const civil = document.getElementById('civil-status').value;
-  const years = document.getElementById('years-together').value;
-
-  document.getElementById('preview-name').textContent = name || (localStorage.getItem('hksk-lang')==='en'?'Your name':'Tu nombre');
-
-  const bioEl = document.getElementById('preview-bio');
-  if (bio) { bioEl.textContent = bio; bioEl.classList.remove('empty'); }
-  else { bioEl.textContent = localStorage.getItem('hksk-lang')==='en'?'Your bio will appear here…':'Aquí aparecerá tu bio…'; bioEl.classList.add('empty'); }
-
-  const cityEl = document.getElementById('preview-city');
-  if (city) {
-    cityEl.style.display = 'flex';
-    document.getElementById('preview-city-text').textContent = city;
-  } else { cityEl.style.display = 'none'; }
-
-  const specContainer = document.getElementById('preview-specialties');
-  if (selectedSpecs.length) {
-    specContainer.style.display = 'flex';
-    const iconMap = {
-      'Relaciones': 'relaciones', 'Relaciones y pareja': 'relaciones',
-      'Ghosting': 'ghosting', 'Ghosting e infidelidad': 'ghosting',
-      'Infidelidad': 'ghosting',
-      'Cómo piensa el sexo opuesto': 'sexoOpuesto',
-      'Como piensa el sexo opuesto': 'sexoOpuesto',
-      'Confianza': 'confianza', 'Confianza y autoestima': 'confianza',
-      'Autoestima': 'confianza',
-      'Styling': 'styling', 'Styling y presencia': 'styling',
-      'Texting': 'texting', 'Texting y comunicación': 'texting',
-      'Texting y comunicacion': 'texting',
-      'Citas': 'citas', 'Citas y conquista': 'citas',
-      'Desahogo': 'desahogo',
-      'Sexualidad': 'relaciones',
-      'Divorcio': 'ghosting'
-    };
-    specContainer.innerHTML = selectedSpecs.map(s => {
-      const clean = s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}❤️👻💕💪🧴💬❤🔥\s]+/gu, ' ').trim();
-      const iconKey = iconMap[clean] || iconMap[s] ||
-        Object.keys(iconMap).find(k => clean.includes(k) || s.includes(k));
-      const iconHtml = (typeof HKSK !== 'undefined' && iconKey && HKSK.icons[iconKey])
-        ? HKSK.icons[iconKey].replace('width="44"','width="14"').replace('height="44"','height="14"')
-        : '';
-      const label = iconHtml ? clean : s;
-      return `<span class="specialty-pill">${iconHtml}${label}</span>`;
-    }).join('');
-  } else { specContainer.style.display = 'none'; }
-
-  const metaEl = document.getElementById('preview-advisor-meta');
-  const priceEl = document.getElementById('preview-price');
-  if (profile && profile.role === 'advisor') {
-    metaEl.style.display = 'flex';
-    priceEl.style.display = 'flex';
-    document.getElementById('pm-civil').textContent = civil || '—';
-    const lang=localStorage.getItem('hksk-lang')||'es';
-    document.getElementById('pm-exp').textContent = years ? `${years} ${lang==='en'?'year':'año'}${years==1?'':'s'}` : '—';
-    document.getElementById('pm-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : '$0';
-  } else {
-    metaEl.style.display = 'none';
-    priceEl.style.display = 'none';
-  }
-
-  document.getElementById('preview-anon').style.display = isAnon ? 'flex' : 'none';
-}
-
-function setAvatarUI(url) {
-  ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-    const img = document.getElementById(id);
-    img.src = url; img.style.display = '';
-  });
-  document.getElementById('edit-avatar-ph').style.display = 'none';
-  document.getElementById('preview-avatar-ph').style.display = 'none';
-}
-
-async function uploadAvatar(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) return showToast('La imagen debe ser menor a 2MB', true);
-
-  const fileBase64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-        const img = document.getElementById(id);
-        if (img) { img.src = e.target.result; img.style.display = ''; }
-      });
-      const editPh = document.getElementById('edit-avatar-ph');
-      const prevPh = document.getElementById('preview-avatar-ph');
-      if (editPh) editPh.style.display = 'none';
-      if (prevPh) prevPh.style.display = 'none';
-      resolve(e.target.result.split(',')[1]);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-
-  showToast(localStorage.getItem('hksk-lang')==='en'?'Uploading photo…':'Subiendo foto…');
-
-  try {
-    const res = await fetch('/.netlify/functions/avatar-upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: session.user.id,
-        fileBase64: fileBase64,
-        fileName: file.name,
-        fileType: file.type
-      })
-    });
-    const data = await res.json();
-    console.log('avatar-upload response:', data);
-    if (data.url || data.avatar_url) {
-      showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
-      const finalUrl = data.url || data.avatar_url;
-      ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
-        const img = document.getElementById(id);
-        if (img) img.src = finalUrl;
-      });
-    } else {
-      showToast(data.error || 'Error al subir', true);
-    }
-  } catch (e) {
-    console.error('Upload error:', e);
-    showToast('Error de conexión', true);
-  }
-}
-
-function setAnonUI(val) {
-  const btn = document.getElementById('anon-toggle');
-  btn.classList.toggle('on', val);
-}
-
-async function toggleAnon() {
-  isAnon = !isAnon;
-  setAnonUI(isAnon);
-  syncPreview();
-  await fetch('/.netlify/functions/update-profile', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: session.access_token, is_anonymous: isAnon })
-  });
-}
-
-function toggleAdvisorPanel() {
-  const panel = document.getElementById('advisor-panel');
-  panel.classList.toggle('open');
-  document.getElementById('advisor-expand-btn').textContent =
-    panel.classList.contains('open') ? (localStorage.getItem('hksk-lang')==='en'?'Close ↑':'Cerrar ↑') : (localStorage.getItem('hksk-lang')==='en'?'Set up →':'Configurar →');
-}
-
-function updateAdvisorSectionHeader(isAdvisor) {
-  document.getElementById('advisor-dot').classList.toggle('inactive', !isAdvisor);
-  const lang=localStorage.getItem('hksk-lang')||'es';
-  document.getElementById('advisor-section-title').textContent = isAdvisor ? (lang==='en'?'Advisor profile':'Perfil de advisor') : (lang==='en'?'Become an advisor':'Ser advisor');
-  document.getElementById('advisor-section-sub').textContent = isAdvisor
-    ? `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`
-    : (lang==='en'?'Help others and earn money':'Ayuda a otros y gana dinero');
-  document.getElementById('advisor-expand-btn').textContent = isAdvisor ? (lang==='en'?'Edit →':'Editar →') : (lang==='en'?'Set up →':'Configurar →');
-}
-
-function setAdvisorAvailableUI(val) {
-  const btn = document.getElementById('advisor-available-toggle');
-  btn.classList.toggle('on', val);
-  document.getElementById('advisor-available-label').textContent = val ? (localStorage.getItem('hksk-lang')==='en'?'Available':'Disponible') : (localStorage.getItem('hksk-lang')==='en'?'Unavailable':'No disponible');
-}
-
-function toggleAdvisorAvailable() {
-  isAdvisorAvailable = !isAdvisorAvailable;
-  setAdvisorAvailableUI(isAdvisorAvailable);
-}
-
-function buildSpecialtyGrid() {
-  const grid = document.getElementById('specialties-grid');
-  grid.innerHTML = SPECIALTIES.map(s => `
-    <div class="spec-chip ${selectedSpecs.includes(s) ? 'selected' : ''}"
-      onclick="toggleSpec('${s}', this)">${s}</div>
-  `).join('');
-}
-
-function refreshSpecialtyGrid() {
-  document.querySelectorAll('.spec-chip').forEach(chip => {
-    chip.classList.toggle('selected', selectedSpecs.includes(chip.textContent));
-  });
-}
-
-function toggleSpec(name, el) {
-  if (selectedSpecs.includes(name)) {
-    selectedSpecs = selectedSpecs.filter(s => s !== name);
-    el.classList.remove('selected');
-  } else {
-    selectedSpecs.push(name);
-    el.classList.add('selected');
-  }
-  syncPreview();
-  const lang=localStorage.getItem('hksk-lang')||'es';
-  document.getElementById('advisor-section-sub').textContent =
-    `${selectedSpecs.length} ${lang==='en'?'specialt':'especialidad'}${selectedSpecs.length!==1?(lang==='en'?'ies':'es'):(lang==='en'?'y':'')}`;
-}
-
-async function saveProfile() {
-  const btn = document.querySelector('.settings-section .btn-save');
-  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
-
-  const body = {
-    token: session.access_token,
-    full_name: document.getElementById('full-name').value.trim(),
-    bio: document.getElementById('bio').value.trim(),
-    city: document.getElementById('city').value.trim(),
-    gender: document.getElementById('gender').value,
-    is_anonymous: isAnon
-  };
-
-  try {
-    const res = await fetch('/.netlify/functions/update-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) {
-      showToast(data.error || 'Error al guardar', true);
-    } else {
-      showToast(localStorage.getItem('hksk-lang')==='en'?'Profile updated':'Perfil actualizado');
-    }
   } catch(e) {
-    console.error(e);
-    showToast('Error de conexión', true);
+    window.location.replace('/login.html');
+  } finally {
+    document.getElementById('loader').classList.add('gone');
   }
-
-  btn.disabled = false;
-  btn.innerHTML = '<span class="es">Guardar cambios</span><span class="en">Save changes</span>';
-}
-
-async function saveAdvisor() {
-  const btn = document.querySelectorAll('.btn-save')[1];
-  btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
-
-  const body = {
-    token: session.access_token,
-    bio: document.getElementById('advisor-bio').value.trim(),
-    specialty: selectedSpecs.join(', '),
-    civil_status: document.getElementById('civil-status').value,
-    years_together: parseInt(document.getElementById('years-together').value) || 0,
-    price_per_session: parseFloat(document.getElementById('price').value) || 0,
-    available: isAdvisorAvailable
-  };
-
-  try {
-    const res = await fetch('/.netlify/functions/save-advisor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) {
-      showToast(data.error || 'Error al guardar', true);
-    } else {
-      showToast(localStorage.getItem('hksk-lang')==='en'?'Advisor profile saved':'Perfil de advisor guardado');
-      profile.role = 'advisor';
-      updateAdvisorSectionHeader(true);
-      syncPreview();
-    }
-  } catch(e) {
-    console.error(e);
-    showToast('Error de conexión', true);
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<span class="es">Guardar perfil de advisor</span><span class="en">Save advisor profile</span>';
-}
-
-function cancelPlan() {
-  if (!confirm(localStorage.getItem('hksk-lang')==='en'?'Are you sure?':'¿Seguro que quieres cancelar tu plan?')) return;
-  showToast(localStorage.getItem('hksk-lang')==='en'?'Contact support to cancel':'Escríbenos a soporte para cancelar');
-}
-
-function showToast(msg, error = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast${error ? ' error' : ''} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-init();
+})();
 </script>
 
 <script>
@@ -1193,6 +358,186 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
   document.querySelectorAll('.mm-lang button').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase()===lang);});
 })();
+</script>
+
+<!-- ===== LÓGICA DEL MODAL DE RESEÑAS ===== -->
+<script>
+let REV_PENDING_LIST = [];
+let REV_CURRENT = null;
+let REV_STARS = 0;
+let REV_RECOMMEND = null;
+
+async function checkPendingReviews() {
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+  if (!session?.access_token) return;
+
+  try {
+    const res = await fetch('/.netlify/functions/get-pending-reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: session.access_token })
+    });
+    const data = await res.json();
+
+    if (data?.pending && data.pending.length > 0) {
+      let skipped = [];
+      try { skipped = JSON.parse(sessionStorage.getItem('rev-skipped') || '[]'); } catch(e) {}
+
+      REV_PENDING_LIST = data.pending.filter(p => !skipped.includes(p.consultation_id));
+      if (REV_PENDING_LIST.length > 0) {
+        showNextReview();
+      }
+    }
+  } catch(e) {
+    console.error('checkPendingReviews error:', e);
+  }
+}
+
+function showNextReview() {
+  if (REV_PENDING_LIST.length === 0) {
+    closeRevModal();
+    return;
+  }
+  REV_CURRENT = REV_PENDING_LIST.shift();
+  resetRevForm();
+  fillAdvisorInfo(REV_CURRENT);
+  document.getElementById('rev-form-view').style.display = 'block';
+  document.getElementById('rev-thanks-view').style.display = 'none';
+  document.getElementById('rev-overlay').classList.add('show');
+}
+
+function fillAdvisorInfo(p) {
+  document.getElementById('rev-advisor-name').textContent = p.advisor_name || 'tu Advisor';
+  const av = document.getElementById('rev-av');
+  if (p.advisor_avatar) {
+    av.innerHTML = `<img src="${p.advisor_avatar}" alt="${p.advisor_name}">`;
+  } else {
+    av.textContent = (p.advisor_name?.[0] || 'A').toUpperCase();
+  }
+}
+
+function resetRevForm() {
+  REV_STARS = 0;
+  REV_RECOMMEND = null;
+  document.querySelectorAll('.rev-star').forEach(s => s.classList.remove('on'));
+  document.getElementById('rev-stars-label').textContent = 'Toca para calificar';
+  document.getElementById('rev-yes').classList.remove('on');
+  document.getElementById('rev-no').classList.remove('on');
+  document.getElementById('rev-comment').value = '';
+  document.getElementById('rev-public').checked = true;
+  document.getElementById('rev-anon').checked = false;
+  document.getElementById('rev-submit').disabled = true;
+  document.getElementById('rev-submit').textContent = 'Enviar reseña';
+}
+
+// Eventos de estrellas
+document.querySelectorAll('.rev-star').forEach(star => {
+  star.addEventListener('click', () => {
+    REV_STARS = parseInt(star.dataset.val);
+    document.querySelectorAll('.rev-star').forEach(s => {
+      s.classList.toggle('on', parseInt(s.dataset.val) <= REV_STARS);
+    });
+    const labels = {1:'Muy malo', 2:'Malo', 3:'Regular', 4:'Bueno', 5:'Excelente'};
+    document.getElementById('rev-stars-label').textContent = labels[REV_STARS] || '';
+    document.getElementById('rev-submit').disabled = REV_STARS === 0;
+  });
+});
+
+function revSetRec(val) {
+  REV_RECOMMEND = val;
+  document.getElementById('rev-yes').classList.toggle('on', val === true);
+  document.getElementById('rev-no').classList.toggle('on', val === false);
+}
+
+function revSkip() {
+  if (REV_CURRENT) {
+    try {
+      const skipped = JSON.parse(sessionStorage.getItem('rev-skipped') || '[]');
+      skipped.push(REV_CURRENT.consultation_id);
+      sessionStorage.setItem('rev-skipped', JSON.stringify(skipped));
+    } catch(e) {}
+  }
+  if (REV_PENDING_LIST.length > 0) {
+    showNextReview();
+  } else {
+    closeRevModal();
+  }
+}
+
+function closeRevModal() {
+  document.getElementById('rev-overlay').classList.remove('show');
+  REV_CURRENT = null;
+}
+
+async function revSubmit() {
+  if (!REV_CURRENT || REV_STARS === 0) return;
+
+  const btn = document.getElementById('rev-submit');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('hksk-session')); } catch(e) {}
+  if (!session?.access_token) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar reseña';
+    return;
+  }
+
+  try {
+    const res = await fetch('/.netlify/functions/create-review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_token: session.access_token,
+        consultation_id: REV_CURRENT.consultation_id,
+        stars: REV_STARS,
+        would_recommend: REV_RECOMMEND,
+        comment: document.getElementById('rev-comment').value.trim() || null,
+        is_public: document.getElementById('rev-public').checked,
+        is_anonymous: document.getElementById('rev-anon').checked
+      })
+    });
+    const data = await res.json();
+
+    if (data?.success) {
+      document.getElementById('rev-form-view').style.display = 'none';
+      document.getElementById('rev-thanks-view').style.display = 'block';
+      setTimeout(() => {
+        if (REV_PENDING_LIST.length > 0) {
+          showNextReview();
+        } else {
+          closeRevModal();
+        }
+      }, 1500);
+    } else {
+      alert(data?.error || 'No se pudo enviar la reseña');
+      btn.disabled = false;
+      btn.textContent = 'Enviar reseña';
+    }
+  } catch(e) {
+    console.error('Submit review error:', e);
+    btn.disabled = false;
+    btn.textContent = 'Enviar reseña';
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('rev-overlay').classList.contains('show')) {
+    revSkip();
+  }
+});
+
+document.getElementById('rev-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'rev-overlay') revSkip();
+});
+
+function logout() {
+  localStorage.removeItem("hksk-session");
+  window.location.href = "login.html";
+}
+
 </script>
 </body>
 </html>
