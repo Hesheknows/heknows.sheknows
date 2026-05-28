@@ -111,6 +111,16 @@ body.menu-open{overflow:hidden;}
   font-family:inherit;transition:background 0.15s;
 }
 .post-menu-item:hover{background:var(--cream);color:#C47A5A;}
+.post-menu-item.danger:hover{background:#FDF2EF;color:#B73E1F;}
+
+/* Marca "editado" y posts eliminados */
+.edited-mark{font-size:0.72rem;color:var(--muted);font-style:normal;letter-spacing:0.02em;}
+.post-body.deleted{
+  font-family:inherit;font-style:normal;color:var(--muted);font-size:0.85rem;
+  background:var(--cream);padding:10px 14px;border-radius:4px;border:1px dashed var(--border);
+}
+.post-body.deleted::before, .post-body.deleted::after{content:none;}
+.deleted-post{opacity:0.85;}
 
 .reply-meta-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
 .reply-actions-row{display:flex;align-items:center;gap:6px;margin-top:6px;justify-content:flex-end;}
@@ -461,7 +471,58 @@ function renderPost(p) {
   const liked = localStorage.getItem(likesKey);
   const likeCount = (p.likes || 0) + (liked ? 1 : 0);
 
-  return `<div class="post-card" id="post-${p.id}">
+  // ¿Es mi propio post? (para decidir qué opciones muestro en el menú)
+  const myId = session?.user?.id;
+  const isMine = myId && p.user_id === myId;
+  const isDeleted = !!p.is_deleted;
+  const wasEdited = !!p.edited_at;
+  const langCur = localStorage.getItem('hksk-lang')||'es';
+
+  // Menú: si está eliminado, NADIE puede hacer nada; si es mío, editar/borrar; si es de otros, reportar
+  let menuItemsHtml = '';
+  if (!isDeleted) {
+    if (isMine) {
+      menuItemsHtml = `
+          <button class="post-menu-item" onclick="openEditModalHT('post', '${p.id}')">
+            <span class="es">✏️ Editar</span><span class="en">✏️ Edit</span>
+          </button>
+          <button class="post-menu-item danger" onclick="confirmDeleteHT('post', '${p.id}')">
+            <span class="es">🗑️ Borrar</span><span class="en">🗑️ Delete</span>
+          </button>`;
+    } else {
+      menuItemsHtml = `
+          <button class="post-menu-item" onclick="openReportFromHonest('post', '${p.id}')">
+            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
+          </button>`;
+    }
+  }
+  const menuWrapHtml = menuItemsHtml ? `
+      <div class="post-menu-wrap" style="${catLabel ? '' : 'margin-left:auto;'}">
+        <button class="post-menu-btn" onclick="togglePostMenu(event, 'post', '${p.id}')" aria-label="Más opciones">⋯</button>
+        <div class="post-menu-dropdown" id="menu-post-${p.id}">${menuItemsHtml}
+        </div>
+      </div>` : '';
+
+  // Cuerpo: si está eliminado, mostrar marca; si no, mostrar texto
+  const bodyHtml = isDeleted
+    ? `<div class="post-body deleted">${langCur==='en'?'[This question was deleted]':'[Esta pregunta fue eliminada]'}</div>`
+    : `<div class="post-body">${escHtml(p.body)}${wasEdited ? `<span class="edited-mark"> · ${langCur==='en'?'edited':'editado'}</span>` : ''}</div>`;
+
+  // Si está eliminado, ocultar formulario de respuesta (pero dejar respuestas existentes)
+  const replyFormHtml = isDeleted ? '' : `
+    <div class="reply-form" id="rf-${p.id}">
+      <textarea class="reply-input" id="ri-${p.id}" placeholder="Tu respuesta..."></textarea>
+      <div class="reply-form-bottom">
+        <button class="reply-anon-tog" id="rat-${p.id}" onclick="toggleReplyAnon('${p.id}')"><span class="es">Anónimo</span><span class="en">Anonymous</span></button>
+        <button class="reply-send-btn" onclick="sendReply('${p.id}')">${langCur==='en'?'Reply →':'Responder →'}</button>
+      </div>
+    </div>`;
+
+  // Botón de responder solo si no está eliminado
+  const replyBtnHtml = isDeleted ? '' : `
+      <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">${langCur==='en'?'+ Reply':'+ Responder'}</button>`;
+
+  return `<div class="post-card${isDeleted ? ' deleted-post' : ''}" id="post-${p.id}">
     <div class="post-meta">
       ${avatarHtml}
       <div>
@@ -469,31 +530,18 @@ function renderPost(p) {
         <div class="post-time">${timeAgo}</div>
       </div>
       ${catLabel ? `<div class="post-tag">${catLabel}</div>` : ''}
-      <div class="post-menu-wrap" style="${catLabel ? '' : 'margin-left:auto;'}">
-        <button class="post-menu-btn" onclick="togglePostMenu(event, 'post', '${p.id}')" aria-label="Más opciones">⋯</button>
-        <div class="post-menu-dropdown" id="menu-post-${p.id}">
-          <button class="post-menu-item" onclick="openReportFromHonest('post', '${p.id}')">
-            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
-          </button>
-        </div>
-      </div>
+      ${menuWrapHtml}
     </div>
-    <div class="post-body">${escHtml(p.body)}</div>
+    ${bodyHtml}
     ${replyHtml}
-    <div class="reply-form" id="rf-${p.id}">
-      <textarea class="reply-input" id="ri-${p.id}" placeholder="Tu respuesta..."></textarea>
-      <div class="reply-form-bottom">
-        <button class="reply-anon-tog" id="rat-${p.id}" onclick="toggleReplyAnon('${p.id}')"><span class="es">Anónimo</span><span class="en">Anonymous</span></button>
-        <button class="reply-send-btn" onclick="sendReply('${p.id}')">${localStorage.getItem('hksk-lang')==='en'?'Reply →':'Responder →'}</button>
-      </div>
-    </div>
+    ${replyFormHtml}
     <div class="post-actions">
-      <button class="post-action" onclick="likePost('${p.id}', this)">
+      <button class="post-action" onclick="likePost('${p.id}', this)" ${isDeleted ? 'disabled' : ''}>
         <svg viewBox="0 0 24 24" fill="${liked ? '#C47A5A' : 'none'}" stroke="${liked ? '#C47A5A' : '#9A8880'}" stroke-width="1.6"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.5 1 4.5 2.5C11.5 6 13 5 15 5c3.5 0 5 4 3.5 7-2.5 4.5-6.5 9-6.5 9z"/></svg>
         <span style="margin-left:3px;">${likeCount}</span>
       </button>
-      <button class="post-action reply-btn" onclick="toggleReplyForm('${p.id}')">${localStorage.getItem('hksk-lang')==='en'?'+ Reply':'+ Responder'}</button>
-      <span class="post-replies-count">${p.reply_count || 0} ${localStorage.getItem('hksk-lang')==='en'?(p.reply_count===1?'reply':'replies'):(p.reply_count===1?'respuesta':'respuestas')}</span>
+      ${replyBtnHtml}
+      <span class="post-replies-count">${p.reply_count || 0} ${langCur==='en'?(p.reply_count===1?'reply':'replies'):(p.reply_count===1?'respuesta':'respuestas')}</span>
     </div>
   </div>`;
 }
@@ -506,22 +554,45 @@ function renderReplyPreview(reply) {
     : '';
   const badgeClass = isAdvisor ? 'reply-badge' : 'reply-badge f';
   const badgeText = isAdvisor ? 'Advisor' : (localStorage.getItem('hksk-lang')==='en'?'User':'Usuario');
+
+  // ¿Es mi propia respuesta?
+  const myId = session?.user?.id;
+  const isMine = myId && reply.user_id === myId;
+  const wasEdited = !!reply.edited_at;
+  const langCur = localStorage.getItem('hksk-lang')||'es';
+
+  // Items del menú según autor
+  let menuItemsHtml = '';
+  if (isMine) {
+    menuItemsHtml = `
+          <button class="post-menu-item" onclick="openEditModalHT('reply', '${reply.id}')">
+            <span class="es">✏️ Editar</span><span class="en">✏️ Edit</span>
+          </button>
+          <button class="post-menu-item danger" onclick="confirmDeleteHT('reply', '${reply.id}')">
+            <span class="es">🗑️ Borrar</span><span class="en">🗑️ Delete</span>
+          </button>`;
+  } else {
+    menuItemsHtml = `
+          <button class="post-menu-item" onclick="openReportFromHonest('reply', '${reply.id}')">
+            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
+          </button>`;
+  }
   const menuHtml = reply.id ? `
       <div class="post-menu-wrap" style="margin-left:auto;">
         <button class="post-menu-btn" onclick="togglePostMenu(event, 'reply', '${reply.id}')" aria-label="Más opciones">⋯</button>
-        <div class="post-menu-dropdown" id="menu-reply-${reply.id}">
-          <button class="post-menu-item" onclick="openReportFromHonest('reply', '${reply.id}')">
-            <span class="es">⚠️ Reportar</span><span class="en">⚠️ Report</span>
-          </button>
+        <div class="post-menu-dropdown" id="menu-reply-${reply.id}">${menuItemsHtml}
         </div>
       </div>` : '';
-  return `<div class="reply-preview">
+
+  const editedMark = wasEdited ? `<span class="edited-mark"> · ${langCur==='en'?'edited':'editado'}</span>` : '';
+
+  return `<div class="reply-preview" id="reply-${reply.id}">
     <div class="reply-meta-row">
       <span class="${badgeClass}">${badgeText}</span>
       ${avatarHtml}<span class="reply-name">${escHtml(name)}</span>
       ${menuHtml}
     </div>
-    <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}</div>
+    <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}${editedMark}</div>
   </div>`;
 }
 
@@ -790,6 +861,197 @@ async function submitReportHT() {
 // Cerrar modal al picarle al fondo
 document.addEventListener('click', (e) => {
   if (e.target.id === 'report-modal-ht') closeReportModalHT();
+});
+</script>
+
+<!-- Modal de EDITAR (post o respuesta) -->
+<div class="report-overlay" id="edit-modal-ht">
+  <div class="report-modal">
+    <h3>
+      <span class="es">Editar</span>
+      <span class="en">Edit</span>
+    </h3>
+    <p>
+      <span class="es">Aparecerá la marca "editado" para mantener transparencia.</span>
+      <span class="en">An "edited" mark will appear to keep transparency.</span>
+    </p>
+    <textarea id="edit-textarea-ht" maxlength="2000"></textarea>
+    <div class="report-actions">
+      <button class="report-btn-cancel" onclick="closeEditModalHT()">
+        <span class="es">Cancelar</span><span class="en">Cancel</span>
+      </button>
+      <button class="report-btn-send" id="edit-save-btn-ht" onclick="submitEditHT()">
+        <span class="es">Guardar cambios</span><span class="en">Save changes</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de CONFIRMAR BORRADO -->
+<div class="report-overlay" id="delete-modal-ht">
+  <div class="report-modal">
+    <h3>
+      <span class="es">¿Borrar este contenido?</span>
+      <span class="en">Delete this content?</span>
+    </h3>
+    <p id="delete-msg-ht">
+      <span class="es">Esta acción no se puede deshacer.</span>
+      <span class="en">This action cannot be undone.</span>
+    </p>
+    <div class="report-actions">
+      <button class="report-btn-cancel" onclick="closeDeleteModalHT()">
+        <span class="es">Cancelar</span><span class="en">Cancel</span>
+      </button>
+      <button class="report-btn-send" id="delete-confirm-btn-ht" onclick="submitDeleteHT()" style="background:#B73E1F;border-color:#B73E1F;">
+        <span class="es">Sí, borrar</span><span class="en">Yes, delete</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Estado de qué se está editando/borrando
+let editingItem = null;   // { kind, id }
+let deletingItem = null;  // { kind, id }
+
+// ============================================================
+// EDITAR
+// ============================================================
+function openEditModalHT(kind, id) {
+  // Cerrar menús
+  document.querySelectorAll('.post-menu-dropdown.open').forEach(m => m.classList.remove('open'));
+  if (!session?.access_token) {
+    showToast(localStorage.getItem('hksk-lang')==='en' ? 'Sign in first.' : 'Inicia sesión primero.');
+    return;
+  }
+  // Tomar el texto actual del DOM (sin la marca "editado")
+  let currentText = '';
+  if (kind === 'post') {
+    const card = document.getElementById(`post-${id}`);
+    const body = card?.querySelector('.post-body');
+    if (body) {
+      // Quitar el span .edited-mark del clon para extraer solo el texto original
+      const clone = body.cloneNode(true);
+      clone.querySelectorAll('.edited-mark').forEach(e => e.remove());
+      currentText = clone.textContent.trim();
+    }
+  } else {
+    const replyEl = document.getElementById(`reply-${id}`);
+    const txt = replyEl?.querySelector('.reply-text');
+    if (txt) {
+      const clone = txt.cloneNode(true);
+      clone.querySelectorAll('.edited-mark').forEach(e => e.remove());
+      // Remover el "…" final si existía (era recorte de preview)
+      currentText = clone.textContent.replace(/…$/, '').trim();
+    }
+  }
+  editingItem = { kind, id };
+  const ta = document.getElementById('edit-textarea-ht');
+  ta.value = currentText;
+  document.getElementById('edit-modal-ht').classList.add('show');
+  setTimeout(() => { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }, 100);
+}
+
+function closeEditModalHT() {
+  document.getElementById('edit-modal-ht').classList.remove('show');
+  editingItem = null;
+}
+
+async function submitEditHT() {
+  if (!session?.access_token || !editingItem) return;
+  const text = document.getElementById('edit-textarea-ht').value.trim();
+  if (!text) {
+    showToast(localStorage.getItem('hksk-lang')==='en' ? 'Text cannot be empty.' : 'El texto no puede quedar vacío.');
+    return;
+  }
+  const btn = document.getElementById('edit-save-btn-ht');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/.netlify/functions/update-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: session.access_token,
+        kind: editingItem.kind,
+        itemId: editingItem.id,
+        text
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error');
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en' ? 'Saved.' : 'Cambios guardados.');
+    closeEditModalHT();
+    // Recargar feed para ver el cambio
+    setTimeout(() => { offset = 0; loadPosts(); }, 300);
+  } catch (err) {
+    console.error('Error editando:', err);
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en' ? 'Could not save. Try again.' : 'No se pudo guardar. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ============================================================
+// BORRAR
+// ============================================================
+function confirmDeleteHT(kind, id) {
+  // Cerrar menús
+  document.querySelectorAll('.post-menu-dropdown.open').forEach(m => m.classList.remove('open'));
+  if (!session?.access_token) return;
+  deletingItem = { kind, id };
+  // Si es un post con respuestas, advertir que se conservarán
+  const lang = localStorage.getItem('hksk-lang')||'es';
+  const msgEl = document.getElementById('delete-msg-ht');
+  if (kind === 'post') {
+    msgEl.innerHTML = lang==='en'
+      ? 'If your question has answers, they will be kept but the question will show as "[deleted]". This cannot be undone.'
+      : 'Si tu pregunta tiene respuestas, se conservarán pero la pregunta aparecerá como "[eliminada]". Esto no se puede deshacer.';
+  } else {
+    msgEl.innerHTML = lang==='en' ? 'This action cannot be undone.' : 'Esta acción no se puede deshacer.';
+  }
+  document.getElementById('delete-modal-ht').classList.add('show');
+}
+
+function closeDeleteModalHT() {
+  document.getElementById('delete-modal-ht').classList.remove('show');
+  deletingItem = null;
+}
+
+async function submitDeleteHT() {
+  if (!session?.access_token || !deletingItem) return;
+  const btn = document.getElementById('delete-confirm-btn-ht');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/.netlify/functions/delete-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: session.access_token,
+        kind: deletingItem.kind,
+        itemId: deletingItem.id
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error');
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en' ? 'Deleted.' : 'Eliminado.');
+    closeDeleteModalHT();
+    setTimeout(() => { offset = 0; loadPosts(); }, 300);
+  } catch (err) {
+    console.error('Error borrando:', err);
+    const lang = localStorage.getItem('hksk-lang')||'es';
+    showToast(lang==='en' ? 'Could not delete. Try again.' : 'No se pudo borrar. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Cerrar al picarle al fondo
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'edit-modal-ht') closeEditModalHT();
+  if (e.target.id === 'delete-modal-ht') closeDeleteModalHT();
 });
 </script>
 
