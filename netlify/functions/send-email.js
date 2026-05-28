@@ -331,7 +331,115 @@ He Knows · She Knows
   return { subject, htmlContent, textContent };
 }
 
-module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje, emailNuevaRespuestaHonest };
+// ============================================================
+// PLANTILLA: Reporte de conversación (llega a admin del sitio)
+// reporterRole: 'user' (un usuario reporta a un advisor) | 'advisor' (un advisor reporta a un usuario)
+// ============================================================
+function emailReporte({ reporterName, reporterEmail, reporterRole, reportedName, reportedEmail, reportedRole, motivo, conversationId, fecha }) {
+  const tipoReporte = reporterRole === 'advisor' ? 'Advisor reporta a usuario' : 'Usuario reporta a advisor';
+  const subject = `🚨 Reporte nuevo — ${tipoReporte}`;
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#F7F3EE;font-family:'Helvetica Neue',Arial,sans-serif;color:#1A1410;">
+<div style="max-width:600px;margin:0 auto;background:#FFFFFF;">
+
+  <div style="padding:24px 32px;background:#1A1410;color:#FFFFFF;">
+    <div style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A96E;margin-bottom:6px;">
+      Admin · He Knows · She Knows
+    </div>
+    <h1 style="margin:0;font-size:1.3rem;font-weight:400;">
+      🚨 Nuevo reporte recibido
+    </h1>
+  </div>
+
+  <div style="padding:28px 32px 20px;">
+    <p style="margin:0 0 6px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Tipo de reporte
+    </p>
+    <p style="margin:0 0 24px;font-size:1.05rem;font-weight:500;color:#C47A5A;">
+      ${tipoReporte}
+    </p>
+
+    <table style="width:100%;border-collapse:collapse;margin:0 0 24px;">
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;width:40%;">Quien reporta</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">
+          <strong>${reporterName || '(sin nombre)'}</strong><br>
+          <span style="color:#9A8880;font-size:0.85rem;">${reporterEmail || ''} · ${reporterRole}</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">Persona reportada</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">
+          <strong>${reportedName || '(sin nombre)'}</strong><br>
+          <span style="color:#9A8880;font-size:0.85rem;">${reportedEmail || ''} · ${reportedRole}</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">Fecha</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.9rem;color:#1A1410;">${fecha || ''}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.85rem;color:#9A8880;">ID conversación</td>
+        <td style="padding:10px 0;border-bottom:1px solid #EDE7DF;font-size:0.8rem;color:#1A1410;font-family:monospace;">${conversationId || '-'}</td>
+      </tr>
+    </table>
+
+    <p style="margin:0 0 8px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#9A8880;">
+      Motivo
+    </p>
+    <div style="background:#F7F3EE;border-left:3px solid #C47A5A;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.5;color:#1A1410;${motivo ? '' : 'font-style:italic;color:#9A8880;'}">
+        ${motivo || '(El usuario no escribió motivo)'}
+      </p>
+    </div>
+
+    <p style="margin:0 0 16px;font-size:0.9rem;line-height:1.6;color:#3D3530;">
+      <strong>Próximos pasos:</strong> Revisa el chat en Supabase usando el ID de la conversación.
+      Decide si corresponde una advertencia, suspensión o ninguna acción.
+    </p>
+  </div>
+
+  <div style="padding:20px 32px;background:#F7F3EE;border-top:1px solid #EDE7DF;text-align:center;">
+    <p style="margin:0;font-size:0.7rem;color:#9A8880;">
+      Este reporte se envió silenciosamente. Ninguna de las dos partes sabe que llegó a tu inbox.
+    </p>
+  </div>
+
+</div>
+</body></html>`;
+
+  const textContent = `
+🚨 NUEVO REPORTE — He Knows · She Knows
+
+Tipo: ${tipoReporte}
+
+Quien reporta:
+  Nombre: ${reporterName || '(sin nombre)'}
+  Email: ${reporterEmail || ''}
+  Rol: ${reporterRole}
+
+Persona reportada:
+  Nombre: ${reportedName || '(sin nombre)'}
+  Email: ${reportedEmail || ''}
+  Rol: ${reportedRole}
+
+Fecha: ${fecha || ''}
+ID conversación: ${conversationId || '-'}
+
+Motivo:
+${motivo || '(El usuario no escribió motivo)'}
+
+Próximos pasos: Revisa el chat en Supabase usando el ID de la conversación.
+
+— Este reporte se envió silenciosamente. Ninguna de las dos partes sabe que llegó a tu inbox.
+`.trim();
+
+  return { subject, htmlContent, textContent };
+}
+
+module.exports = { sendEmail, emailNuevaConsulta, emailNuevoMensaje, emailNuevaRespuestaHonest, emailReporte };
 
 // Handler vacío — este archivo es solo una librería, no un endpoint.
 // Netlify requiere que toda función exporte un handler; aquí responde 404.
