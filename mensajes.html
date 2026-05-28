@@ -394,10 +394,9 @@ function renderMessages(msgs, userId) {
 }
 
 async function openOrCreateConv(advisorId) {
-  if (!isPremium()) {
-    showUpgradeModal();
-    return;
-  }
+  // El candado de "consulta activa" ahora vive en el backend (send-message.js).
+  // Aquí dejamos abrir el chat; si no hay consulta activa, el backend lo bloquea
+  // al intentar enviar y mostramos un mensaje amable.
   try {
     const advisorRes = await fetch(
       `${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`,
@@ -490,7 +489,15 @@ async function sendMessage() {
     if (!res.ok) {
       const data = await res.json();
       console.error('Error enviando mensaje:', data);
-      showToast('Error al enviar: ' + (data.error || res.status));
+      // Candado: no hay consulta activa → mensaje amable en vez de error técnico
+      if (data.error === 'no_active_consultation') {
+        const lang = localStorage.getItem('hksk-lang')||'es';
+        showToast(lang==='en'
+          ? 'This consultation has ended. Start a new one to keep chatting.'
+          : 'Esta consulta finalizó. Inicia una nueva consulta para seguir conversando.');
+      } else {
+        showToast('Error al enviar: ' + (data.error || res.status));
+      }
       input.value = body;
       autoResize(input);
     } else {
@@ -543,7 +550,7 @@ init();
     <div class="upgrade-icon">🔒</div>
     <div class="upgrade-title" id="upgrade-title">Función Premium</div>
     <p class="upgrade-sub" id="upgrade-sub"></p>
-    <a href="https://buy.stripe.com/6oU5kw7FQagVftscIccQU03" class="upgrade-btn-modal" target="_blank"><span class="es">Ver planes →</span><span class="en">See plans →</span></a>
+    <a href="https://buy.stripe.com/eVq14g4tE60Fgxw4bGcQU04" class="upgrade-btn-modal" target="_blank"><span class="es">Ver planes →</span><span class="en">See plans →</span></a>
     <button class="upgrade-cancel" onclick="document.getElementById('upgrade-modal').style.display='none'"><span class="es">Ahora no</span><span class="en">Not now</span></button>
   </div>
 </div>
