@@ -535,8 +535,17 @@ document.getElementById('rev-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'rev-overlay') revSkip();
 });
 
-function logout() {
-  localStorage.removeItem("hksk-session");
+// ===== LOGOUT CORREGIDO =====
+// Antes solo borraba 'hksk-session', pero Supabase guardaba su propia
+// sesión aparte, así que login.html te regresaba al dashboard (loop).
+// Ahora HKSK.signOut() cierra también la sesión de Supabase.
+async function logout() {
+  try {
+    await HKSK.signOut();
+  } catch (e) {
+    // Si algo falla, igual limpiamos la sesión local como respaldo
+    localStorage.removeItem("hksk-session");
+  }
   window.location.href = "login.html";
 }
 
