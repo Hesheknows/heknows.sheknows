@@ -1129,6 +1129,22 @@ async function saveProfile() {
 
 async function saveAdvisor() {
   const btn = document.querySelectorAll('.btn-save')[1];
+
+  // ⚠️ Sin foto de perfil NO se puede publicar como advisor (regla del marketplace).
+  // Avisamos claro ANTES de mandar nada y, si quería estar disponible, lo apagamos.
+  const tieneFoto = !!(profile.avatar_url && profile.avatar_url.trim());
+  if (!tieneFoto) {
+    const en = localStorage.getItem('hksk-lang')==='en';
+    if (isAdvisorAvailable) {
+      isAdvisorAvailable = false;
+      setAdvisorAvailableUI(false);
+    }
+    showToast(en
+      ? 'You need a profile photo to make your advisor profile public. Upload a photo first.'
+      : 'Sin foto de perfil no puedes hacer público tu perfil de advisor. Sube una foto primero.', true);
+    return;
+  }
+
   btn.disabled = true; btn.textContent = localStorage.getItem('hksk-lang')==='en'?'Saving…':'Guardando…';
 
   const body = {
@@ -1174,7 +1190,7 @@ function showToast(msg, error = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = `toast${error ? ' error' : ''} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), error ? 5000 : 3000);
 }
 
 init();
