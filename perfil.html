@@ -1008,6 +1008,9 @@ async function uploadAvatar(input) {
     if (data.url || data.avatar_url) {
       showToast(localStorage.getItem('hksk-lang')==='en'?'Photo updated':'Foto actualizada');
       const finalUrl = data.url || data.avatar_url;
+      // 🆕 Actualizar la copia en memoria para que "Guardar perfil de advisor"
+      // ya reconozca la foto SIN tener que recargar la página.
+      if (typeof profile === 'object' && profile) { profile.avatar_url = finalUrl; }
       ['edit-avatar-img', 'preview-avatar-img'].forEach(id => {
         const img = document.getElementById(id);
         if (img) img.src = finalUrl;
