@@ -123,6 +123,24 @@ body.menu-open{overflow:hidden;}
 .pay-cancel:hover{color:var(--night);}
 .pay-stripe-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.68rem;color:var(--muted);margin-top:12px;}
 
+/* ===== PROFILE MODAL (perfil completo del advisor) ===== */
+.prof-modal{background:white;border-radius:16px;max-width:480px;width:100%;padding:0 0 28px;text-align:center;position:relative;animation:slideUp 0.3s ease;max-height:88vh;overflow-y:auto;}
+.prof-header{background:linear-gradient(135deg,#E8C4B0 0%,#C47A5A 100%);padding:32px 32px 56px;border-radius:16px 16px 0 0;position:relative;}
+.prof-av{width:110px;height:110px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.6rem;color:var(--terra);margin:0 auto -55px;border:4px solid white;overflow:hidden;box-shadow:0 8px 24px rgba(26,20,16,0.18);position:relative;top:28px;}
+.prof-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.prof-body{padding:44px 32px 0;}
+.prof-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;color:var(--night);margin-bottom:6px;}
+.prof-specs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:18px;}
+.prof-spec-chip{background:rgba(196,122,90,0.1);color:var(--terra);font-size:0.66rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;padding:5px 12px;border-radius:20px;}
+.prof-bio{font-size:0.92rem;line-height:1.7;color:var(--slate);font-weight:300;text-align:left;margin-bottom:22px;white-space:pre-wrap;}
+.prof-price-box{background:var(--cream);border-radius:12px;padding:18px;margin-bottom:18px;}
+.prof-price-amount{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--terra);line-height:1;}
+.prof-price-period{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.prof-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,0.85);border:none;font-size:22px;color:var(--night);cursor:pointer;line-height:1;padding:2px 10px;border-radius:50%;z-index:2;}
+.prof-close:hover{background:white;}
+.advisor-card{cursor:pointer;}
+.advisor-card .ac-btn{cursor:pointer;}
+
 /* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--night);color:var(--cream);font-size:0.85rem;padding:12px 22px;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:2000;max-width:90%;text-align:center;}
 .toast.show{opacity:1;}
@@ -185,6 +203,27 @@ body.menu-open{overflow:hidden;}
     <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
     <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
     <div class="skel-card"><div class="skel skel-av"></div><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>
+  </div>
+</div>
+
+<!-- ===== PROFILE MODAL (perfil completo) ===== -->
+<div class="pay-overlay" id="prof-modal" style="display:none;">
+  <div class="prof-modal">
+    <button class="prof-close" onclick="closeProfModal()">×</button>
+    <div class="prof-header">
+      <div class="prof-av" id="prof-av"></div>
+    </div>
+    <div class="prof-body">
+      <div class="prof-name" id="prof-name"></div>
+      <div class="prof-specs" id="prof-specs"></div>
+      <div class="prof-bio" id="prof-bio"></div>
+      <div class="prof-price-box">
+        <div class="prof-price-amount" id="prof-price"></div>
+        <div class="prof-price-period"><span class="es">MXN por consulta</span><span class="en">MXN per session</span></div>
+      </div>
+      <button class="pay-btn" id="prof-consult-btn"><span class="es">Consultar →</span><span class="en">Consult →</span></button>
+      <button class="pay-cancel" onclick="closeProfModal()"><span class="es">Cerrar</span><span class="en">Close</span></button>
+    </div>
   </div>
 </div>
 
@@ -343,7 +382,8 @@ function renderAdvisors(list) {
     </div>`;
     return;
   }
-  grid.innerHTML = list.map(a => {
+  window.ADVISORS_DATA = list;  // guardamos para el perfil completo
+  grid.innerHTML = list.map((a, idx) => {
     const adv = a.adv || {};
     const name = a.full_name || 'Advisor';
     const initial = name[0]?.toUpperCase() || 'A';
@@ -354,7 +394,7 @@ function renderAdvisors(list) {
     const avatarHtml = a.avatar_url
       ? `<img src="${a.avatar_url}" alt="${name}">`
       : initial;
-    return `<div class="advisor-card">
+    return `<div class="advisor-card" onclick="openProfModal(${idx})">
       <div class="ac-avail ${available ? 'yes' : ''}"></div>
       <div class="ac-av">${avatarHtml}</div>
       <div class="ac-name">${name}</div>
@@ -364,7 +404,7 @@ function renderAdvisors(list) {
       <div class="ac-footer">
         <div class="ac-price">${price} <span><span class="es">MXN / consulta</span><span class="en">MXN / session</span></span></div>
         ${available
-          ? `<button class="ac-btn" onclick='openPayModal(${JSON.stringify({
+          ? `<button class="ac-btn" onclick='event.stopPropagation();openPayModal(${JSON.stringify({
               id: a.id,
               name: name,
               specialty: (adv.specialty || "Advisor"),
@@ -375,6 +415,61 @@ function renderAdvisors(list) {
       </div>
     </div>`;
   }).join('');
+}
+
+// ===== PROFILE MODAL (perfil completo) =====
+function openProfModal(idx) {
+  const list = window.ADVISORS_DATA || [];
+  const a = list[idx];
+  if (!a) return;
+  const adv = a.adv || {};
+  const name = a.full_name || 'Advisor';
+  const lang = document.body.getAttribute('data-lang');
+  const bio = adv.bio || a.bio || (lang==='en'?'Verified advisor on He Knows She Knows.':'Advisor verificado en He Knows She Knows.');
+  const price = adv.price_per_session || 0;
+  const available = adv.available !== false;
+
+  // Avatar
+  const av = document.getElementById('prof-av');
+  av.innerHTML = a.avatar_url ? `<img src="${a.avatar_url}" alt="${name}">` : (name[0]||'A').toUpperCase();
+
+  // Nombre
+  document.getElementById('prof-name').textContent = name;
+
+  // Especialidades como chips (separadas por coma, sin emojis)
+  const specsRaw = (adv.specialty || 'Advisor')
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}\u2764\uFE0F\u{1F47B}\u{1F495}\u{1F4AA}\u{1F9F4}\u{1F4AC}\u{1F525}]+/gu, '')
+    .split(',').map(s => s.trim()).filter(Boolean);
+  document.getElementById('prof-specs').innerHTML = specsRaw
+    .map(s => `<span class="prof-spec-chip">${s}</span>`).join('');
+
+  // Bio completa
+  document.getElementById('prof-bio').textContent = bio;
+
+  // Precio
+  document.getElementById('prof-price').textContent = price ? `$${parseInt(price).toLocaleString()}` : (lang==='en'?'Free':'Gratis');
+
+  // Botón consultar dentro del perfil
+  const cbtn = document.getElementById('prof-consult-btn');
+  if (available) {
+    cbtn.style.display = '';
+    cbtn.onclick = function() {
+      closeProfModal();
+      openPayModal({
+        id: a.id, name: name,
+        specialty: (adv.specialty || 'Advisor'),
+        price: price, avatar_url: a.avatar_url || null
+      });
+    };
+  } else {
+    cbtn.style.display = 'none';
+  }
+
+  document.getElementById('prof-modal').style.display = 'flex';
+}
+
+function closeProfModal() {
+  document.getElementById('prof-modal').style.display = 'none';
 }
 
 // ===== PAYMENT MODAL =====
@@ -461,6 +556,7 @@ function showToast(msg, isError = false) {
 }
 
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('prof-modal').style.display === 'flex') { closeProfModal(); }
   if (e.key === 'Escape' && document.getElementById('pay-modal').style.display === 'flex') {
     closePayModal();
   }
