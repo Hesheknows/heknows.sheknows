@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmar cuenta — He Knows · She Knows</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F7F3EE;--blush:#E8C4B0;--terra:#C47A5A;--night:#1A1410;--slate:#3D3530;--muted:#9A8880;--gold:#C9A96E;--success:#7BA785;--error:#D4634A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--night);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(232,196,176,0.3),transparent 60%);z-index:0;}
+.card{position:relative;z-index:1;background:#FFFFFF;border-radius:6px;max-width:480px;width:100%;padding:56px 48px;box-shadow:0 24px 64px rgba(26,20,16,0.08);border:1px solid rgba(196,122,90,0.12);text-align:center;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--night);margin-bottom:32px;}
+.logo span{color:var(--terra);font-style:italic;}
+.icon-wrap{width:80px;height:80px;margin:0 auto 24px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.icon-wrap.loading{background:rgba(196,122,90,0.1);}
+.icon-wrap.success{background:rgba(123,167,133,0.15);}
+.icon-wrap.error{background:rgba(212,99,74,0.12);}
+.spinner{width:36px;height:36px;border:3px solid rgba(196,122,90,0.2);border-top-color:var(--terra);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.checkmark{width:42px;height:42px;}
+.checkmark circle{stroke:var(--success);stroke-width:2.5;fill:none;stroke-dasharray:166;stroke-dashoffset:166;animation:circleAnim 0.5s ease forwards;}
+.checkmark path{stroke:var(--success);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:48;stroke-dashoffset:48;animation:checkAnim 0.3s 0.4s ease forwards;}
+@keyframes circleAnim{to{stroke-dashoffset:0;}}
+@keyframes checkAnim{to{stroke-dashoffset:0;}}
+.xmark{font-size:2.4rem;color:var(--error);font-weight:300;}
+h1{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;line-height:1.2;color:var(--night);margin-bottom:14px;}
+h1 em{color:var(--terra);font-style:italic;}
+.message{font-size:0.95rem;line-height:1.65;color:var(--slate);font-weight:300;margin-bottom:32px;}
+.message strong{color:var(--terra);font-weight:500;}
+.cta{display:inline-block;background:var(--terra);color:#FFFFFF;padding:14px 32px;font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;transition:all 0.25s;}
+.cta:hover{background:var(--night);}
+.cta-secondary{display:inline-block;background:transparent;color:var(--slate);padding:12px 24px;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;border:1.5px solid rgba(61,53,48,0.2);cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;transition:all 0.25s;margin-left:10px;}
+.cta-secondary:hover{border-color:var(--terra);color:var(--terra);}
+.note{font-size:0.78rem;color:var(--muted);margin-top:24px;line-height:1.55;}
+.note a{color:var(--terra);text-decoration:none;font-weight:500;}
+.hidden{display:none!important;}
+.lang-toggle{position:absolute;top:20px;right:20px;display:flex;gap:0;border:1px solid rgba(196,122,90,0.3);border-radius:2px;overflow:hidden;}
+.lang-btn{font-size:0.6rem;letter-spacing:0.12em;font-weight:600;padding:5px 9px;background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted);}
+.lang-btn.active{background:var(--terra);color:white;}
+[data-lang="en"] .es{display:none!important;}
+[data-lang="es"] .en{display:none!important;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="card">
+
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+
+  <div class="logo">He Knows · <span>She Knows</span></div>
+
+  <!-- Estado: cargando -->
+  <div id="state-loading">
+    <div class="icon-wrap loading"><div class="spinner"></div></div>
+    <h1>
+      <span class="es">Confirmando tu <em>cuenta...</em></span>
+      <span class="en">Confirming your <em>account...</em></span>
+    </h1>
+    <p class="message">
+      <span class="es">Un momento, estamos verificando tu correo.</span>
+      <span class="en">One moment, we're verifying your email.</span>
+    </p>
+  </div>
+
+  <!-- Estado: éxito -->
+  <div id="state-success" class="hidden">
+    <div class="icon-wrap success">
+      <svg class="checkmark" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="26"/>
+        <path d="M18 30 L27 38 L42 22"/>
+      </svg>
+    </div>
+    <h1>
+      <span class="es">¡Tu cuenta está <em>lista!</em></span>
+      <span class="en">Your account is <em>ready!</em></span>
+    </h1>
+    <p class="message">
+      <span class="es">Tu correo fue verificado correctamente. Te llevamos a tu dashboard en <strong id="countdown">3</strong> segundos…</span>
+      <span class="en">Your email was successfully verified. Taking you to your dashboard in <strong id="countdown-en">3</strong> seconds…</span>
+    </p>
+    <a href="/dashboard.html" class="cta">
+      <span class="es">Ir a mi dashboard →</span>
+      <span class="en">Go to my dashboard →</span>
+    </a>
+  </div>
+
+  <!-- Estado: error (link expirado o usuario ya confirmado) -->
+  <div id="state-error" class="hidden">
+    <div class="icon-wrap error"><span class="xmark">⚠</span></div>
+    <h1>
+      <span class="es">El link <em>expiró</em></span>
+      <span class="en">Link <em>expired</em></span>
+    </h1>
+    <p class="message" id="error-message">
+      <span class="es">Es posible que el link haya expirado o ya hayas confirmado tu cuenta. Intenta iniciar sesión directamente.</span>
+      <span class="en">The link may have expired or your account is already confirmed. Try logging in directly.</span>
+    </p>
+    <div>
+      <a href="/login.html" class="cta">
+        <span class="es">Iniciar sesión</span>
+        <span class="en">Log in</span>
+      </a>
+      <a href="/index.html" class="cta-secondary">
+        <span class="es">Volver al inicio</span>
+        <span class="en">Back home</span>
+      </a>
+    </div>
+    <p class="note">
+      <span class="es">¿Necesitas un nuevo link? <a href="/login.html">Inicia sesión</a> y te enviaremos uno nuevo.</span>
+      <span class="en">Need a new link? <a href="/login.html">Log in</a> and we'll send you a new one.</span>
+    </p>
+  </div>
+
+</div>
+
+<script>
+// Idioma
+function setLang(lang){
+  document.body.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase() === lang);
+  });
+  localStorage.setItem('hksk-lang', lang);
+}
+(function(){
+  const saved = localStorage.getItem('hksk-lang');
+  const browser = navigator.language || navigator.userLanguage;
+  const lang = saved || (browser.startsWith('es') ? 'es' : 'en');
+  setLang(lang);
+})();
+
+// ============================================================
+// PROCESAR EL LINK DE CONFIRMACIÓN
+// ============================================================
+// Supabase manda el link con tokens en el hash (#access_token=...&type=signup&...)
+// o como query (?error=access_denied&error_description=...)
+// Tenemos que procesar ambos casos.
+
+(async function() {
+  // Si hay un error en la URL (link expirado)
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorParam = urlParams.get('error');
+  const errorDescription = urlParams.get('error_description');
+
+  if (errorParam) {
+    console.log('Error en URL:', errorParam, errorDescription);
+    showError(errorDescription || errorParam);
+    return;
+  }
+
+  // Si hay tokens en el hash (caso de éxito)
+  const hash = window.location.hash.substring(1); // quitar el #
+  const hashParams = new URLSearchParams(hash);
+  const accessToken = hashParams.get('access_token');
+  const refreshToken = hashParams.get('refresh_token');
+  const type = hashParams.get('type');
+  const hashError = hashParams.get('error');
+  const hashErrorDesc = hashParams.get('error_description');
+
+  if (hashError) {
+    console.log('Error en hash:', hashError, hashErrorDesc);
+    showError(hashErrorDesc || hashError);
+    return;
+  }
+
+  if (accessToken) {
+    // ¡Cuenta confirmada! Guardamos la sesión.
+    console.log('Tokens recibidos, type:', type);
+    try {
+      // Obtener datos del usuario con el token
+      const userRes = await fetch('https://ydqcxbwxfzyxdzidafch.supabase.co/auth/v1/user', {
+        headers: {
+          'Authorization': 'Bearer ' + accessToken,
+          'apikey': 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA'
+        }
+      });
+
+      if (userRes.ok) {
+        const user = await userRes.json();
+        const sessionData = {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          user: user
+        };
+        localStorage.setItem('hksk-session', JSON.stringify(sessionData));
+        console.log('Sesión guardada para:', user.email);
+        showSuccess();
+      } else {
+        console.log('Error obteniendo usuario:', userRes.status);
+        // Aun así mostramos éxito porque el token vino bien
+        showSuccess(true);
+      }
+    } catch (e) {
+      console.error('Error procesando sesión:', e);
+      // Aun así mostramos éxito — la cuenta SÍ se confirmó
+      showSuccess(true);
+    }
+    return;
+  }
+
+  // Si no hay ni error ni tokens, asumimos que el link era inválido o ya se usó
+  console.log('Sin parámetros válidos en URL');
+  showError(null);
+})();
+
+function showSuccess(needsLogin = false) {
+  document.getElementById('state-loading').classList.add('hidden');
+  document.getElementById('state-success').classList.remove('hidden');
+
+  // Si no pudimos obtener la sesión, redirigir a login en lugar de dashboard
+  const redirectUrl = needsLogin ? '/login.html' : '/dashboard.html';
+
+  // Cuenta regresiva de 3 segundos
+  let seconds = 3;
+  const cdEs = document.getElementById('countdown');
+  const cdEn = document.getElementById('countdown-en');
+  const interval = setInterval(() => {
+    seconds--;
+    if (cdEs) cdEs.textContent = seconds;
+    if (cdEn) cdEn.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      window.location.href = redirectUrl;
+    }
+  }, 1000);
+
+  // Actualizar el botón también
+  document.querySelector('#state-success .cta').href = redirectUrl;
+}
+
+function showError(description) {
+  document.getElementById('state-loading').classList.add('hidden');
+  document.getElementById('state-error').classList.remove('hidden');
+
+  // Si hay descripción específica, mostrarla
+  if (description) {
+    const msgEl = document.getElementById('error-message');
+    const lang = localStorage.getItem('hksk-lang') || 'es';
+    // Mensajes amigables según el error de Supabase
+    const lower = description.toLowerCase();
+    if (lower.includes('expired') || lower.includes('expirado')) {
+      msgEl.innerHTML = lang === 'en'
+        ? '<span>This link expired (links last 24 hours). Try logging in — if you already confirmed your account, you can enter directly.</span>'
+        : '<span>Este link expiró (los links duran 24 horas). Intenta iniciar sesión — si ya confirmaste tu cuenta, puedes entrar directamente.</span>';
+    } else if (lower.includes('already') || lower.includes('ya')) {
+      msgEl.innerHTML = lang === 'en'
+        ? '<span>Your account is already confirmed. You can log in directly.</span>'
+        : '<span>Tu cuenta ya está confirmada. Puedes iniciar sesión directamente.</span>';
+    }
+  }
+}
+</script>
+</body>
+</html>
