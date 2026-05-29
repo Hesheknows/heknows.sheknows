@@ -1,12 +1,18 @@
 // netlify/functions/stripe-webhook.js
-// v4: ahora también envía email al advisor cuando recibe nueva consulta pagada.
+// v5: ahora valida la firma con DOS secretos (webhook de pagos + webhook
+//      de cuentas conectadas), para soportar los dos destinos de Stripe.
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { sendEmail, emailNuevaConsulta } = require('./send-email');
 
 const SUPABASE_URL = 'https://ydqcxbwxfzyxdzidafch.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+
+// 👇 Dos secretos posibles:
+//    - STRIPE_WEBHOOK_SECRET         → webhook viejo (pagos de membresía/consulta, "Tu cuenta")
+//    - STRIPE_WEBHOOK_SECRET_CONNECT → webhook nuevo (cuentas conectadas: account.updated, payout.paid)
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const STRIPE_WEBHOOK_SECRET_CONNECT = process.env.STRIPE_WEBHOOK_SECRET_CONNECT;
 
 exports.handler = async (event) => {
   const headers = {
@@ -23,22 +29,36 @@ exports.handler = async (event) => {
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Server misconfigured' }) };
   }
 
-  // 1. Verificar firma de Stripe
+  // 1. Verificar firma de Stripe (probando los dos secretos posibles)
   let stripeEvent;
   try {
     const signature = event.headers['stripe-signature'] || event.headers['Stripe-Signature'];
-    if (!STRIPE_WEBHOOK_SECRET) {
-      console.warn('⚠️ STRIPE_WEBHOOK_SECRET no configurada — webhook sin verificar');
+
+    // Lista de secretos configurados (ignora los que no existan)
+    const secrets = [STRIPE_WEBHOOK_SECRET, STRIPE_WEBHOOK_SECRET_CONNECT].filter(Boolean);
+
+    if (secrets.length === 0) {
+      console.warn('⚠️ Ningún secreto de webhook configurado — webhook sin verificar');
       stripeEvent = JSON.parse(event.body);
     } else if (!signature) {
       console.error('Falta header stripe-signature');
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'No signature' }) };
     } else {
-      stripeEvent = stripe.webhooks.constructEvent(
-        event.body,
-        signature,
-        STRIPE_WEBHOOK_SECRET
-      );
+      // Intenta validar con cada secreto; con el primero que funcione, listo.
+      let verified = null;
+      let lastErr = null;
+      for (const secret of secrets) {
+        try {
+          verified = stripe.webhooks.constructEvent(event.body, signature, secret);
+          break;
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      if (!verified) {
+        throw lastErr || new Error('No se pudo verificar la firma con ningún secreto');
+      }
+      stripeEvent = verified;
     }
   } catch (err) {
     console.error('Verificación de firma falló:', err.message);
