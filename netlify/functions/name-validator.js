@@ -18,9 +18,20 @@ const PALABRAS_PROHIBIDAS = new Set([
   'anon', 'anonima', 'anonimo', 'anónima', 'anónimo', 'usuario', 'user', 'admin',
   'advisor', 'test', 'prueba', 'pruebas', 'name', 'nombre', 'demo', 'example',
   // Variaciones internet / dreamy
-  'xoxo', 'dreamgirl', 'dreamy', 'fantasy', 'dream', 'angel', 'angelita', 'angelito',
+  'xoxo', 'dreamgirl', 'dreamy', 'fantasy', 'dream',
   // Otros
-  'love', 'amor', 'amorcito', 'corazon', 'corazón', 'cielo', 'cielito', 'vida', 'vidita'
+  'love', 'amor', 'amorcito', 'corazon', 'corazón', 'cielo', 'cielito', 'vida', 'vidita',
+  // Animales / naturaleza cursi (apodos, no nombres reales)
+  'colibri', 'colibrí', 'pajarito', 'pajarita', 'pajaro', 'pájaro',
+  'mariposa', 'mariposita', 'gatito', 'gatita', 'gato', 'gata',
+  'conejito', 'conejita', 'conejo', 'osito', 'osita', 'oso', 'osa',
+  'perrito', 'perrita', 'cachorro', 'cachorra', 'pollito', 'pollita',
+  'ratoncito', 'ratoncita', 'florecita', 'flor', 'florcita', 'rosita',
+  'estrellita', 'solecito', 'lunita', 'nube', 'nubecita',
+  'abejita', 'abeja', 'mariquita', 'caracol', 'delfin', 'delfín',
+  'pez', 'pececito', 'tortuga', 'tortuguita', 'ardilla', 'ardillita',
+  'venado', 'venadito', 'cervatillo', 'pichon', 'pichón',
+  'gorrion', 'gorrión', 'ruiseñor', 'ruisenor', 'golondrina'
 ]);
 
 /**
