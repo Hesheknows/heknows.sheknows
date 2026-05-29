@@ -505,7 +505,7 @@ async function subscribeNewsletter() {
         <div class="fg"><label class="flbl">Usuario anónimo</label><input class="finp" type="text" placeholder="@usuario_secreto"></div>
         <div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Tijuana</option><option>Otra</option></select></div>
       </div>
-      <div class="fg"><label class="flbl">Contraseña</label><div class="pw-wrap"><input class="finp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="pw-eye" onclick="togglePw(this)" aria-label="Mostrar u ocultar contraseña"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="fg"><label class="flbl">Contraseña</label><div class="pw-wrap"><input id="mu-pass" class="finp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="pw-eye" onclick="togglePw(this)" aria-label="Mostrar u ocultar contraseña"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <div class="fg"><label class="flbl">¿Qué te trae por aquí?</label><div class="chips"><button class="chip" onclick="togC(this)">Entender a mi pareja</button><button class="chip" onclick="togC(this)">Superar una ruptura</button><button class="chip" onclick="togC(this)">Reconquistar a alguien</button><button class="chip" onclick="togC(this)">Entender el ghosting</button><button class="chip" onclick="togC(this)">Mejorar mi vida amorosa</button><button class="chip" onclick="togC(this)">Solo explorar</button></div></div>
       <button class="bfl" onclick="showSuc('mu')">Crear mi cuenta gratuita →</button>
       <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:14px;">Al registrarte aceptas nuestros <a href="terminos-condiciones.html" style="color:var(--terra);">Términos</a> y <a href="terminos-condiciones.html" style="color:var(--terra);">Privacidad</a></p>
@@ -532,7 +532,7 @@ async function subscribeNewsletter() {
       <div class="frw"><div class="fg"><label class="flbl">Nombre completo</label><input class="finp" type="text" placeholder="Solo para verificación"></div><div class="fg"><label class="flbl">Edad</label><input class="finp" type="number" placeholder="18+" min="18"></div></div>
       <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
       <div class="frw"><div class="fg"><label class="flbl">Teléfono</label><input class="finp" type="tel" placeholder="+52 55 0000 0000"></div><div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Otra</option></select></div></div>
-      <div class="fg"><label class="flbl">Contraseña</label><div class="pw-wrap"><input class="finp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="pw-eye" onclick="togglePw(this)" aria-label="Mostrar u ocultar contraseña"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="fg"><label class="flbl">Contraseña</label><div class="pw-wrap"><input id="as1-pass" class="finp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="pw-eye" onclick="togglePw(this)" aria-label="Mostrar u ocultar contraseña"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <button class="bfl" onclick="aN(1)">Continuar →</button>
     </div>
     <div id="as2" style="display:none;">
@@ -620,7 +620,7 @@ async function showSuc(id){
   if(id==='mu'){
     // ===== FLUJO USUARIO (sin cambios) =====
     const email=document.querySelector('#mu-form input[type="email"]').value.trim();
-    const password=document.querySelector('#mu-form input[type="password"]').value.trim();
+    const password=document.getElementById('mu-pass').value.trim();
     const gender=document.querySelector('#mu-form .chip.active')?.textContent.trim()||'';
     if(!email||!password){alert('Por favor ingresa tu correo y contraseña.');return;}
     try{
@@ -646,7 +646,7 @@ async function showSuc(id){
   try{ sesionActual=JSON.parse(localStorage.getItem('hksk-session')); }catch(e){}
   const yaLogueado=!!sesionActual?.access_token;
   let email=document.querySelector('#as1 input[type="email"]').value.trim();
-  let password=document.querySelector('#as1 input[type="password"]').value.trim();
+  let password=document.getElementById('as1-pass').value.trim();
   if(yaLogueado){
     email=sesionActual.user?.email||email;
     if(!password) password='__YA_REGISTRADO__';
