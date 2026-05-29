@@ -26,7 +26,16 @@ const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 })();
 
 async function signUp(email, password) {
-  const { data, error } = await db.auth.signUp({ email, password });
+  // 👇 ARREGLO: le decimos a Supabase a dónde mandar a la persona después de
+  //    confirmar su correo. Sin esto, usaba el "Site URL" (dashboard.html),
+  //    que no sabe procesar la confirmación, y la gente quedaba atorada.
+  const { data, error } = await db.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: 'https://he-sheknows.com/confirm-email.html'
+    }
+  });
   return { data, error };
 }
 async function signIn(email, password) {
