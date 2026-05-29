@@ -642,6 +642,14 @@ async function showSuc(id){
 
   if(!email||!password){alert('Por favor completa el correo y contraseña en el paso 1.');return;}
 
+  // Validar formato del correo (las cuentas nuevas escriben el correo a mano;
+  // los que ya tienen sesión usan el correo de su sesión, que siempre es válido)
+  const correoValido=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!yaLogueado && !correoValido){
+    alert('El correo parece tener un error de formato. Revísalo (sin espacios, con @ y dominio, por ejemplo nombre@correo.com) e intenta de nuevo.');
+    return;
+  }
+
   // Deshabilitar botón mientras procesa
   const btn = document.querySelector('#as4 .bfl');
   if(btn){btn.disabled=true;btn.textContent='Procesando...';}
