@@ -621,9 +621,18 @@ async function showSuc(id){
     return;
   }
 
-  // ===== FLUJO ADVISOR (NUEVO: redirige DIRECTO a Stripe) =====
-  const email=document.querySelector('#as1 input[type="email"]').value.trim();
-  const password=document.querySelector('#as1 input[type="password"]').value.trim();
+  // ===== FLUJO ADVISOR (convierte cuenta existente o crea nueva) =====
+  // Si la persona YA tiene sesion, usamos el correo de su sesion (sin dedazos)
+  // y mandamos su token para CONVERTIR su cuenta, no re-registrarla.
+  let sesionActual=null;
+  try{ sesionActual=JSON.parse(localStorage.getItem('hksk-session')); }catch(e){}
+  const yaLogueado=!!sesionActual?.access_token;
+  let email=document.querySelector('#as1 input[type="email"]').value.trim();
+  let password=document.querySelector('#as1 input[type="password"]').value.trim();
+  if(yaLogueado){
+    email=sesionActual.user?.email||email;
+    if(!password) password='__YA_REGISTRADO__';
+  }
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
   const gender=document.querySelector('#as1 .chip.active')?.textContent.trim()||'';
   const bio=document.querySelector('#as2 textarea').value.trim();
@@ -646,6 +655,7 @@ async function showSuc(id){
       body:JSON.stringify({
         email,
         password,
+        access_token: yaLogueado ? sesionActual.access_token : null,
         full_name,
         gender,
         role:'advisor',
