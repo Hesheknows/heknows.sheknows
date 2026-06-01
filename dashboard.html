@@ -210,7 +210,7 @@ body.menu-open{overflow:hidden;}
       <div class="ac-title"><span class="es">Mejorar mi plan</span><span class="en">Upgrade my plan</span></div>
       <p class="ac-desc"><span class="es">Obtén más consultas privadas y respuesta prioritaria.</span><span class="en">Get more private consultations and priority response.</span></p>
     </a>
-    <a href="index.html#advsec" class="action-card">
+    <a href="index.html#advsec" class="action-card" id="card-ser-advisor">
       <span class="ac-icon"><svg width="32" height="32" viewBox="0 0 44 44" fill="none">
   <circle cx="16" cy="14" r="6" fill="#C47A5A" opacity="0.9"/>
   <path d="M4 34C4 27 9 24 16 24C23 24 28 27 28 34" fill="#C47A5A" opacity="0.9"/>
@@ -330,6 +330,20 @@ function closeMobileMenu(){
         'advisor_mensual': 'Advisor', 'advisor_anual': 'Advisor+'
       };
       document.getElementById('stat-plan').textContent = planNames[profile?.plan] || 'Free';
+
+      // Si ya es advisor, cambiar la tarjeta "Ser Advisor" por algo útil para advisors
+      const esAdvisor = profile?.role === 'advisor' || ['advisor_mensual','advisor_anual'].includes(profile?.plan);
+      if (esAdvisor) {
+        const card = document.getElementById('card-ser-advisor');
+        if (card) {
+          card.href = 'mensajes.html';
+          const lang = localStorage.getItem('hksk-lang') || 'es';
+          const titEl = card.querySelector('.ac-title');
+          const descEl = card.querySelector('.ac-desc');
+          if (titEl) titEl.innerHTML = '<span class="es">Mis consultas</span><span class="en">My consultations</span>';
+          if (descEl) descEl.innerHTML = '<span class="es">Revisa los mensajes de las personas que te consultan.</span><span class="en">Check messages from people consulting you.</span>';
+        }
+      }
     } catch(e) {
       document.getElementById('welcome-name').textContent = user.email.split('@')[0];
     }
