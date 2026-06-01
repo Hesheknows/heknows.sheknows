@@ -624,7 +624,7 @@ async function showSuc(id){
     const gender=document.querySelector('#mu-form .chip.active')?.textContent.trim()||'';
     if(!email||!password){alert('Por favor ingresa tu correo y contraseña.');return;}
     try{
-      const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,gender})});
+      const res=await fetch('/.netlify/functions/auth-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,gender,ref_code:localStorage.getItem('hksk-ref')||null})});
       const data=await res.json();
       if(data.error){alert('Error: '+data.error);return;}
       if(data.access_token){
@@ -682,6 +682,7 @@ async function showSuc(id){
         email,
         password,
         access_token: yaLogueado ? sesionActual.access_token : null,
+        ref_code: localStorage.getItem('hksk-ref') || null,
         full_name,
         gender,
         role:'advisor',
@@ -731,6 +732,12 @@ async function showSuc(id){
 
 <script>
 (function(){
+  // Capturar código de referido de la URL (?ref=CODIGO) y guardarlo
+  try{
+    const params=new URLSearchParams(window.location.search);
+    const ref=params.get('ref');
+    if(ref && ref.trim()){ localStorage.setItem('hksk-ref', ref.trim().toUpperCase()); }
+  }catch(e){}
   try{
     const session=JSON.parse(localStorage.getItem('hksk-session'));
     if(session?.access_token){
