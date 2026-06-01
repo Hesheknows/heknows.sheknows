@@ -83,9 +83,33 @@ exports.handler = async (event) => {
     }
   }
 
+  // 4. Contar referidos VÁLIDOS (los que ya pagaron su primera consulta)
+  //    y los pendientes (registrados pero aún no pagan)
+  let referrals_valid = 0;
+  let referrals_pending = 0;
+  if (advisor_profile) {
+    try {
+      const rRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/referrals?referrer_id=eq.${userId}&select=is_valid`,
+        { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } }
+      );
+      if (rRes.ok) {
+        const refs = await rRes.json();
+        if (Array.isArray(refs)) {
+          referrals_valid = refs.filter(r => r.is_valid === true).length;
+          referrals_pending = refs.filter(r => r.is_valid !== true).length;
+        }
+      }
+    } catch (e) {
+      console.error('Error contando referidos:', e.message);
+    }
+  }
+
   return json(200, {
     ok: true,
     profile: profile || {},
-    advisor_profile: advisor_profile
+    advisor_profile: advisor_profile,
+    referrals_valid,
+    referrals_pending
   });
 };
