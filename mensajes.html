@@ -338,6 +338,7 @@ async function init() {
     });
     const planData = await planRes.json();
     userPlan = planData.profile?.plan || 'free';
+    window.MI_ROLE = planData.profile?.role || 'user';
   } catch(e) {}
 
   await loadConversations();
@@ -372,7 +373,7 @@ function renderConvList(convs) {
     const preview = c.last_message
       ? (c.last_message.length > 40 ? c.last_message.slice(0, 40) + '…' : c.last_message)
       : 'Sin mensajes aún';
-    return `<div class="conv-item${c.id === currentConvId ? ' active' : ''}" data-conv-id="${c.id}" onclick="openConv('${c.id}', ${JSON.stringify(other).replace(/"/g, '&quot;')})">
+    return `<div class="conv-item${c.id === currentConvId ? ' active' : ''}" data-conv-id="${c.id}" data-my-role="${c.role || 'user'}" onclick="openConv('${c.id}', ${JSON.stringify(other).replace(/"/g, '&quot;')}, '${c.role || 'user'}')">
       ${avatarHtml}
       <div class="conv-info">
         <div class="conv-name">${other.full_name || 'Usuario'}</div>
@@ -383,8 +384,9 @@ function renderConvList(convs) {
   }).join('');
 }
 
-async function openConv(convId, other) {
+async function openConv(convId, other, myRole) {
   window.CONSULTA_CADUCADA = false;
+  window.MI_ROL_EN_CONV = myRole || 'user';
   currentConvId = convId;
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
   const activeItem = document.querySelector(`.conv-item[data-conv-id="${convId}"]`);
@@ -428,15 +430,36 @@ function mostrarConsultaCaducada() {
   // Si ya existe la tarjeta, no duplicar
   if (document.getElementById('consulta-caducada-card')) return;
 
-  const advisorId = (currentOther && currentOther.id) ? currentOther.id : '';
-  const destino = advisorId ? `buscar-advisors.html?advisorId=${advisorId}` : 'buscar-advisors.html';
+  // ¿Qué papel juego EN ESTA conversación?
+  // 'advisor' = soy el consultado (recibo pago) -> sin botón.
+  // 'user' = soy quien consulta (pago) -> con botón, aunque yo también sea advisor en general.
+  const esAdvisor = (window.MI_ROL_EN_CONV === 'advisor');
 
   const titulo = lang === 'en' ? 'This consultation ended' : 'Esta consulta finalizó';
-  const texto = lang === 'en'
-    ? 'Your 24-hour conversation window is over. To keep chatting with this advisor, start a new consultation.'
-    : 'Tu ventana de conversación de 24 horas terminó. Para seguir platicando con este advisor, inicia una nueva consulta.';
-  const boton = lang === 'en' ? 'Start new consultation' : 'Iniciar nueva consulta';
   const privado = lang === 'en' ? 'Your previous conversation stays private' : 'Tu conversación anterior se mantiene privada';
+
+  let cuerpoHtml;
+  if (esAdvisor) {
+    // Vista ADVISOR: solo informa, sin botón de pago (el advisor no paga)
+    const textoAdv = lang === 'en'
+      ? 'The 24-hour window has closed. When this user starts a new consultation, you will be able to chat again.'
+      : 'La ventana de 24 horas se cerró. Cuando este usuario inicie una nueva consulta, podrás volver a conversar.';
+    cuerpoHtml = `<p style="font-size:14px;color:#9A8880;line-height:1.6;margin:0;">${textoAdv}</p>`;
+  } else {
+    // Vista USUARIO: con botón para iniciar nueva consulta (lleva al advisor a pagar)
+    const advisorId = (currentOther && currentOther.id) ? currentOther.id : '';
+    const destino = advisorId ? `buscar-advisors.html?advisorId=${advisorId}` : 'buscar-advisors.html';
+    const textoUser = lang === 'en'
+      ? 'Your 24-hour conversation window is over. To keep chatting with this advisor, start a new consultation.'
+      : 'Tu ventana de conversación de 24 horas terminó. Para seguir platicando con este advisor, inicia una nueva consulta.';
+    const boton = lang === 'en' ? 'Start new consultation' : 'Iniciar nueva consulta';
+    cuerpoHtml = `
+      <p style="font-size:14px;color:#9A8880;line-height:1.6;margin:0 0 22px;">${textoUser}</p>
+      <a href="${destino}" style="display:inline-flex;align-items:center;gap:8px;background:#C47A5A;color:white;text-decoration:none;border-radius:10px;padding:13px 28px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        ${boton}
+      </a>`;
+  }
 
   const card = document.createElement('div');
   card.id = 'consulta-caducada-card';
@@ -447,11 +470,7 @@ function mostrarConsultaCaducada() {
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C47A5A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       </div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#1A1410;margin-bottom:8px;line-height:1.2;">${titulo}</div>
-      <p style="font-size:14px;color:#9A8880;line-height:1.6;margin:0 0 22px;">${texto}</p>
-      <a href="${destino}" style="display:inline-flex;align-items:center;gap:8px;background:#C47A5A;color:white;text-decoration:none;border-radius:10px;padding:13px 28px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        ${boton}
-      </a>
+      ${cuerpoHtml}
       <p style="font-size:12px;color:#C9A96E;margin:16px 0 0;display:flex;align-items:center;justify-content:center;gap:5px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         ${privado}
