@@ -42,7 +42,7 @@ exports.handler = async (event) => {
   }
 
   const {
-    email, password, access_token,
+    email, password, access_token, ref_code,
     full_name, gender, role,
     bio, specialty, price_per_session, civil_status, years_together
   } = body;
@@ -161,6 +161,48 @@ exports.handler = async (event) => {
   }
 
   // ──────────────────────────────────────────────────────────
+  // REFERIDO: si llegó con ref_code, registrar quién lo invitó
+  // (queda como pendiente; se vuelve válido cuando pague su 1a consulta)
+  // ──────────────────────────────────────────────────────────
+  if (ref_code && typeof ref_code === 'string' && ref_code.trim()) {
+    try {
+      // Buscar el advisor dueño de ese código
+      const codeClean = ref_code.trim().toUpperCase();
+      const refRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/advisor_profiles?referral_code=eq.${encodeURIComponent(codeClean)}&select=id`,
+        { headers: adminHeaders }
+      );
+      if (refRes.ok) {
+        const arr = await refRes.json();
+        const referrer = Array.isArray(arr) && arr.length ? arr[0] : null;
+        // Solo si existe el referrer y NO es la misma persona (no auto-referirse)
+        if (referrer && referrer.id && referrer.id !== userId) {
+          // Evitar duplicados: ¿ya existe un referral para este referido?
+          const dupRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/referrals?referred_id=eq.${userId}&select=id`,
+            { headers: adminHeaders }
+          );
+          const dupArr = dupRes.ok ? await dupRes.json() : [];
+          if (!Array.isArray(dupArr) || dupArr.length === 0) {
+            await fetch(`${SUPABASE_URL}/rest/v1/referrals`, {
+              method: 'POST',
+              headers: { ...adminHeaders, 'Prefer': 'return=minimal' },
+              body: JSON.stringify({
+                referrer_id: referrer.id,
+                referred_id: userId,
+                is_valid: false
+              })
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error registrando referido:', e.message);
+      // No bloqueamos el registro por esto
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────
   // Si es advisor, crear/actualizar advisor_profile (INACTIVO hasta pagar)
   // ──────────────────────────────────────────────────────────
   let advisor_created = false;
@@ -174,7 +216,8 @@ exports.handler = async (event) => {
       available: false,        // ⚠️ INACTIVO hasta que pague Stripe
       civil_status: civil_status || null,
       years_together: parseInt(years_together) || 0,
-      commission_rate: 0.70
+      commission_rate: 0.70,
+      commission_base: 0.70
     };
     try {
       const advRes = await fetch(`${SUPABASE_URL}/rest/v1/advisor_profiles`, {
