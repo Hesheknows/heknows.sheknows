@@ -384,6 +384,7 @@ function renderConvList(convs) {
 }
 
 async function openConv(convId, other) {
+  window.CONSULTA_CADUCADA = false;
   currentConvId = convId;
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
   const activeItem = document.querySelector(`.conv-item[data-conv-id="${convId}"]`);
@@ -421,6 +422,9 @@ function mostrarConsultaCaducada() {
   const lang = localStorage.getItem('hksk-lang') || 'es';
   const area = document.getElementById('messages-area');
   if (!area) return;
+  // Detener el polling para que no borre la tarjeta al recargar mensajes
+  if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  window.CONSULTA_CADUCADA = true;
   // Si ya existe la tarjeta, no duplicar
   if (document.getElementById('consulta-caducada-card')) return;
 
@@ -459,6 +463,8 @@ function mostrarConsultaCaducada() {
 
 async function loadMessages() {
   if (!currentConvId) return;
+  // Si la tarjeta de consulta caducada está visible, no recargar (la borraría)
+  if (window.CONSULTA_CADUCADA) return;
   try {
     const res = await fetch(`/.netlify/functions/get-messages?token=${session.access_token}&conversationId=${currentConvId}&markRead=true`);
     const data = await res.json();
