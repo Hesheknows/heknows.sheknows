@@ -611,6 +611,47 @@ main {
             oninput="syncPreview()"></textarea>
         </div>
 
+        <!-- ===== PROGRAMA DE EMBAJADOR (referidos) ===== -->
+        <div id="referral-section" style="display:none;background:#F0EAE3;border-radius:12px;padding:18px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:18px;">🎯</span>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--night);"><span class="es">Tu programa de embajador</span><span class="en">Your ambassador program</span></div>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;"><span class="es">Invita personas a He Knows She Knows y gana más por cada consulta.</span><span class="en">Invite people to He Knows She Knows and earn more per consultation.</span></p>
+
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+            <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;"><span class="es">Comisión ahora</span><span class="en">Commission now</span></div>
+              <div id="ref-commission" style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--terra);line-height:1;">70%</div>
+            </div>
+            <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;"><span class="es">Referidos</span><span class="en">Referrals</span></div>
+              <div id="ref-count" style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--night);line-height:1;">0</div>
+            </div>
+            <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;"><span class="es">Próxima meta</span><span class="en">Next goal</span></div>
+              <div id="ref-next" style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);line-height:1;">75%</div>
+            </div>
+          </div>
+
+          <div style="background:white;border-radius:8px;padding:12px;margin-bottom:16px;">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px;"><span class="es">Tu link para invitar</span><span class="en">Your invite link</span></div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="ref-link" type="text" readonly style="flex:1;font-size:12px;padding:8px 10px;border:1px solid rgba(61,53,48,0.15);border-radius:6px;background:#F7F3EE;color:var(--night);font-family:monospace;" value="">
+              <button type="button" onclick="copyReferralLink()" style="white-space:nowrap;padding:8px 14px;background:var(--terra);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">📋 <span class="es">Copiar</span><span class="en">Copy</span></button>
+            </div>
+          </div>
+
+          <div style="background:rgba(196,122,90,0.08);border-radius:8px;padding:14px;">
+            <div style="font-size:13px;font-weight:600;color:var(--terra);margin-bottom:8px;"><span class="es">Cómo funciona</span><span class="en">How it works</span></div>
+            <div style="font-size:12px;color:var(--slate);line-height:1.7;">
+              <div><span class="es">1. Comparte tu link con tu comunidad.</span><span class="en">1. Share your link with your community.</span></div>
+              <div><span class="es">2. Cuando alguien entra con tu link y paga su primera consulta, cuenta como referido válido.</span><span class="en">2. When someone joins with your link and pays their first consultation, it counts as a valid referral.</span></div>
+              <div><span class="es">3. Por cada referido válido, tu comisión sube 5% por 30 días (hasta 85%).</span><span class="en">3. For each valid referral, your commission goes up 5% for 30 days (up to 85%).</span></div>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Especialidades</label>
           <div class="specialties-grid" id="specialties-grid"></div>
@@ -734,6 +775,8 @@ async function loadProfile() {
     const data = await res.json();
     profile = data.profile || {};
     advisorProfile = data.advisor_profile || null;
+    window.REFERRALS_VALID = data.referrals_valid || 0;
+    window.REFERRALS_PENDING = data.referrals_pending || 0;
   } catch(e) {
     console.error('Error cargando perfil:', e);
     profile = {};
@@ -861,6 +904,55 @@ function loadAdvisorProfileData() {
   setAdvisorAvailableUI(isAdvisorAvailable);
   refreshSpecialtyGrid();
   syncPreview();
+  populateReferralSection();
+}
+
+function populateReferralSection() {
+  const sec = document.getElementById('referral-section');
+  if (!sec || !advisorProfile) return;
+  sec.style.display = 'block';
+
+  // Comisión actual (commission_rate viene como 0.70 → 70%)
+  const rate = Number(advisorProfile.commission_rate || advisorProfile.commission_base || 0.70);
+  const ratePct = Math.round(rate * 100);
+  document.getElementById('ref-commission').textContent = ratePct + '%';
+
+  // Referidos válidos (lo manda get-profile como window.REFERRALS_VALID)
+  const validCount = window.REFERRALS_VALID || 0;
+  document.getElementById('ref-count').textContent = validCount;
+
+  // Próxima meta: 5% más, tope 85
+  const nextPct = Math.min(ratePct + 5, 85);
+  const nextEl = document.getElementById('ref-next');
+  if (ratePct >= 85) {
+    nextEl.textContent = '85%';
+    nextEl.parentElement.querySelector('.es').textContent = 'Tope alcanzado';
+    nextEl.parentElement.querySelector('.en').textContent = 'Max reached';
+  } else {
+    nextEl.textContent = nextPct + '%';
+  }
+
+  // Link de referido
+  const code = advisorProfile.referral_code || '';
+  const linkInput = document.getElementById('ref-link');
+  if (code) {
+    linkInput.value = 'https://he-sheknows.com/?ref=' + code;
+  } else {
+    linkInput.value = '';
+    linkInput.placeholder = 'Tu código se generará pronto';
+  }
+}
+
+function copyReferralLink() {
+  const input = document.getElementById('ref-link');
+  if (!input.value) return;
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    showToast(localStorage.getItem('hksk-lang')==='en' ? 'Link copied!' : '¡Link copiado!');
+  }).catch(() => {
+    document.execCommand('copy');
+    showToast(localStorage.getItem('hksk-lang')==='en' ? 'Link copied!' : '¡Link copiado!');
+  });
 }
 
 function setPlanUI(plan) {
