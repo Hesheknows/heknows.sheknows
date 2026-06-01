@@ -153,6 +153,62 @@ exports.handler = async (event) => {
             // No re-lanzamos: el pago ya quedó registrado, el email es secundario
           }
 
+          // ────────────────────────────────────────────
+          // 🎯 PREMIO DE REFERIDO
+          // Si quien pagó fue referido por un advisor y este es su primer
+          // pago válido, marcamos el referido como válido y subimos +5% la
+          // comisión del advisor que lo trajo (tope 85%, base 70%).
+          // No bloqueante: si algo falla, el pago ya quedó registrado.
+          // ────────────────────────────────────────────
+          try {
+            // ¿La persona que pagó tiene un referido PENDIENTE?
+            const refRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/referrals?referred_id=eq.${metadata.userId}&is_valid=eq.false&select=id,referrer_id`,
+              { headers: supabaseHeaders() }
+            );
+            const refArr = refRes.ok ? await refRes.json() : [];
+            const referral = Array.isArray(refArr) && refArr.length ? refArr[0] : null;
+
+            if (referral && referral.referrer_id) {
+              // 1. Marcar el referido como VÁLIDO (inicia los 30 días)
+              await fetch(
+                `${SUPABASE_URL}/rest/v1/referrals?id=eq.${referral.id}`,
+                {
+                  method: 'PATCH',
+                  headers: { ...supabaseHeaders(), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                  body: JSON.stringify({ is_valid: true, validated_at: new Date().toISOString() })
+                }
+              );
+
+              // 2. Leer la comisión actual del advisor que lo trajo
+              const advRes = await fetch(
+                `${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${referral.referrer_id}&select=commission_rate,commission_base`,
+                { headers: supabaseHeaders() }
+              );
+              const advArr = advRes.ok ? await advRes.json() : [];
+              const advProf = Array.isArray(advArr) && advArr.length ? advArr[0] : null;
+
+              if (advProf) {
+                const current = Number(advProf.commission_rate) || 0.70;
+                // Subir 5% con tope de 85% (0.85)
+                const nuevaComision = Math.min(Math.round((current + 0.05) * 100) / 100, 0.85);
+
+                await fetch(
+                  `${SUPABASE_URL}/rest/v1/advisor_profiles?id=eq.${referral.referrer_id}`,
+                  {
+                    method: 'PATCH',
+                    headers: { ...supabaseHeaders(), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ commission_rate: nuevaComision })
+                  }
+                );
+                console.log(`🎯 Referido válido: comisión de ${referral.referrer_id} subió a ${nuevaComision}`);
+              }
+            }
+          } catch (refErr) {
+            console.error('❌ Error procesando premio de referido:', refErr.message);
+            // No re-lanzamos: el pago ya quedó registrado
+          }
+
           break;
         }
 
