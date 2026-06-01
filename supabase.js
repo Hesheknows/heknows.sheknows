@@ -61,8 +61,24 @@ async function requireAuth() {
   return session;
 }
 async function getProfile(userId) {
-  const { data } = await db.from('profiles').select('*').eq('id', userId).single();
-  return data;
+  // Leemos el perfil vía función con llave secreta (la tabla profiles tiene RLS,
+  // así que leer directo con la llave pública ya no funciona).
+  try {
+    const saved = JSON.parse(localStorage.getItem('hksk-session'));
+    const token = saved?.access_token;
+    if (!token) return null;
+    const res = await fetch('/.netlify/functions/get-public-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })  // sin profileId = mi propio perfil completo
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.profile || null;
+  } catch (e) {
+    console.error('getProfile error:', e);
+    return null;
+  }
 }
 async function saveProfile(userId, email, fields) {
   const { error } = await db.from('profiles')
