@@ -309,6 +309,18 @@ let SELECTED_ADVISOR = null;
     }
 
     await loadAdvisors();
+
+    // Si llegó con ?advisorId= (ej. desde el chat al caducar la consulta),
+    // abrir automáticamente el modal de ese advisor listo para consultar.
+    const advisorIdParam = params.get('advisorId');
+    if (advisorIdParam) {
+      const lista = window.ADVISORS_DATA || ALL_ADVISORS || [];
+      const idx = lista.findIndex(a => a && a.id === advisorIdParam);
+      if (idx >= 0 && typeof openProfModal === 'function') {
+        openProfModal(idx);
+        history.replaceState({}, '', 'buscar-advisors.html');
+      }
+    }
   } finally {
     document.getElementById('loader').classList.add('gone');
   }
