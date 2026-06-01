@@ -514,6 +514,9 @@ async function openOrCreateConv(advisorId) {
   // El candado de "consulta activa" ahora vive en el backend (send-message.js).
   // Aquí dejamos abrir el chat; si no hay consulta activa, el backend lo bloquea
   // al intentar enviar y mostramos un mensaje amable.
+  // Al abrir desde el directorio, YO soy quien consulta (rol 'user' en esta conversación).
+  window.MI_ROL_EN_CONV = 'user';
+  window.CONSULTA_CADUCADA = false;
   try {
     const advisorRes = await fetch('/.netlify/functions/get-public-profile', {
       method: 'POST',
