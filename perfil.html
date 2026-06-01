@@ -581,6 +581,33 @@ main {
       </div>
     </div>
 
+    <!-- Invitación para usuarios normales (se oculta si ya es advisor) -->
+    <div id="advisor-invite" style="display:none;background:var(--night);border-radius:16px;padding:32px 28px;text-align:center;margin-bottom:20px;">
+      <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,169,110,0.18);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2a2.5 2 0 0 1-2.5-1.5"/><path d="M12 6.5v1.5M12 16v1.5"/></svg>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--cream);margin-bottom:10px;line-height:1.2;"><span class="es">Gana dinero ayudando a otros</span><span class="en">Earn money helping others</span></div>
+      <p style="font-size:14px;color:rgba(247,243,238,0.7);line-height:1.7;margin:0 auto 24px;max-width:420px;"><span class="es">¿Tienes experiencia en relaciones que otros valorarían? Conviértete en advisor, ofrece consultas y gana por cada conversación. Tú decides tu precio y tus horarios.</span><span class="en">Do you have relationship experience others would value? Become an advisor, offer consultations and earn per conversation. You set your price and your hours.</span></p>
+      <div style="display:flex;justify-content:center;gap:24px;margin-bottom:26px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5a2.5 2 0 0 0-2.5-1.5c-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2"/></svg>
+          <span style="font-size:13px;color:rgba(247,243,238,0.85);"><span class="es">Hasta 90% por consulta</span><span class="en">Up to 90% per consult</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span style="font-size:13px;color:rgba(247,243,238,0.85);"><span class="es">Tu propio horario</span><span class="en">Your own schedule</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <span style="font-size:13px;color:rgba(247,243,238,0.85);"><span class="es">100% anónimo</span><span class="en">100% anonymous</span></span>
+        </div>
+      </div>
+      <button type="button" onclick="abrirSerAdvisor()" style="background:var(--terra);color:white;border:none;border-radius:10px;padding:14px 32px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;">
+        <span class="es">Quiero ser advisor</span><span class="en">I want to be an advisor</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
     <div class="advisor-collapsed" id="advisor-section">
       <div class="advisor-collapsed-header" onclick="toggleAdvisorPanel()">
         <div class="advisor-status">
@@ -834,7 +861,42 @@ async function loadProfile() {
   if (profile.role === 'advisor' && advisorProfile) {
     loadAdvisorProfileData();
     renderStripeBanner();
+    aplicarVistaAdvisorPerfil(true);
+  } else {
+    aplicarVistaAdvisorPerfil(false);
   }
+}
+
+// Decide qué se ve en la sección advisor según si la persona ya es advisor o no.
+function aplicarVistaAdvisorPerfil(esAdvisor) {
+  const invite = document.getElementById('advisor-invite');
+  const section = document.getElementById('advisor-section');
+  const panel = document.getElementById('advisor-panel');
+  if (esAdvisor) {
+    // Advisor: ocultar invitación, mostrar su panel abierto directo
+    if (invite) invite.style.display = 'none';
+    if (section) section.style.display = '';
+    if (panel) panel.classList.add('open');
+    const btn = document.getElementById('advisor-expand-btn');
+    if (btn) btn.textContent = (localStorage.getItem('hksk-lang')==='en'?'Edit →':'Editar →');
+  } else {
+    // Usuario normal: mostrar invitación bonita, ocultar el bloque viejo
+    if (invite) invite.style.display = 'block';
+    if (section) section.style.display = 'none';
+  }
+}
+
+// Al picar "Quiero ser advisor": ocultar invitación y abrir el panel con los campos
+function abrirSerAdvisor() {
+  const invite = document.getElementById('advisor-invite');
+  const section = document.getElementById('advisor-section');
+  const panel = document.getElementById('advisor-panel');
+  if (invite) invite.style.display = 'none';
+  if (section) section.style.display = '';
+  if (panel) panel.classList.add('open');
+  const btn = document.getElementById('advisor-expand-btn');
+  if (btn) btn.textContent = (localStorage.getItem('hksk-lang')==='en'?'Close ↑':'Cerrar ↑');
+  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ===== STRIPE CONNECT BANNER =====
