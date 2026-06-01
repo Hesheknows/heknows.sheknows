@@ -331,11 +331,13 @@ async function init() {
   session = JSON.parse(raw);
 
   try {
-    const planRes = await fetch(`https://ydqcxbwxfzyxdzidafch.supabase.co/rest/v1/profiles?id=eq.${session.user.id}&select=plan`, {
-      headers: { apikey: 'sb_publishable_6LRVFCwHqtf0r9daHpqbLg_oH9VTpRA', Authorization: `Bearer ${session.access_token}` }
+    const planRes = await fetch('/.netlify/functions/get-public-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: session.access_token })
     });
     const planData = await planRes.json();
-    userPlan = planData[0]?.plan || 'free';
+    userPlan = planData.profile?.plan || 'free';
   } catch(e) {}
 
   await loadConversations();
@@ -448,12 +450,13 @@ async function openOrCreateConv(advisorId) {
   // Aquí dejamos abrir el chat; si no hay consulta activa, el backend lo bloquea
   // al intentar enviar y mostramos un mensaje amable.
   try {
-    const advisorRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${advisorId}&select=id,full_name,avatar_url`,
-      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } }
-    );
+    const advisorRes = await fetch('/.netlify/functions/get-public-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: session.access_token, profileId: advisorId })
+    });
     const advisorData = await advisorRes.json();
-    const advisor = advisorData[0] || { id: advisorId, full_name: 'Advisor', avatar_url: null };
+    const advisor = advisorData.profile || { id: advisorId, full_name: 'Advisor', avatar_url: null };
 
     const existingItem = document.querySelector(`.conv-item[data-advisor-id="${advisorId}"]`);
     if (existingItem) {
