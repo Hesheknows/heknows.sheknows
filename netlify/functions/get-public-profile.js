@@ -44,10 +44,17 @@ exports.handler = async (event) => {
   // 2. Si no mandan profileId, devolver el perfil del propio usuario (incluye su plan)
   const targetId = profileId || requesterId;
 
-  // 3. Leer SOLO campos públicos con la llave secreta
+  // ¿Está pidiendo SU PROPIO perfil? Entonces puede ver todos sus datos.
+  const esPropio = (targetId === requesterId);
+
+  // 3. Leer el perfil con la llave secreta.
+  //    Propio -> todos los campos. Ajeno -> solo campos públicos (nunca email).
+  const campos = esPropio
+    ? '*'
+    : 'id,full_name,avatar_url,plan,role';
   try {
     const profRes = await fetch(
-      `${SUPA_URL}/rest/v1/profiles?id=eq.${targetId}&select=id,full_name,avatar_url,plan,role`,
+      `${SUPA_URL}/rest/v1/profiles?id=eq.${targetId}&select=${campos}`,
       { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
     );
     if (!profRes.ok) {
@@ -60,7 +67,12 @@ exports.handler = async (event) => {
 
     if (!prof) return json(404, { error: 'Perfil no encontrado' });
 
-    // Devolver solo lo público (nunca el email)
+    if (esPropio) {
+      // Perfil completo del propio usuario (todos sus campos)
+      return json(200, { profile: prof });
+    }
+
+    // Perfil ajeno: solo lo público (nunca el email)
     return json(200, {
       profile: {
         id: prof.id,
