@@ -177,9 +177,9 @@ body.menu-open{overflow:hidden;}
     <a href="perfil.html" class="alert-btn"><span class="es">Completar →</span><span class="en">Complete →</span></a>
   </div>
   <div class="stats">
-    <div class="stat"><div class="stat-n">0</div><div class="stat-l"><span class="es">Preguntas hechas</span><span class="en">Questions asked</span></div></div>
-    <div class="stat"><div class="stat-n">0</div><div class="stat-l"><span class="es">Respuestas recibidas</span><span class="en">Answers received</span></div></div>
-    <div class="stat"><div class="stat-n" id="stat-plan">—</div><div class="stat-l"><span class="es">Tu plan actual</span><span class="en">Your current plan</span></div></div>
+    <div class="stat"><div class="stat-n" id="stat-1-n">0</div><div class="stat-l" id="stat-1-l"><span class="es">Preguntas hechas</span><span class="en">Questions asked</span></div></div>
+    <div class="stat"><div class="stat-n" id="stat-2-n">0</div><div class="stat-l" id="stat-2-l"><span class="es">Respuestas recibidas</span><span class="en">Answers received</span></div></div>
+    <div class="stat"><div class="stat-n" id="stat-plan">—</div><div class="stat-l" id="stat-3-l"><span class="es">Tu plan actual</span><span class="en">Your current plan</span></div></div>
   </div>
   <div class="section-label"><span class="es">Acciones rápidas</span><span class="en">Quick actions</span></div>
   <div class="actions">
@@ -331,18 +331,10 @@ function closeMobileMenu(){
       };
       document.getElementById('stat-plan').textContent = planNames[profile?.plan] || 'Free';
 
-      // Si ya es advisor, cambiar la tarjeta "Ser Advisor" por algo útil para advisors
+      // Si ya es advisor, transformar el dashboard a vista de advisor
       const esAdvisor = profile?.role === 'advisor' || ['advisor_mensual','advisor_anual'].includes(profile?.plan);
       if (esAdvisor) {
-        const card = document.getElementById('card-ser-advisor');
-        if (card) {
-          card.href = 'mensajes.html';
-          const lang = localStorage.getItem('hksk-lang') || 'es';
-          const titEl = card.querySelector('.ac-title');
-          const descEl = card.querySelector('.ac-desc');
-          if (titEl) titEl.innerHTML = '<span class="es">Mis consultas</span><span class="en">My consultations</span>';
-          if (descEl) descEl.innerHTML = '<span class="es">Revisa los mensajes de las personas que te consultan.</span><span class="en">Check messages from people consulting you.</span>';
-        }
+        aplicarVistaAdvisor();
       }
     } catch(e) {
       document.getElementById('welcome-name').textContent = user.email.split('@')[0];
@@ -350,6 +342,7 @@ function closeMobileMenu(){
 
     // Esperar un poquito antes de mostrar el modal de reseñas (no interrumpe el flujo principal)
     setTimeout(checkPendingReviews, 1200);
+    // (la vista de advisor se aplica dentro del try de arriba si corresponde)
 
   } catch(e) {
     window.location.replace('/login.html');
@@ -382,6 +375,49 @@ let REV_PENDING_LIST = [];
 let REV_CURRENT = null;
 let REV_STARS = 0;
 let REV_RECOMMEND = null;
+
+
+async function aplicarVistaAdvisor() {
+  const lang = localStorage.getItem('hksk-lang') || 'es';
+
+  // Cambiar la subtitulo del saludo
+  const sub = document.querySelector('.welcome-sub, .sub');
+  // Cambiar las 3 tarjetas-stat a métricas de advisor
+  const s1n = document.getElementById('stat-1-n');
+  const s1l = document.getElementById('stat-1-l');
+  const s2n = document.getElementById('stat-2-n');
+  const s2l = document.getElementById('stat-2-l');
+  if (s1l) s1l.innerHTML = '<span class="es">Consultas activas</span><span class="en">Active consultations</span>';
+  if (s2l) s2l.innerHTML = '<span class="es">Ganado este mes</span><span class="en">Earned this month</span>';
+
+  // Transformar la tarjeta "Ser Advisor" en "Mis consultas"
+  const card = document.getElementById('card-ser-advisor');
+  if (card) {
+    card.href = 'mensajes.html';
+    const titEl = card.querySelector('.ac-title');
+    const descEl = card.querySelector('.ac-desc');
+    if (titEl) titEl.innerHTML = '<span class="es">Mis consultas</span><span class="en">My consultations</span>';
+    if (descEl) descEl.innerHTML = '<span class="es">Responde a las personas que te consultan.</span><span class="en">Reply to people consulting you.</span>';
+  }
+
+  // Cargar números reales
+  try {
+    const saved = JSON.parse(localStorage.getItem('hksk-session'));
+    const token = saved?.access_token;
+    if (!token) return;
+    const res = await fetch('/.netlify/functions/get-advisor-dashboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    });
+    if (!res.ok) return;
+    const d = await res.json();
+    if (s1n) s1n.textContent = d.consultas_activas != null ? d.consultas_activas : '0';
+    if (s2n) s2n.textContent = '$' + (d.ganado_mes != null ? d.ganado_mes.toLocaleString('es-MX') : '0');
+  } catch (e) {
+    console.error('aplicarVistaAdvisor error:', e);
+  }
+}
 
 async function checkPendingReviews() {
   let session = null;
