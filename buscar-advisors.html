@@ -327,8 +327,17 @@ let SELECTED_ADVISOR = null;
 })();
 
 function logout() {
-  localStorage.removeItem('hksk-session');
-  window.location.href = 'login.html';
+  // Borrar la sesión custom
+  localStorage.removeItem("hksk-session");
+  // Borrar la sesión del SDK de Supabase (claves que empiezan con "sb-")
+  try {
+    Object.keys(localStorage).forEach(function(k){
+      if (k.indexOf("sb-") === 0 || k.indexOf("supabase") !== -1) {
+        localStorage.removeItem(k);
+      }
+    });
+  } catch(e) {}
+  window.location.href = "login.html";
 }
 
 async function loadAdvisors() {
