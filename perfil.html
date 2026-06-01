@@ -652,6 +652,44 @@ main {
           </div>
         </div>
 
+        <!-- ===== CONSEJOS PARA SUBIR VENTAS ===== -->
+        <div id="consejos-section" style="display:none;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <span style="font-size:16px;">📈</span>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--night);"><span class="es">Consejos para subir tus ventas</span><span class="en">Tips to grow your sales</span></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:white;border:1px solid rgba(61,53,48,0.1);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:13px;font-weight:600;color:var(--night);margin-bottom:2px;"><span class="es">Cuida tu foto y tu bio</span><span class="en">Polish your photo and bio</span></div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.5;"><span class="es">Una foto cálida y una bio honesta generan más confianza y más consultas.</span><span class="en">A warm photo and an honest bio build trust and bring more consultations.</span></div>
+            </div>
+            <div style="background:white;border:1px solid rgba(61,53,48,0.1);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:13px;font-weight:600;color:var(--night);margin-bottom:2px;"><span class="es">Responde rápido y con calidez</span><span class="en">Respond quickly and warmly</span></div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.5;"><span class="es">Quien contesta pronto recibe mejores reseñas y sube en el directorio.</span><span class="en">Replying fast earns better reviews and higher ranking.</span></div>
+            </div>
+            <div style="background:white;border:1px solid rgba(61,53,48,0.1);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:13px;font-weight:600;color:var(--night);margin-bottom:2px;"><span class="es">Comparte tu perspectiva en redes</span><span class="en">Share your perspective on social media</span></div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.5;"><span class="es">Publica tips propios sobre relaciones (nunca conversaciones de clientes) con tu link de invitación.</span><span class="en">Post your own relationship tips (never client conversations) with your invite link.</span></div>
+            </div>
+            <div style="background:white;border:1px solid rgba(61,53,48,0.1);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:13px;font-weight:600;color:var(--night);margin-bottom:2px;"><span class="es">Pide reseñas honestas</span><span class="en">Ask for honest reviews</span></div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.5;"><span class="es">Las buenas calificaciones te dan más visibilidad y más clientes nuevos.</span><span class="en">Good ratings give you more visibility and new clients.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== REGLA DE CONFIDENCIALIDAD ===== -->
+        <div id="confidencialidad-section" style="display:none;background:var(--night);border-radius:12px;padding:16px 18px;margin-bottom:18px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:18px;flex-shrink:0;">🔒</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:6px;"><span class="es">Tu compromiso de confidencialidad</span><span class="en">Your confidentiality commitment</span></div>
+              <div style="font-size:12px;color:rgba(247,243,238,0.75);line-height:1.6;"><span class="es">Todo lo que un usuario comparte contigo es privado. Nunca publiques, compartas ni menciones fuera de la plataforma las conversaciones, historias o datos de las personas que te consultan. Romper esto puede resultar en la suspensión de tu cuenta.</span><span class="en">Everything a user shares with you is private. Never publish, share or mention outside the platform the conversations, stories or data of the people who consult you. Breaking this may result in account suspension.</span></div>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Especialidades</label>
           <div class="specialties-grid" id="specialties-grid"></div>
@@ -911,6 +949,10 @@ function populateReferralSection() {
   const sec = document.getElementById('referral-section');
   if (!sec || !advisorProfile) return;
   sec.style.display = 'block';
+  const consejos = document.getElementById('consejos-section');
+  const confid = document.getElementById('confidencialidad-section');
+  if (consejos) consejos.style.display = 'block';
+  if (confid) confid.style.display = 'block';
 
   // Comisión actual (commission_rate viene como 0.70 → 70%)
   const rate = Number(advisorProfile.commission_rate || advisorProfile.commission_base || 0.70);
