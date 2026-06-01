@@ -500,7 +500,8 @@ async function subscribeNewsletter() {
       <h2 class="mtt">Bienvenido/a a<br><em>He Knows She Knows</em></h2>
       <p class="msb">Anónimo desde el primer momento. Nadie sabrá quién eres.</p>
       <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ug')">Hombre</button><button class="chip" onclick="togCS(this,'ug')">Mujer</button><button class="chip" onclick="togCS(this,'ug')">Prefiero no decir</button></div></div>
-      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input id="mu-email" class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="fg"><label class="flbl">Confirma tu correo</label><input id="mu-email2" class="finp" type="email" placeholder="Escríbelo de nuevo"></div>
       <div class="frw">
         <div class="fg"><label class="flbl">Usuario anónimo</label><input class="finp" type="text" placeholder="@usuario_secreto"></div>
         <div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Tijuana</option><option>Otra</option></select></div>
@@ -530,7 +531,8 @@ async function subscribeNewsletter() {
       <p class="msb">Tu identidad queda verificada pero nunca visible para los usuarios.</p>
       <div class="fg"><label class="flbl">¿Cómo te identificas?</label><div style="display:flex;gap:12px;"><button class="chip" onclick="togCS(this,'ag')">Hombre</button><button class="chip" onclick="togCS(this,'ag')">Mujer</button></div></div>
       <div class="frw"><div class="fg"><label class="flbl">Nombre completo</label><input class="finp" type="text" placeholder="Solo para verificación"></div><div class="fg"><label class="flbl">Edad</label><input class="finp" type="number" placeholder="18+" min="18"></div></div>
-      <div class="fg"><label class="flbl">Correo electrónico</label><input class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="fg"><label class="flbl">Correo electrónico</label><input id="as1-email" class="finp" type="email" placeholder="tu@correo.com"></div>
+      <div class="fg"><label class="flbl">Confirma tu correo</label><input id="as1-email2" class="finp" type="email" placeholder="Escríbelo de nuevo"></div>
       <div class="frw"><div class="fg"><label class="flbl">Teléfono</label><input class="finp" type="tel" placeholder="+52 55 0000 0000"></div><div class="fg"><label class="flbl">Ciudad</label><select class="fsel"><option>CDMX</option><option>Guadalajara</option><option>Monterrey</option><option>Puebla</option><option>Otra</option></select></div></div>
       <div class="fg"><label class="flbl">Contraseña</label><div class="pw-wrap"><input id="as1-pass" class="finp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="pw-eye" onclick="togglePw(this)" aria-label="Mostrar u ocultar contraseña"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <button class="bfl" onclick="aN(1)">Continuar →</button>
@@ -619,8 +621,10 @@ function togglePw(btn){
 async function showSuc(id){
   if(id==='mu'){
     // ===== FLUJO USUARIO (sin cambios) =====
-    const email=document.querySelector('#mu-form input[type="email"]').value.trim();
+    const email=document.getElementById('mu-email').value.trim();
+    const email2=document.getElementById('mu-email2').value.trim();
     const password=document.getElementById('mu-pass').value.trim();
+    if(email.toLowerCase()!==email2.toLowerCase()){alert('Los correos no coinciden. Revisa que estén escritos igual.');return;}
     const gender=document.querySelector('#mu-form .chip.active')?.textContent.trim()||'';
     if(!email||!password){alert('Por favor ingresa tu correo y contraseña.');return;}
     try{
@@ -645,11 +649,14 @@ async function showSuc(id){
   let sesionActual=null;
   try{ sesionActual=JSON.parse(localStorage.getItem('hksk-session')); }catch(e){}
   const yaLogueado=!!sesionActual?.access_token;
-  let email=document.querySelector('#as1 input[type="email"]').value.trim();
+  let email=document.getElementById('as1-email').value.trim();
+  const email2=document.getElementById('as1-email2').value.trim();
   let password=document.getElementById('as1-pass').value.trim();
   if(yaLogueado){
     email=sesionActual.user?.email||email;
     if(!password) password='__YA_REGISTRADO__';
+  } else {
+    if(email.toLowerCase()!==email2.toLowerCase()){alert('Los correos no coinciden. Revisa que estén escritos igual.');return;}
   }
   const full_name=document.querySelector('#as1 input[placeholder="Solo para verificación"]').value.trim();
   const gender=document.querySelector('#as1 .chip.active')?.textContent.trim()||'';
