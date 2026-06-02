@@ -14,7 +14,7 @@ exports.handler = async (event) => {
   const { id: userId } = await userRes.json();
 
   try {
-    const convsRes = await fetch(`${URL}/rest/v1/conversations?or=(user_id.eq.${userId},advisor_id.eq.${userId})&order=updated_at.desc&select=id,last_message,updated_at,unread_user,unread_advisor,user_id,advisor_id`, {
+    const convsRes = await fetch(`${URL}/rest/v1/conversations?or=(user_id.eq.${userId},advisor_id.eq.${userId})&order=updated_at.desc&select=id,last_message,updated_at,unread_user,unread_advisor,user_id,advisor_id,is_anonymous,display_name`, {
       headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY }
     });
     const convs = await convsRes.json();
@@ -22,6 +22,23 @@ exports.handler = async (event) => {
     const result = await Promise.all((convs || []).map(async c => {
       const isAdvisor = c.advisor_id === userId;
       const otherId = isAdvisor ? c.user_id : c.advisor_id;
+
+      // Si el advisor mira una consulta ANÓNIMA: mostrar apodo, ocultar identidad real
+      if (isAdvisor && c.is_anonymous) {
+        const apodo = (c.display_name && c.display_name.trim())
+          ? c.display_name.trim()
+          : 'Usuaria anónima';
+        return {
+          id: c.id,
+          other: { id: otherId, full_name: apodo, avatar_url: null, anonymous: true },
+          last_message: c.last_message,
+          updated_at: c.updated_at,
+          unread: c.unread_advisor,
+          role: 'advisor'
+        };
+      }
+
+      // Caso normal: mostrar datos reales del otro
       const profRes = await fetch(`${URL}/rest/v1/profiles?id=eq.${otherId}&select=id,full_name,avatar_url`, {
         headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY }
       });
