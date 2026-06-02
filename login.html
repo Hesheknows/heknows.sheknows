@@ -99,6 +99,11 @@ if (window.location.hash.includes("access_token")) {
 }
 
 (async () => {
+  // Si el usuario ACABA de cerrar sesión, no resucitar la sesión (evita el loop)
+  if (sessionStorage.getItem('hksk-just-logged-out')) {
+    sessionStorage.removeItem('hksk-just-logged-out');
+    return;
+  }
   const session = await HKSK.getSession();
   if (session) {
     localStorage.setItem('hksk-session', JSON.stringify({
