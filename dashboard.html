@@ -410,12 +410,47 @@ async function aplicarVistaAdvisor() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token })
     });
-    if (!res.ok) return;
-    const d = await res.json();
-    if (s1n) s1n.textContent = d.consultas_activas != null ? d.consultas_activas : '0';
-    if (s2n) s2n.textContent = '$' + (d.ganado_mes != null ? d.ganado_mes.toLocaleString('es-MX') : '0');
+    if (res.ok) {
+      const d = await res.json();
+      if (s1n) s1n.textContent = d.consultas_activas != null ? d.consultas_activas : '0';
+      if (s2n) s2n.textContent = '$' + (d.ganado_mes != null ? d.ganado_mes.toLocaleString('es-MX') : '0');
+
+      // Si el perfil del advisor está incompleto, mostrar banner para activarse
+      if (d.perfil_completo === false && Array.isArray(d.faltantes) && d.faltantes.length > 0) {
+        mostrarBannerPerfilIncompleto(d.faltantes);
+      }
+    }
   } catch (e) {
     console.error('aplicarVistaAdvisor error:', e);
+  }
+}
+
+function mostrarBannerPerfilIncompleto(faltantes) {
+  // Traducir los faltantes a texto amable
+  const nombres = { foto: 'tu foto', bio: 'tu descripción', precio: 'tu precio', especialidad: 'tu especialidad' };
+  const lista = faltantes.map(f => nombres[f] || f);
+  let textoFalta;
+  if (lista.length === 1) textoFalta = lista[0];
+  else if (lista.length === 2) textoFalta = lista[0] + ' y ' + lista[1];
+  else textoFalta = lista.slice(0, -1).join(', ') + ' y ' + lista[lista.length - 1];
+
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#FBF2EC;border:1px solid #E8C9B8;border-left:4px solid #C47A5A;border-radius:12px;padding:18px 20px;margin:0 0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;';
+  banner.innerHTML = `
+    <div style="flex:1;min-width:240px;">
+      <div style="font-weight:600;color:#9A5B3B;font-size:0.95rem;margin-bottom:4px;">⚠️ Tu perfil de advisor está incompleto</div>
+      <div style="font-size:0.85rem;color:#7A6A60;line-height:1.5;">Te falta agregar <strong>${textoFalta}</strong>. Sin esto no apareces en la página de Advisors y los usuarios no pueden encontrarte.</div>
+    </div>
+    <a href="perfil.html" style="background:#C47A5A;color:white;text-decoration:none;padding:11px 22px;border-radius:8px;font-size:0.85rem;font-weight:600;white-space:nowrap;">Completar mi perfil →</a>
+  `;
+
+  // Insertarlo al inicio del contenido principal
+  const main = document.querySelector('.dash-main, main, .container') || document.body;
+  const firstChild = main.querySelector('.stats') || main.firstElementChild;
+  if (firstChild) {
+    firstChild.parentNode.insertBefore(banner, firstChild);
+  } else {
+    main.prepend(banner);
   }
 }
 
