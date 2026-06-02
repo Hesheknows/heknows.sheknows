@@ -405,6 +405,10 @@ async function init() {
   const raw = localStorage.getItem('hksk-session');
   if (raw) {
     session = JSON.parse(raw);
+    // Renovar el token al cargar (por si expiró mientras la página estaba cerrada)
+    await refrescarToken();
+    // Y renovarlo cada 45 min para que nunca expire mientras navega
+    setInterval(refrescarToken, 45 * 60 * 1000);
     const email = session.user?.email?.split('@')[0] || '';
     const navUserEl = document.getElementById('nav-user');
     if (navUserEl) navUserEl.textContent = email;
@@ -418,6 +422,26 @@ async function init() {
       </div>`;
   }
   await loadPosts();
+}
+
+async function refrescarToken() {
+  try {
+    if (!session?.refresh_token) return;
+    const res = await fetch('/.netlify/functions/refresh-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.access_token) {
+      session.access_token = data.access_token;
+      if (data.refresh_token) session.refresh_token = data.refresh_token;
+      localStorage.setItem('hksk-session', JSON.stringify(session));
+    }
+  } catch (e) {
+    console.error('refrescarToken error:', e);
+  }
 }
 
 async function loadPosts(reset = false) {
@@ -592,7 +616,7 @@ function renderReplyPreview(reply) {
       ${avatarHtml}<span class="reply-name">${escHtml(name)}</span>
       ${menuHtml}
     </div>
-    <div class="reply-text">${escHtml(reply.body.slice(0, 160))}${reply.body.length > 160 ? '…' : ''}${editedMark}</div>
+    <div class="reply-text">${escHtml(reply.body)}${editedMark}</div>
   </div>`;
 }
 
@@ -1068,9 +1092,7 @@ function setLang(lang){
 })();
 
 function logout() {
-  // Borrar la sesión custom
   localStorage.removeItem("hksk-session");
-  // Borrar la sesión del SDK de Supabase (claves que empiezan con "sb-")
   try {
     Object.keys(localStorage).forEach(function(k){
       if (k.indexOf("sb-") === 0 || k.indexOf("supabase") !== -1) {
