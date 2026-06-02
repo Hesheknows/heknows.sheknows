@@ -330,6 +330,10 @@ async function init() {
   if (!raw) return window.location.href = 'login.html';
   session = JSON.parse(raw);
 
+  // Renovar el token al cargar y cada 45 min para que no expire mientras navega
+  await refrescarToken();
+  setInterval(refrescarToken, 45 * 60 * 1000);
+
   try {
     const planRes = await fetch('/.netlify/functions/get-public-profile', {
       method: 'POST',
@@ -346,6 +350,26 @@ async function init() {
   const params = new URLSearchParams(location.search);
   const advisorId = params.get('advisorId');
   if (advisorId) await openOrCreateConv(advisorId);
+}
+
+async function refrescarToken() {
+  try {
+    if (!session?.refresh_token) return;
+    const res = await fetch('/.netlify/functions/refresh-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.access_token) {
+      session.access_token = data.access_token;
+      if (data.refresh_token) session.refresh_token = data.refresh_token;
+      localStorage.setItem('hksk-session', JSON.stringify(session));
+    }
+  } catch (e) {
+    console.error('refrescarToken error:', e);
+  }
 }
 
 async function loadConversations() {
