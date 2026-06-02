@@ -256,6 +256,24 @@ body.menu-open{overflow:hidden;}
       </div>
     </div>
 
+    <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;text-align:left;">
+      <div style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:10px;"><span class="es">¿Cómo quieres aparecer?</span><span class="en">How do you want to appear?</span></div>
+      <div style="display:flex;gap:8px;margin-bottom:0;">
+        <button type="button" id="anon-yes" onclick="setAnon(true)" style="flex:1;border:2px solid var(--terra);background:#FBF2EC;border-radius:10px;padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 4px;"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#9A5B3B" stroke-width="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#9A5B3B" stroke-width="2"/></svg>
+          <span style="font-size:0.78rem;font-weight:500;color:#9A5B3B;"><span class="es">Anónima</span><span class="en">Anonymous</span></span>
+        </button>
+        <button type="button" id="anon-no" onclick="setAnon(false)" style="flex:1;border:1px solid #E0D5CC;background:white;border-radius:10px;padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 4px;"><circle cx="12" cy="8" r="4" stroke="#9A8880" stroke-width="2"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="#9A8880" stroke-width="2"/></svg>
+          <span style="font-size:0.78rem;font-weight:500;color:var(--muted);"><span class="es">Con mi nombre</span><span class="en">With my name</span></span>
+        </button>
+      </div>
+      <div id="anon-nick-wrap" style="margin-top:12px;">
+        <input type="text" id="anon-nick" maxlength="24" placeholder="¿Cómo quieres que te diga? (ej. Luna)" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #E0D5CC;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;">
+        <p style="font-size:0.68rem;color:var(--muted);margin:8px 0 0;line-height:1.5;"><span class="es">El advisor verá este nombre, nunca tu identidad real. Si lo dejas vacío, verá "Usuaria anónima".</span><span class="en">The advisor sees this name, never your real identity. If empty, they see "Anonymous user".</span></p>
+      </div>
+    </div>
+
     <button class="pay-btn" id="pay-proceed-btn" onclick="proceedToPayment()">
       Pagar y consultar →
     </button>
@@ -524,6 +542,24 @@ function closePayModal() {
   SELECTED_ADVISOR = null;
 }
 
+let ANON_CONSULTA = true;  // por defecto anónima (privacidad primero)
+
+function setAnon(val) {
+  ANON_CONSULTA = val;
+  const yes = document.getElementById('anon-yes');
+  const no = document.getElementById('anon-no');
+  const nickWrap = document.getElementById('anon-nick-wrap');
+  if (val) {
+    yes.style.border = '2px solid var(--terra)'; yes.style.background = '#FBF2EC';
+    no.style.border = '1px solid #E0D5CC'; no.style.background = 'white';
+    if (nickWrap) nickWrap.style.display = 'block';
+  } else {
+    no.style.border = '2px solid var(--terra)'; no.style.background = '#FBF2EC';
+    yes.style.border = '1px solid #E0D5CC'; yes.style.background = 'white';
+    if (nickWrap) nickWrap.style.display = 'none';
+  }
+}
+
 async function proceedToPayment() {
   if (!SELECTED_ADVISOR || !SESSION) return;
 
@@ -542,7 +578,9 @@ async function proceedToPayment() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         access_token: SESSION.access_token,
-        advisor_id: SELECTED_ADVISOR.id
+        advisor_id: SELECTED_ADVISOR.id,
+        is_anonymous: ANON_CONSULTA,
+        display_name: ANON_CONSULTA ? (document.getElementById('anon-nick')?.value || '').trim() : ''
       })
     });
     const data = await res.json();
