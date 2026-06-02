@@ -73,7 +73,7 @@ exports.handler = async (event) => {
     // 3) Buscar una consulta activa y no vencida entre ese par
     const nowISO = new Date().toISOString();
     const consultaRes = await fetch(
-      `${SUPA_URL}/rest/v1/consultations?user_id=eq.${convUserId}&advisor_id=eq.${convAdvisorId}&status=eq.active&expires_at=gt.${nowISO}&select=id,expires_at&limit=1`,
+      `${SUPA_URL}/rest/v1/consultations?user_id=eq.${convUserId}&advisor_id=eq.${convAdvisorId}&status=eq.paid&expires_at=gt.${nowISO}&select=id,expires_at&limit=1`,
       { headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY } }
     );
     if (!consultaRes.ok) {
