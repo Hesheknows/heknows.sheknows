@@ -28,7 +28,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { access_token, advisor_id } = JSON.parse(event.body || '{}');
+    const { access_token, advisor_id, is_anonymous = false, display_name = '' } = JSON.parse(event.body || '{}');
 
     if (!access_token || !advisor_id) {
       return { statusCode: 200, headers, body: JSON.stringify({ error: 'Faltan datos: access_token y advisor_id requeridos' }) };
@@ -129,7 +129,9 @@ exports.handler = async (event) => {
         advisorId: advisor_id,
         advisorAmount: String(advisorAmount),
         platformFee: String(platformFee),
-        commissionRate: String(commissionRate)
+        commissionRate: String(commissionRate),
+        isAnonymous: is_anonymous ? '1' : '0',
+        displayName: (display_name || '').slice(0, 24)
       },
       success_url: `https://he-sheknows.com/mensajes.html?advisorId=${advisor_id}&consultation=success`,
       cancel_url: `https://he-sheknows.com/buscar-advisors.html?consultation=cancelled`
