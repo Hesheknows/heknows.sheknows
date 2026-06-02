@@ -113,6 +113,47 @@ exports.handler = async (event) => {
           console.log(`✅ Consulta registrada. Acceso hasta: ${expiresAt}`);
 
           // ────────────────────────────────────────────
+          // Crear o actualizar la conversación con la info de anonimato
+          // (para que el advisor vea el apodo en vez del nombre real)
+          // ────────────────────────────────────────────
+          try {
+            const esAnon = metadata.isAnonymous === '1';
+            const apodo = metadata.displayName || '';
+            // ¿Ya existe conversación entre este user y advisor?
+            const convExistRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/conversations?user_id=eq.${metadata.userId}&advisor_id=eq.${metadata.advisorId}&select=id`,
+              { headers: supabaseHeaders() }
+            );
+            const convExist = await convExistRes.json();
+            if (Array.isArray(convExist) && convExist.length > 0) {
+              // Actualizar la conversación existente con el anonimato de esta consulta
+              await fetch(
+                `${SUPABASE_URL}/rest/v1/conversations?id=eq.${convExist[0].id}`,
+                {
+                  method: 'PATCH',
+                  headers: { ...supabaseHeaders(), 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ is_anonymous: esAnon, display_name: apodo })
+                }
+              );
+            } else {
+              // Crear la conversación con el anonimato
+              await fetch(`${SUPABASE_URL}/rest/v1/conversations`, {
+                method: 'POST',
+                headers: { ...supabaseHeaders(), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                body: JSON.stringify({
+                  user_id: metadata.userId,
+                  advisor_id: metadata.advisorId,
+                  is_anonymous: esAnon,
+                  display_name: apodo
+                })
+              });
+            }
+            console.log(`✅ Conversación lista (anónima: ${esAnon}, apodo: "${apodo}")`);
+          } catch (convErr) {
+            console.error('Error creando/actualizando conversación con anonimato:', convErr.message);
+          }
+
+          // ────────────────────────────────────────────
           // 📧 ENVIAR EMAIL AL ADVISOR
           // (no bloqueante: si falla, el pago igual queda registrado)
           // ────────────────────────────────────────────
