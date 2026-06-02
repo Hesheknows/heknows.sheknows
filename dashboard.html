@@ -322,7 +322,11 @@ function closeMobileMenu(){
       const profile = await HKSK.getProfile(user.id);
       const name = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
       document.getElementById('welcome-name').textContent = name;
-      if (!profile?.full_name || !profile?.bio) {
+
+      const esAdvisorCheck = profile?.role === 'advisor' || ['advisor_mensual','advisor_anual'].includes(profile?.plan);
+      // El banner viejo "Completa tu perfil" SOLO para usuarios normales (los advisors
+      // tienen su propio banner inteligente). Y solo si de verdad les falta el nombre.
+      if (!esAdvisorCheck && !profile?.full_name) {
         document.getElementById('alert-perfil').style.display = 'flex';
       }
       const planNames = {
