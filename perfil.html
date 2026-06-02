@@ -805,6 +805,21 @@ async function init() {
     localStorage.setItem('hksk-session', JSON.stringify(session));
   }
 
+  // Renovar el token cada 45 min para que no expire mientras la página está abierta
+  setInterval(async () => {
+    try {
+      const { data: r } = await sb.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token
+      });
+      if (r?.session) {
+        session.access_token = r.session.access_token;
+        session.refresh_token = r.session.refresh_token;
+        localStorage.setItem('hksk-session', JSON.stringify(session));
+      }
+    } catch (e) { console.error('refresh perfil error:', e); }
+  }, 45 * 60 * 1000);
+
   // Detectar si vuelve de Stripe Connect onboarding
   const params = new URLSearchParams(window.location.search);
   if (params.get('stripe') === 'complete') {
