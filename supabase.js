@@ -43,9 +43,22 @@ async function signIn(email, password) {
   return { data, error };
 }
 async function signOut() {
-  await db.auth.signOut();
-  localStorage.removeItem('hksk-session');
-  window.location.href = '/';
+  // 1. Cerrar sesión en el SDK (scope global borra el refresh token del server)
+  try { await db.auth.signOut({ scope: 'global' }); } catch(e) {}
+  // 2. Borrar la sesión custom y TODAS las claves del SDK de Supabase
+  try {
+    localStorage.removeItem('hksk-session');
+    Object.keys(localStorage).forEach(function(k){
+      if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) {
+        localStorage.removeItem(k);
+      }
+    });
+    sessionStorage.clear();
+    // Marca para que login.html NO resucite la sesión justo después de salir
+    sessionStorage.setItem('hksk-just-logged-out', '1');
+  } catch(e) {}
+  // 3. Pequeña espera para que el SDK termine de limpiar, luego ir a login
+  setTimeout(function(){ window.location.replace('login.html'); }, 150);
 }
 async function getSession() {
   const { data } = await db.auth.getSession();
