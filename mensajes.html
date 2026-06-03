@@ -524,7 +524,12 @@ function renderMessages(msgs, userId) {
 
   area.innerHTML = msgs.map(m => {
     const mine = m.sender_id === userId;
-    const time = new Date(m.created_at).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+    // created_at viene en UTC sin marca de zona; le agregamos 'Z' para que JS lo
+    // interprete como UTC y lo convierta a la hora local del usuario.
+    const fechaUTC = m.created_at && !m.created_at.endsWith('Z') && !m.created_at.includes('+')
+      ? m.created_at.replace(' ', 'T') + 'Z'
+      : m.created_at;
+    const time = new Date(fechaUTC).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
     return `<div class="msg ${mine ? 'mine' : 'theirs'}">
       <div class="msg-bubble">${escapeHtml(m.body)}</div>
       <div class="msg-time">${time}</div>
