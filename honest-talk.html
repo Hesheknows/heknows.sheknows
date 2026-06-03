@@ -797,7 +797,11 @@ function getCatLabel(cat) {
 }
 
 function getTimeAgo(dateStr) {
-  const diff = (Date.now() - new Date(dateStr)) / 1000;
+  // dateStr viene en UTC sin marca de zona; le agregamos 'Z' para que JS lo lea como UTC.
+  const fechaUTC = dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')
+    ? dateStr.replace(' ', 'T') + 'Z'
+    : dateStr;
+  const diff = (Date.now() - new Date(fechaUTC)) / 1000;
   const lang=localStorage.getItem('hksk-lang')||'es';
   if (diff < 60) return lang==='en'?'just now':'hace un momento';
   if (diff < 3600) return lang==='en'?`${Math.floor(diff/60)} min ago`:`hace ${Math.floor(diff/60)} min`;
