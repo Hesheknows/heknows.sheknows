@@ -558,6 +558,8 @@ function renderPost(p) {
     </div>
     ${bodyHtml}
     ${replyHtml}
+    ${(p.reply_count > 1) ? `<button class="ver-mas-replies" id="vmr-${p.id}" onclick="verRespuestas('${p.id}')" style="background:none;border:none;color:var(--terra);font-size:0.75rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px 0 8px;margin-left:2px;">${langCur==='en'?`View all ${p.reply_count} replies →`:`Ver las ${p.reply_count} respuestas →`}</button>` : ''}
+    <div class="replies-expanded" id="re-${p.id}" style="display:none;"></div>
     ${replyFormHtml}
     <div class="post-actions">
       <button class="post-action" onclick="likePost('${p.id}', this)" ${isDeleted ? 'disabled' : ''}>
@@ -568,6 +570,44 @@ function renderPost(p) {
       <span class="post-replies-count">${p.reply_count || 0} ${langCur==='en'?(p.reply_count===1?'reply':'replies'):(p.reply_count===1?'respuesta':'respuestas')}</span>
     </div>
   </div>`;
+}
+
+async function verRespuestas(postId) {
+  const cont = document.getElementById('re-' + postId);
+  const btn = document.getElementById('vmr-' + postId);
+  if (!cont) return;
+
+  // Si ya están abiertas, las cerramos (toggle)
+  if (cont.style.display === 'block') {
+    cont.style.display = 'none';
+    cont.innerHTML = '';
+    const lang = localStorage.getItem('hksk-lang') || 'es';
+    const post = allPosts.find(p => p.id === postId);
+    const n = post ? post.reply_count : '';
+    if (btn) btn.textContent = lang === 'en' ? `View all ${n} replies →` : `Ver las ${n} respuestas →`;
+    return;
+  }
+
+  // Cargar todas las respuestas
+  if (btn) btn.textContent = '...';
+  try {
+    const res = await fetch('/.netlify/functions/get-replies?post_id=' + postId);
+    const data = await res.json();
+    const replies = data.replies || [];
+    // Quitamos la primera (ya se muestra en el preview) para no duplicarla
+    const resto = replies.slice(1);
+    if (resto.length === 0) {
+      cont.innerHTML = '';
+    } else {
+      cont.innerHTML = resto.map(r => renderReplyPreview(r)).join('');
+    }
+    cont.style.display = 'block';
+    const lang = localStorage.getItem('hksk-lang') || 'es';
+    if (btn) btn.textContent = lang === 'en' ? 'Hide replies ↑' : 'Ocultar respuestas ↑';
+  } catch (e) {
+    console.error('verRespuestas error:', e);
+    if (btn) btn.textContent = (localStorage.getItem('hksk-lang')==='en'?'Error loading':'Error al cargar');
+  }
 }
 
 function renderReplyPreview(reply) {
