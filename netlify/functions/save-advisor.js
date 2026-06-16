@@ -1,4 +1,7 @@
 // netlify/functions/save-advisor.js
+// v3: ya NO escribe commission_rate aquí. La comisión la maneja el pago
+//     (stripe-webhook: anual=0.90, mensual=0.70). Antes esta función la
+//     reseteaba a 0.70 en cada edición de perfil. <-- ese era el bug.
 // v2: valida que el advisor tenga nombre real (no apodos) y foto de perfil
 // Guarda/actualiza el perfil de advisor del usuario autenticado.
 
@@ -121,7 +124,8 @@ exports.handler = async (event) => {
     civil_status: civil_status || null,
     years_together: years_together ? parseInt(years_together) : null,
     available: true,
-    commission_rate: 0.70,
+    // OJO: commission_rate NO se toca aquí. La pone el pago (stripe-webhook).
+    // Si la pusiéramos, se resetearía la comisión en cada edición de perfil.
     updated_at: new Date().toISOString()
   };
 
